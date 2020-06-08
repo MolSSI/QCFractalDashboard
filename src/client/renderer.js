@@ -1,3 +1,9 @@
+// IPC Test C.
+let input = document.querySelector('#input')
+let result = document.querySelector('#result')
+let btn = document.querySelector('#btn')
+
+
 function sendToPython() {
 
     // IPC Test A..
@@ -8,7 +14,7 @@ function sendToPython() {
 
     let options = {
       mode: 'text',
-      args: [input.value]
+      // args: [input.value]   // comment out for IPC Text C.
     };
 
     // IPC Test A.
@@ -30,12 +36,29 @@ function sendToPython() {
       if (err) throw err;
       // results is an array consisting of messages colected during execution.
       console.log('results: ', results);
-      result.textCOntent =results[0];
+      // result.textCOntent =results[0];   // comment out for IPC Text C.
     });
 }
 
+// IPC Text C.
+function onClick() {
+  fetch(`http://127.0.0.1:5001/${input.value}`).then((data) => {
+    return data.text();
+  }).then((text) => {
+    console.log("data: ", text);
+    result.textContent = text;
+  }).catch(e => {
+    console.log(e);
+  })
+}
+sendToPython();
+
+
 btn.addEventListener('click', () => {
-    sendToPython();
+    // sendToPython();   // comment out for IPC Text C.
+
+    // IPC Test C.
+    onclick();
 });
 
 btn.dispatchEvent(new Event('click'));
