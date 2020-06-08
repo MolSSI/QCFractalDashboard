@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Python Electron Dashboard PoC</title>
+    <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+</head>
+
+<body>
+    <!-- App HTML Content -->
+    <h1>Hello Electron Dashboard</h1>
+    <p>Tech Stack Versions:
+        <ul>
+            <li>NodeJS <script>document.write(process.versions.node)</script></li>
+            <li>Chrome Browser <script>document.write(process.versions.chrome)</script></li>
+            <li>ElectronJS <script>document.write(process.versions.electron)</script></li>
+        </ul>
+    </p>
+
+    <hr />
+
+    <!-- Example IPC Usage A, B & C -->
+    <h1>Simple Python Calculator Example</h1>
+    <p>Input something like <code>1 + 1</code>.</p>
+    <input id="input" value="1 + 1"></input>
+    <input id="btn" type="button" value="Send to Python!"></input>
+    </br>
+    Got <span id="result"></span>
+
+    <!-- Custom Scripts -->
+    <script src="./renderer.js"></script>
+</body>
+
+</html>

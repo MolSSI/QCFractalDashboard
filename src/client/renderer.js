@@ -7,14 +7,14 @@ let btn = document.querySelector('#btn')
 function sendToPython() {
 
     // IPC Test A..
-    var python = require('child_process').spawn('python', ['../server/calc.py', input.value]);
+    var python = require('child_process').spawn('python', ['./src/server/calc.py', input.value]);
 
     // IPC Test B.
     var { PythonShell } = require('python-shell');
 
     let options = {
       mode: 'text',
-      // args: [input.value]   // comment out for IPC Text C.
+      args: [input.value]   // comment out for IPC Text C.
     };
 
     // IPC Test A.
@@ -32,33 +32,33 @@ function sendToPython() {
     });
 
     // IPC Test B.
-    PythonShell.run('../server/calc.py', options, function (err, results) {
+    PythonShell.run('./src/server/calc.py', options, function (err, results) {
       if (err) throw err;
       // results is an array consisting of messages colected during execution.
       console.log('results: ', results);
-      // result.textCOntent =results[0];   // comment out for IPC Text C.
+      result.textContent =results[0];   // comment out for IPC Text C.
     });
 }
 
 // IPC Text C.
-function onClick() {
-  fetch(`http://127.0.0.1:5001/${input.value}`).then((data) => {
-    return data.text();
-  }).then((text) => {
-    console.log("data: ", text);
-    result.textContent = text;
-  }).catch(e => {
-    console.log(e);
-  })
-}
+// function onClick() {
+//   fetch(`http://127.0.0.1:5001/${input.value}`).then((data) => {
+//     return data.text();
+//   }).then((text) => {
+//     console.log("data: ", text);
+//     result.textContent = text;
+//   }).catch(e => {
+//     console.log(e);
+//   })
+// }
+
 sendToPython();
 
-
 btn.addEventListener('click', () => {
-    // sendToPython();   // comment out for IPC Text C.
+    sendToPython();   // comment out for IPC Text C.
 
     // IPC Test C.
-    onclick();
+    // onclick();
 });
 
 btn.dispatchEvent(new Event('click'));

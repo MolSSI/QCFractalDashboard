@@ -1,10 +1,10 @@
 from sys import argv
-from calculator.simple import simplecalculator
+from calculator.simple import SimpleCalculator as simplecalculator
 
 
 def calc(text):
     """based on the input text, returnb the operation result"""
-    try::
+    try:
         c = simplecalculator()
         c.run(text)
         return c.log[-1]
