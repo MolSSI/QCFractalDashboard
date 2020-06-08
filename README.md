@@ -22,3 +22,10 @@ Use the ElectronJS framework for a GUI with a NodeJS server communicating with a
 
 - I may ditch the use of Plotly Dash in favor of more ubiquitous web technologies to eliminate iFrame constraint inherent in Dash approach.
 - Notably could simply use plotlyJS instead (or D3 as well).
+
+
+## Development Log
+
+- Established basic conda environment: `conda create -y -n tacc.sgci.eds.qcarchive.fractal-dashboard.electron -c conda-forge python=3.8.3 nodejs=14.4.0 qcfractal`
+- Activated enviroenment: `conda activate tacc.sgci.eds.qcarchive.fractal-dashboard.electron`
+- Confirmed versions of dependencies: `conda list`  (see ./devcruft/conda_list_initial.txt)
