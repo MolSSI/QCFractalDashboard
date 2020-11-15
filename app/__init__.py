@@ -19,6 +19,7 @@ from config import config
 from .template_filters import replace_empty
 from .setup_logging import setup_logging
 from .setup_argparsing import options
+from flask_caching import Cache #to cache all the data once instead of connecting to the server unnecesarily
 
 
 # Setup the logging, now that we know where the datastore is
@@ -55,6 +56,8 @@ if 'debug' in options:
 # continue the setup
 mail = Mail()
 cors = CORS()
+cache = Cache()#to cache all the data once instead of connecting to the server unnecesarily
+
 # cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 # For: @app.route("/api/v1/users")
 
@@ -80,9 +83,10 @@ def create_app(config_name=None):
     """Flask app factory pattern
       separately creating the extensions and later initializing"""
 
-    conn_app = connexion.App(__name__, specification_dir='./')
+    conn_app = connexion.App(__name__, specification_dir='./') 
     app = conn_app.app
-    
+    cache.init_app(app) #to cache all the data once instead of connecting to the server unnecesarily 
+
     logger.info('')
     if config_name is not None:
         logger.info('Configuring from configuration ' + config_name)
@@ -140,6 +144,8 @@ def create_app(config_name=None):
         from .routes.jobs import jobs as jobs_blueprint
         from .routes.flowcharts import flowcharts as flowchart_blueprint
         from .routes.projects import projects as project_blueprint
+        from .routes.trial_tab import trial_tab as trial_tab_blueprint
+        from .routes.trial_tab import managers_status_tab as managers_status_tab_blueprint
 
         from .routes.main import errors
 
@@ -147,6 +153,8 @@ def create_app(config_name=None):
         app.register_blueprint(jobs_blueprint)
         app.register_blueprint(flowchart_blueprint)
         app.register_blueprint(project_blueprint)
+        app.register_blueprint(trial_tab_blueprint)
+        app.register_blueprint(managers_status_tab_blueprint)
 
         app.register_error_handler(404, errors.not_found)
 
@@ -193,6 +201,7 @@ def create_app(config_name=None):
                 '  added {} jobs and {} projects'
                 .format(n_added_jobs, n_added_projects)
             )
+
 
     return app
 

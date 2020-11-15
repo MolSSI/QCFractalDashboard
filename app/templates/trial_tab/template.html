@@ -1,0 +1,88 @@
+<!-- Plugins and scripts required by this view-->
+<script src="static/js/charts.js"></script>
+
+<!-- <div class="col-sm-7 d-none d-md-block"> -->
+  <button type="button" class="btn btn-primary ">
+    <i class="icon-cloud-download"></i>
+  </button>
+  <div class="btn-group btn-group-toggle float-right mr-3" data-toggle="buttons">
+    <label class="btn btn-outline-secondary">
+      <input type="radio" name="options" id="option1" autocomplete="off"> Day
+    </label>
+    <label class="btn btn-outline-secondary active">
+      <input type="radio" name="options" id="option2" autocomplete="off" checked> Month
+    </label>
+    <label class="btn btn-outline-secondary">
+      <input type="radio" name="options" id="option3" autocomplete="off"> Year
+    </label>
+  </div>
+<!-- </div> -->
+<div class="animated fadeIn">
+  <div class="card-columns cols-2">
+    <div class="card">
+      <div class="card-header">
+        Bar Chart
+        <div class="card-header-actions">
+          <a href="http://www.chartjs.org" class="card-header-action" target="_blank">
+            <small class="text-muted">docs</small>
+          </a>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="chart-wrapper">
+          <canvas id="canvas-2"></canvas>
+        </div>
+      </div>
+    </div>
+   
+    <div class="container">
+    <!-- <a href="/trial_listing">Click me</a> -->
+    
+          <div class="col-md-6">
+              <div class="chart" id="line-chart">
+                <!-- <script src="{{ url_for('static', filename='js/trial_tab_plotly.js') }}"></script> -->
+              </div>
+          </div>
+  </div>
+    </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- <!doctype html>
+
+<title>Test</title> 
+<meta charset=utf-8> 
+
+<html>
+
+  <head lang="en">
+      <meta charset="UTF-8">
+      <title>My First Dashboard</title>
+      <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+  </head> 
+
+  <body>
+    <a href="/my_link/">Click me to test</a>
+    <div class="chart" id="line-chart">
+      <script src="{{ url_for('static', filename='js/trial_tab_plotly.js') }}"></script>
+    </div>
+
+
+    <div class="chart" id="line-chart2" style="bottom: 0%;">  </div>
+
+  </body>
+
+
+</html>
+
+
+<script src="{{ url_for('static', filename='js/project_list.js') }}"></script>
+ <div class="chart" id="line-chart">
+  <script src="{{ url_for('static', filename='js/trial_tab_plotly.js') }}"></script>
+</div> -->
+
+<!-- <a href="/my_link/">Click me to test</a> -->
+

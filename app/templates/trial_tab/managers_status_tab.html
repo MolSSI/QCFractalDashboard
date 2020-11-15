@@ -1,0 +1,67 @@
+<!doctype html>
+<meta charset=utf-8>
+<html>
+
+<head lang="en">
+  <meta charset="UTF-8">
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+</head>
+
+<body>
+  <div>
+
+    <p>
+      managers status to be displayed here
+    </p>
+
+
+    <div class="chart" id="line_chart_manager_status">
+      <script src="{{ url_for('static', filename='js/trial_tab_plotly.js') }}"></script>
+
+    </div>
+
+
+    <div class="chart" id="line_chart_manager_status2"></div>
+
+    <div class="chart" id="line_chart_manager_status3"></div>
+
+    <div class="chart" id="line_chart_manager_status4"></div>
+
+    <!-- Heat Map Graph -->
+    <div id="myDiv" style="width:100%;height:500px;">
+      <script src="{{ url_for('static', filename='js/plotly_buttons.js') }}"></script>
+    </div>
+
+    <!-- <div id='countryDiv'></div>
+
+
+    <div class="showcase__section" id="bubble">
+      <div class="spacer --small"></div>
+      <div id="bubbleplots">
+        <div class="bubbleplot" data-num="0">
+          <div class="plot" id="plotdiv"></div>
+          <div class="control-row">
+            Country: 
+            <select class="countrydata"></select>
+          </div>
+        </div>
+      </div>
+    </div> -->
+
+
+
+
+    <!-- host names -->
+    <div id="myDiv2" style="width:100%;height:500px;"></div>
+    <!-- <div id="myDiv3" class="container-fluid"></div> -->
+    <div id="myDiv3" ></div>
+
+
+    <div id='myDiv_select'></div>
+
+  </div>
+
+</body>
+
+</html>

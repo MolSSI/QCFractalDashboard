@@ -43,25 +43,92 @@ var ChartsView = function ($) {
   var barChart = new Chart($('#canvas-2'), {
     type: 'bar',
     data: {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-      datasets: [{
+      labels: ['lal', 'February', 'March', 'April', 'May', 'June', 'July'],
+      datasets: 
+      [
+        {
         backgroundColor: 'rgba(220, 220, 220, 0.5)',
         borderColor: 'rgba(220, 220, 220, 0.8)',
         highlightFill: 'rgba(220, 220, 220, 0.75)',
         highlightStroke: 'rgba(220, 220, 220, 1)',
         data: [random(), random(), random(), random(), random(), random(), random()]
-      }, {
+        }
+        , 
+      {
         backgroundColor: 'rgba(151, 187, 205, 0.5)',
         borderColor: 'rgba(151, 187, 205, 0.8)',
         highlightFill: 'rgba(151, 187, 205, 0.75)',
         highlightStroke: 'rgba(151, 187, 205, 1)',
         data: [random(), random(), random(), random(), random(), random(), random()]
-      }]
+      }
+      ] 
     },
     options: {
+      scales: {
+        xAxes: [{
+          display: false,
+          barPercentage: 1.3,
+          ticks: {
+              max: 3,
+          }
+       }, {
+          display: true,
+          ticks: {
+              autoSkip: false,
+              max: 4,
+          }
+        }],
+        yAxes: [{
+          ticks: {
+            beginAtZero:true
+          }
+        }]
+      },
       responsive: true
     }
+    // options: {
+    //   responsive: true
+    // }
   }); // eslint-disable-next-line no-unused-vars
+  // ##################################################################################################################
+  function plotting_trial_manager_status(){
+    var lineDiv = document.getElementById('line_chart_manager_status');
+    var data = null;
+    var parsedJson=[];
+    $.ajax({
+      url: "/views/managers_status_tab",
+      async: false, //to wait until data is returned, potential bug
+      dataType: 'json',
+      error: function(xhr, error){
+          alert("error /views/managers_status_tab: "+xhr);
+      }, 
+      success: function (ret) {
+          // alert("success /views/managers_status_tab: "+ret);
+          data = ret;
+          
+          console.log("linediv managers_status is ")
+          console.log(lineDiv) //to use always
+          console.log(data)
+          console.log("data active")
+          for(i=0; i<data.length ; i++)
+          {
+            if(data[i].status=="ACTIVE")
+              parsedJson.push(data[i].hostname)
+          }
+          console.log(parsedJson)
+          var da= [{
+            histfunc: "count",
+            x: parsedJson,
+            type: "histogram",
+            name: "count"
+          }
+        ]
+          plot_data(da, lineDiv)
+        }
+      });
+  
+  }
+// ##################################################################################################################
 
   var doughnutChart = new Chart($('#canvas-3'), {
     type: 'doughnut',
@@ -138,3 +205,28 @@ var ChartsView = function ($) {
   return ChartsView;
 }($);
 //# sourceMappingURL=charts.js.map
+
+
+// Eman - trials
+var barChart_managers = new Chart($('#canvas-7'), {
+  type: 'bar',
+  data: {
+    labels: ['Lala', 'February', 'March', 'April', 'May', 'June', 'July'],
+    datasets: [{
+      backgroundColor: 'rgba(220, 220, 220, 0.5)',
+      borderColor: 'rgba(220, 220, 220, 0.8)',
+      highlightFill: 'rgba(220, 220, 220, 0.75)',
+      highlightStroke: 'rgba(220, 220, 220, 1)',
+      data: [random(), random(), random(), random(), random(), random(), random()]
+    }, {
+      backgroundColor: 'rgba(151, 187, 205, 0.5)',
+      borderColor: 'rgba(151, 187, 205, 0.8)',
+      highlightFill: 'rgba(151, 187, 205, 0.75)',
+      highlightStroke: 'rgba(151, 187, 205, 1)',
+      data: [random(), random(), random(), random(), random(), random(), random()]
+    }]
+  },
+  options: {
+    responsive: true
+  }
+}); // eslint-disable-next-line no-unused-vars

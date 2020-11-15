@@ -34,6 +34,12 @@ class BaseConfig:
     GOOGLE_ANALYTICS_GTAG_submit = 'UA-116673029-2'
     WTF_CSRF_ENABLED = True   # it's true by default, important to prevent CSRF attacks
 
+
+    # Flask-Caching configs: to cache all the data once instead of connecting to the server unnecesarily
+    # CACHE_TYPE = os.environ.get('CACHE_TYPE') or 'simple'
+    CACHE_TYPE =  'simple'
+    CACHE_DEFAULT_TIMEOUT = 60 * 60 * 24  # in seconds, one day
+
 class DevelopmentConfig(BaseConfig):
     _basedir = os.path.abspath(os.path.dirname(__file__))
     DEBUG = True

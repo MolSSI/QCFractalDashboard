@@ -13,7 +13,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
 
     <link rel="shortcut icon" href="{{  url_for('static', filename='images/molssi-favicon.jpg') }}">
-    <title>SEAMM Dashboard</title>
+    <title>QCFractal Dashboard</title>
 
     <!-- Icons-->
     <link href="{{ url_for('static', filename='node_modules/flag-icon-css/css/flag-icon.min.css') }}" rel="stylesheet">
@@ -147,6 +147,20 @@
               <a class="nav-link" href="projects">
                 <i class="nav-icon fas fa-object-group"></i> Projects List</a>
             </li>
+            <!-- Trials by Eman -->
+            <li class="nav-item">
+              <a class="nav-link" href="trial_tab_page">
+                <i class="nav-icon fas fa-object-group"></i> Trial Tab</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="template">
+                <i class="nav-icon fas fa-object-group"></i> Trial Template</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="managers_status_tab_render">
+                <i class="nav-icon fas fa-object-group"></i> Managers Status</a>
+            </li>
+            <!----------------------------------->
             <li class="nav-title">Actions</li>
               <li class="nav-item">
               <a class="nav-link" href="#">
@@ -502,8 +516,11 @@
     <script src="{{ url_for('static', filename='node_modules/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+    
 
-
+    <!-- Eman --> 
+    <!-- <script src="{{ url_for('static', filename='js/trial_tab_plotly.js') }}"></script> -->
+  <!-- commented to avoid exection twice  --> 
     <script>
       $('#ui-view').ajaxLoad();
     </script>
