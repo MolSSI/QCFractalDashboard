@@ -128,7 +128,7 @@ var clusters_names = [];
         }
         
         // completed_failures_submitted = Array.prototype.push.apply(completed, failures, submitted)
-        console.log(parsedJson)
+        // console.log(parsedJson)
         var da= [{
           histfunc: "count",
           x: parsedJson,
