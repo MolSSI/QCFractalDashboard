@@ -1,7 +1,6 @@
 
 $(document).ready(function () {
-
-
+  // $('#hostnamesdata').multiselect();
 
   var lineDiv = document.getElementById('myDiv2');
 
@@ -24,6 +23,7 @@ $(document).ready(function () {
           alert("error /views/managers_status_tab: " + xhr);
         },
         success: function (ret) {
+
           // alert("success /views/managers_status_tab: "+ret);
           data_ret = ret;
           console.log("data.length")
@@ -46,6 +46,7 @@ $(document).ready(function () {
           options = options.sort(function (a, b) {
             return a.toLowerCase().localeCompare(b.toLowerCase());
           });
+          //Populate dropdown of hostnames available 
           for (var i = 0; i < options.length; i++) {
             var opt = options[i];
             // console.log(opt);
@@ -59,15 +60,7 @@ $(document).ready(function () {
           function getHostnameData(chosenHostname) {
             currentCompleted = [];
             currentFailed = [];
-            // for (var i = 0; i < options.length; i++) {
-            //   if (options[i] === chosenHostname) {
-            //     // get 
-            //     console.log("options[i]")
-            //     console.log(options[i])
-            //     currentCompleted.push(options[i].completed);
-            //     currentFailed.push(options[i].failures);
-            //   }
-            // }
+
             hostname_completed = {};
             hostname_failed = {};
 
@@ -118,31 +111,16 @@ $(document).ready(function () {
             ]
 
             var layout = {
-              title: 'Completed & Failed Plot of Selected Hostname',
+              title: 'Completed & Failed Tasks Plot of Selected Hostname',
 
-              // height: 400,
-              // width: 480
+              height: 400,
+              width: 480
             };
 
             Plotly.newPlot('hostnamesDiv', d_completed_failures, layout);
           };
-          // var innerContainer = document.querySelector('[data-num="1"'),
-          //   // plotEl = innerContainer.querySelector('.plot'),
-          //   countrySelector = innerContainer.querySelector('.countrydata');
-
-          // function assignOptions(textArray, selector) {
-          //   for (var i = 0; i < textArray.length; i++) {
-          //     var currentOption = document.createElement('option');
-          //     currentOption.text = textArray[i];
-          //     selector.appendChild(currentOption);
-          //   }
-          // }
-
-          // assignOptions(listofCountries, countrySelector);
-
 
           var innerContainer = document.querySelector('[data-num="0"'),
-            // plotEl = innerContainer.querySelector('.plot'),
             hostnameSelector = innerContainer.querySelector('.hostnamesdata');
 
           function updateHostname() {
@@ -151,10 +129,119 @@ $(document).ready(function () {
 
           hostnameSelector.addEventListener('change', updateHostname, false);
 
+          ////////////////////////////////////// End of Hostnames example ////////////////////////////////////
+
+          ///////////////////////////////////// Clusternames dropdown////////////////////////////////////////////////////////////////////////////
+          var select = document.getElementById("clusternamesdata");
+          var options_clusters = [...new Set(clusters_names)]; //changed this to cluster names to compare
+          options_clusters = options_clusters.sort(function (a, b) {
+            return a.toLowerCase().localeCompare(b.toLowerCase());
+          });
+          //Populate dropdown of hostnames available 
+          for (var i = 0; i < options_clusters.length; i++) {
+            var opt = options_clusters[i];
+            // console.log(opt);
+            var el = document.createElement("option");
+            el.textContent = opt;
+            el.value = opt;
+            select.appendChild(el);
+          }
+          // plotting 
+          function getClusternameData(chosenClustername) {
+            currentCompleted = [];
+            currentFailed = [];
+            currentActiveTasks = [];
+
+            clustername_completed = {};
+            clustername_failed = {};
+            clustername_active_tasks={};
+
+            for (var i = 0; i < data_ret.length; i++) {
+              if (data_ret[i].cluster === chosenClustername) {
+                console.log("data_ret[i]");
+                console.log(data_ret[i]);
+                if (clustername_completed[chosenClustername] != null) {
+                  clustername_completed[chosenClustername] = clustername_completed[chosenClustername] + data_ret[i].completed;
+                  clustername_failed[chosenClustername] = clustername_failed[chosenClustername] + data_ret[i].failures;
+                  clustername_active_tasks[chosenClustername]=clustername_active_tasks[chosenClustername] +data_ret[i].active_tasks;
+                }
+                else {
+                  clustername_completed[chosenClustername] = data_ret[i].completed;
+                  clustername_failed[chosenClustername] = data_ret[i].failures;
+                  clustername_active_tasks[chosenClustername]= data_ret[i].active_tasks;
+                }
+
+              }//end of if (data_ret[i].cluster === chosenClustername)
+            }//end of for loop
+            currentCompleted.push(clustername_completed[chosenClustername]);
+            currentFailed.push(clustername_failed[chosenClustername]);
+            currentActiveTasks.push(clustername_active_tasks[chosenClustername]);
+          };
+
+          setBubblePlot_clusters(options_clusters[0]);
+          console.log("options_clusters[0]");
+          console.log(options_clusters[0]);
+
+          function setBubblePlot_clusters(chosenClustername) {
+            getClusternameData(chosenClustername);
+            console.log(chosenClustername);
+            chosenClusternameList = [chosenClustername]
+
+            var d_active_tasks = [
+              {
+                // histfunc: "count",
+                x: chosenClusternameList,
+                y: currentActiveTasks,
+                type: "bar",
+                name: "Active Taks Count"
+              }
+            ]
+            var d_completed_failures = [
+              {
+                // histfunc: "count",
+                x: chosenClusternameList,
+                y: currentCompleted,
+                type: "bar",
+                name: "Completed"
+              },
+              {
+                // histfunc: "count",
+                x: chosenClusternameList,
+                y: currentFailed,
+                type: "bar",
+                name: "Failed"
+              }
+            ]
+
+            var layout = {
+              title: 'Completed & Failed Tasks Plot of Selected Clusternames',
+
+              height: 400,
+              width: 480
+            };
+            var layout_active_tasks = {
+              title: 'Active Tasks Plot of Selected Clusternames',
+
+              height: 300,
+              width: 480
+            };
+
+            Plotly.newPlot('clusternamesDiv', d_completed_failures, layout);
+            Plotly.newPlot('clusternamesDiv_active_tasks', d_active_tasks, layout_active_tasks);
+            
+          };
+
+          var innerContainer = document.querySelector('[data-num="2"'),
+            clusternameSelector = innerContainer.querySelector('.clusternamesdata');
+
+          function updateClustername() {
+            setBubblePlot_clusters(clusternameSelector.value);
+          }
+
+          clusternameSelector.addEventListener('change', updateClustername, false);
 
 
-          //////////////////////////////////////End of Hostnames example ////////////////////////////////////
-
+          ////////////////////////////////////////////////// End of Clusternames dropdown ////////////////////////////////////////////////////////////////
           // completed_failures_submitted = Array.prototype.push.apply(completed, failures, submitted)
           // console.log(parsedJson)
           da = [{

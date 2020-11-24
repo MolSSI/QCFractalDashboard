@@ -6,6 +6,19 @@
   <meta charset="UTF-8">
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+
+  <!-- Latest compiled and minified CSS -->
+  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> -->
+
+  
+ <!-- <script href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.16/js/bootstrap-multiselect.js" ></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.16/css/bootstrap-multiselect.css"
+    type="text/css" />   -->
+
 </head>
 
 <body>
@@ -18,66 +31,94 @@
 
     <div class="chart" id="line_chart_manager_status">
       <!-- line_chart_manager_status -->
-      <script src="{{ url_for('static', filename='js/trial_tab_plotly.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/trial_tab_plotly.js') }}"></script>
 
-    </div>
+  </div>
 
 
-    <div class="chart" id="line_chart_manager_status2">
-      <!-- line_chart_manager_status2 -->
-    </div>
+  <div class="chart" id="line_chart_manager_status2">
+    <!-- line_chart_manager_status2 -->
+  </div>
 
-    <div class="chart" id="line_chart_manager_status3">
-      <!-- line_chart_manager_status3 -->
-    </div>
+  <div class="chart" id="line_chart_manager_status3">
+    <!-- line_chart_manager_status3 -->
+  </div>
 
-    <div class="chart" id="line_chart_manager_status4">
-      <!-- line_chart_manager_status4 -->
-    </div>
+  <div class="chart" id="line_chart_manager_status4">
+    <!-- line_chart_manager_status4 -->
+  </div>
 
-    <!-- Heat Map Graph -->
-    <!-- <div id="myDiv" style="width:100%;height:500px;">
+  <!-- Heat Map Graph -->
+  <!-- <div id="myDiv" style="width:100%;height:500px;">
     </div>  -->
-    <script src="{{ url_for('static', filename='js/plotly_buttons.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/plotly_buttons.js') }}"></script>
 
-    <!-- <div id='countryDiv'></div> -->
-    <!--id here is used-->
-    <!-- <div class="showcase__section" id="bubble">
+  <!-- <div id='countryDiv'></div> -->
+  <!--id here is used-->
+  <!-- <div class="showcase__section" id="bubble">
       <div class="spacer --small"></div>
       <div id="bubbleplots">
         <div class="bubbleplot" data-num="1"> -->
-          <!--data-num is used -->
-          <!-- <div class="plot" id="plotdiv"></div> -->
-          <!--class name here is used-->
-          <!-- <div class="control-row">
+  <!--data-num is used -->
+  <!-- <div class="plot" id="plotdiv"></div> -->
+  <!--class name here is used-->
+  <!-- <div class="control-row">
             Country:
             <select class="countrydata"></select> -->
-            <!--class name here is used-->
-          <!-- </div>
+  <!--class name here is used-->
+  <!-- </div>
         </div>
       </div>
     </div> -->
 
 
-    <div id='hostnamesDiv'></div>
-    <!--id here is used-->
-    <div class="showcase__section" id="bubble" >
-      <div class="spacer --small"></div>
-      <div id="bubbleplots">
-        <div class="bubbleplot" data-num="0">
-          <!--data-num is used -->
-          <div class="plot" id="plotdiv"></div>
+  <div id='hostnamesDiv'></div>
+  <!--id here is used-->
+  <div class="showcase__section" id="bubble">
+    <div class="spacer --small"></div>
+    <div id="bubbleplots">
+      <div class="bubbleplot" data-num="0">
+        <!--data-num is used -->
+        <div class="plot" id="plotdiv"></div>
+        <!--class name here is used-->
+        <div class="control-row">
+          Choose Hostnames:
+          <!-- <select id="hostnamesdata" class="hostnamesdata" multiple="multiple"></select> -->
+          <select id="hostnamesdata" class="hostnamesdata">
+            <option disabled> Choose Hostnames to Plot</option>
+          </select>
+
+
           <!--class name here is used-->
-          <div class="control-row">
-            Choose a hostname:
-            <select id="hostnamesdata" class="hostnamesdata"></select>
-            <!--class name here is used-->
-          </div>
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- <div id='hostnamesDiv' data-num="0">
+  <div id='clusternamesDiv'></div>
+  <div id='clusternamesDiv_active_tasks'></div>
+
+  <!--id here is used-->
+  <div class="showcase__section" id="bubble">
+    <div class="spacer --small"></div>
+    <div id="bubbleplots">
+      <div class="bubbleplot" data-num="2">
+        <!--data-num is used -->
+        <div class="plot" id="plotdiv"></div>
+        <!--class name here is used-->
+        <div class="control-row">
+          Choose Clusternames:
+          <select id="clusternamesdata" class="clusternamesdata" >
+            <option disabled> Choose Clusternames to Plot</option>
+          </select>
+
+          <!--class name here is used-->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div id='hostnamesDiv' data-num="0">
       Choose a hostname:
       <select id="hostnamesdata" class="hostnamesdata">
       </select>
@@ -88,19 +129,20 @@
 
 
 
-    <div id="myDiv2"></div>
+  <div id="myDiv2"></div>
 
 
-    <!-- host names -->
+  <!-- host names -->
 
-    <!-- <div id="myDiv3" class="container-fluid"></div> -->
-    <!-- <div id="myDiv3"></div> -->
+  <!-- <div id="myDiv3" class="container-fluid"></div> -->
+  <!-- <div id="myDiv3"></div> -->
 
 
-    <!-- <div id='myDiv_select'>myDiv_select</div> -->
+  <!-- <div id='myDiv_select'>myDiv_select</div> -->
 
   </div>
 
-</body>
+  </body>
+
 
 </html>
