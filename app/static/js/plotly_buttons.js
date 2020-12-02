@@ -239,7 +239,7 @@ $(document).ready(function () {
               }
             };
 
-            Plotly.newPlot('clusternamesDiv', d_completed_failures, layout);
+            // Plotly.newPlot('clusternamesDiv', d_completed_failures, layout);
             // Plotly.newPlot('clusternamesDiv_active_tasks', d_active_tasks, layout_active_tasks);
 
           };
@@ -255,6 +255,7 @@ $(document).ready(function () {
 
 
           ////////////////////////////////////////////////// End of Clusternames dropdown ////////////////////////////////////////////////////////////////
+
           ////////////////////////////////////////////////// Dropdown for Cluster with active tasks //////////////////////////////////////////////////
           var select = document.getElementById("clusternamesdata_active_tasks");
           var options_clusters_active_tasks = [...new Set(clusters_active_tasks)]; //changed this to cluster names to compare
@@ -272,6 +273,7 @@ $(document).ready(function () {
           }
 
           ////////////////////////////////////////////////// End of Dropdown for Cluster with active tasks //////////////////////////////////////////////////
+
           // initialize selectize for box plot
           var $selectize = $('#clusternamesdata').selectize({
             options_clusters,
@@ -281,27 +283,18 @@ $(document).ready(function () {
 
           var clusternamesDiv = document.getElementById("clusternamesDiv");
 
-          // var plotlyData = [{
-          //   histfunc: "count",
-          //   x: options_clusters,
-          //   type: "histogram",
-          //   name: "Count"
-          // }
-          // ]
-          // console.log("plotlyData");
-          // console.log(plotlyData);
-          // var layout_clusters = {
-          //   title: 'Clusternames',
+          var layout_clusters = {
+            title: 'Clusternames',
 
-          //   height: 300,//in pixels
-          //   width: 480,//in pixels
-          //   yaxis:
-          //   {
-          //     rangemode: 'tozero'
-          //   }
-          // };
+            height: 300,//in pixels
+            width: 480,//in pixels
+            yaxis:
+            {
+              rangemode: 'tozero'
+            }
+          };
           // // plotly initialize
-          // Plotly.newPlot(clusternamesDiv, plotlyData,layout_clusters);
+          // Plotly.newPlot(clusternamesDiv, options_clusters,layout_clusters);
 
 
           // function updatePlot(chosenClusters) {
@@ -317,8 +310,67 @@ $(document).ready(function () {
           //   // Plotly.react(clusternamesDiv, plotlyData)
 
           // };
+          function getClusternameData(chosenClustername) {
+            currentCompleted = [];
+            currentFailed = [];
+            currentActiveTasks = [];
 
-          // var selectize = $selectize[0].selectize;
+            clustername_completed = {};
+            clustername_failed = {};
+            clustername_active_tasks = {};
+
+            for (var i = 0; i < chosenClustername.length; i++) {
+
+              for (var j = 0; j < data_ret.length; j++) {
+                if (data_ret[j].cluster === chosenClustername[i]) {
+                  console.log("data_ret[i]");
+                  console.log(data_ret[i]);
+                  if (clustername_completed[chosenClustername[i]] != null) {
+                    clustername_completed[chosenClustername[i]] = clustername_completed[chosenClustername[i]] + data_ret[j].completed;
+                    clustername_failed[chosenClustername[i]] = clustername_failed[chosenClustername[i]] + data_ret[j].failures;
+                    // clustername_active_tasks[chosenClustername] = clustername_active_tasks[chosenClustername] + data_ret[i].active_tasks;
+                  }
+                  else {
+                    clustername_completed[chosenClustername[i]] = data_ret[j].completed;
+                    clustername_failed[chosenClustername[i]] = data_ret[j].failures;
+                    // clustername_active_tasks[chosenClustername] = data_ret[i].active_tasks;
+                  }
+
+                }//end of if (data_ret[i].cluster === chosenClustername)
+              }//end of for loop
+              currentCompleted.push(clustername_completed[chosenClustername[i]]);
+              currentFailed.push(clustername_failed[chosenClustername[i]]);
+              currentActiveTasks.push(clustername_active_tasks[chosenClustername[i]]);
+              console.log(currentFailed);
+            }
+
+          };
+
+          var selectizeControl = $selectize[0].selectize;
+
+          selectizeControl.on('change', function () {
+
+            var chosenClustername = selectizeControl.getValue();
+            getClusternameData(chosenClustername);
+            var d_test = [
+              {
+                // histfunc: "count",
+                x: chosenClustername,
+                y: currentCompleted,
+                type: "bar",
+                name: "Completed"
+              },
+              {
+                // histfunc: "count",
+                x: chosenClustername,
+                y: currentFailed,
+                type: "bar",
+                name: "Failed"
+              }
+            ]
+            Plotly.newPlot(clusternamesDiv, d_test, layout_clusters);
+
+          });
           // show current values in multi input dropdown ////////////////////////
           // $('select.selectized,input.selectized').each(function () {
           //   console.log("choosen clustername")
