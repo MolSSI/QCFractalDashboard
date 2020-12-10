@@ -169,10 +169,10 @@ var clusters_names = [];
     ]
     console.log("da:")
     console.log(da)
-      plot_data(da, lineDiv, "Hostnames")
-      plot_data(d_active_inactive, lineDiv2, "Status")
-      plot_data(d_clusters_names, lineDiv4, "Clusters Names")
-      plot_data(d_completed_failures, lineDiv3, "Completed and Failed")
+      // plot_data(da, lineDiv, "Hostnames")
+      // plot_data(d_active_inactive, lineDiv2, "Status")
+      // plot_data(d_clusters_names, lineDiv4, "Clusters Names")
+      // plot_data(d_completed_failures, lineDiv3, "Completed and Failed")
 
     }
   });

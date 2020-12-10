@@ -13,75 +13,16 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js"
     integrity="sha512-hgoywpb1bcTi1B5kKwogCTG4cvTzDmFCJZWjit4ZimDIgXu7Dwsreq8GOQjKVUxFwxCWkLcJN5EN0W0aOngs4g=="
     crossorigin="anonymous"></script>
-
-  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
-
-  <!-- Latest compiled and minified CSS -->
-  <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> -->
-
-
-  <!-- <script href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.16/js/bootstrap-multiselect.js" ></script>
-  <link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.16/css/bootstrap-multiselect.css"
-    type="text/css" />   -->
+  <script src="{{ url_for('static', filename='js/trial_tab_plotly.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/plotly_buttons.js') }}"></script>
 
 </head>
 
 <body>
   <div>
 
-    <p>
-      Managers status to be displayed here
-    </p>
-
-
-    <div class="chart" id="line_chart_manager_status">
-      <!-- line_chart_manager_status -->
-      <script src="{{ url_for('static', filename='js/trial_tab_plotly.js') }}"></script>
-
-    </div>
-
-
-    <div class="chart" id="line_chart_manager_status2">
-      <!-- line_chart_manager_status2 -->
-    </div>
-
-    <div class="chart" id="line_chart_manager_status3">
-      <!-- line_chart_manager_status3 -->
-    </div>
-
-    <div class="chart" id="line_chart_manager_status4">
-      <!-- line_chart_manager_status4 -->
-    </div>
-
-    <!-- Heat Map Graph -->
-    <!-- <div id="myDiv" style="width:100%;height:500px;">
-    </div>  -->
-    <script src="{{ url_for('static', filename='js/plotly_buttons.js') }}"></script>
-
-    <!-- <div id='countryDiv'></div> -->
     <!--id here is used-->
-    <!-- <div class="showcase__section" id="bubble">
-      <div class="spacer --small"></div>
-      <div id="bubbleplots">
-        <div class="bubbleplot" data-num="1"> -->
-    <!--data-num is used -->
-    <!-- <div class="plot" id="plotdiv"></div> -->
-    <!--class name here is used-->
-    <!-- <div class="control-row">
-            Country:
-            <select class="countrydata"></select> -->
-    <!--class name here is used-->
-    <!-- </div>
-        </div>
-      </div>
-    </div> -->
-
-
-    <div id='hostnamesDiv'></div>
-    <!--id here is used-->
-    <div class="showcase__section" id="bubble">
+    <div class="showcase__section" id="bubble" style="padding-top: 40px;">
       <div class="spacer --small"></div>
       <div id="bubbleplots">
         <div class="bubbleplot" data-num="0">
@@ -101,19 +42,21 @@
         </div>
       </div>
     </div>
+    <div id='hostnamesDiv'></div>
 
 
     <!--id here is used-->
-    <div class="showcase__section" id="bubble" style="padding-top: 40px;">
+    <div class="showcase__section" id="bubble" >
       <div class="spacer --small"></div>
       <div id="bubbleplots">
         <div class="bubbleplot" data-num="2">
           <!--data-num is used -->
           <div class="plot" id="plotdiv"></div>
           <!--class name here is used-->
-          <div class="control-group "> <!--control-row-->
+          <div class="control-group ">
+            <!--control-row-->
             Choose Clusternames:
-            <select id="clusternamesdata" class="clusternamesdata" placeholder="Pick Clusternames to Plot...">
+            <select id="clusternamesdata" class="clusternamesdata">
               <option disabled> Choose Clusternames to Plot</option>
             </select>
 
@@ -122,57 +65,27 @@
         </div>
       </div>
     </div>
-    <div id='clusternamesDiv'></div>
+    <div id='clusternamesDiv' ></div>
 
     <!-- <select id="select-to" class="contacts" placeholder="Pick some people..."></select> -->
 
     <!-- <div id='clusternamesDiv_active_tasks'></div> -->
 
-    <!--id here is used-->
+    <!-- id here is used -->
     <!-- <div class="showcase__section" id="bubble">
       <div class="spacer --small"></div>
       <div id="bubbleplots">
-        <div class="bubbleplot" data-num="3"> -->
-          <!--data-num is used -->
-          <!-- <div class="plot" id="plotdiv"></div> -->
-          <!--class name here is used-->
-          <!-- <div class="control-row"> -->
-            <!-- Choose Clusternames:
+        <div class="bubbleplot" data-num="3">
+          <div class="plot" id="plotdiv"></div>
+          <div class="control-row">
+            Choose From Clusternames that Have Active Tasks:
             <select id="clusternamesdata_active_tasks" class="clusternamesdata_active_tasks">
               <option disabled> Choose Clusternames to Plot</option>
-            </select> -->
-
-            <!--class name here is used-->
-          <!-- </div>
+            </select>
+          </div>
         </div>
       </div>
-    </div> --> 
-
-    <!-- <div id='hostnamesDiv' data-num="0">
-      Choose a hostname:
-      <select id="hostnamesdata" class="hostnamesdata">
-      </select>
     </div> -->
-
-
-
-
-
-
-    <div id="myDiv2"></div>
-
-
-    <!-- host names -->
-
-    <!-- <div id="myDiv3" class="container-fluid"></div> -->
-    <!-- <div id="myDiv3"></div> -->
-
-
-    <!-- <div id='myDiv_select'>myDiv_select</div> -->
-
   </div>
-
 </body>
-
-
 </html>
