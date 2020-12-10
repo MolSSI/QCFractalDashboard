@@ -81,10 +81,10 @@ $(document).ready(function () {
           var hostnamesDiv = document.getElementById("hostnamesDiv");
 
           var layout_hostnames = {
-            title: 'Hostnames Selected',
+            title: 'Completed and Failed Tasks of Hostnames Selected',
 
-            height: 300,//in pixels
-            width: 480,//in pixels
+            // height: 300,//in pixels
+            // width: 480,//in pixels
             yaxis:
             {
               rangemode: 'tozero'
@@ -157,10 +157,10 @@ $(document).ready(function () {
           var clusternamesDiv = document.getElementById("clusternamesDiv");
 
           var layout_clusters = {
-            title: 'Clusternames',
+            title: 'Completed and Failed Tasks of Clusternames Selected',
 
-            height: 300,//in pixels
-            width: 480,//in pixels
+            // height: 300,//in pixels
+            // width: 480,//in pixels
             yaxis:
             {
               rangemode: 'tozero'
