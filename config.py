@@ -1,16 +1,14 @@
 """Flask app configuration
 """
 import os
-#Eman: added the following
-from flask import Flask
-from flask_caching import Cache
+
 
 
 class BaseConfig:
 
     _basedir = os.path.abspath(os.path.dirname(__file__))
     STATIC_FOLDER = 'static'
-    ADMINS = frozenset(['janash@vt.edu', 'psaxe@vt.edu'])
+    ADMINS = frozenset(['daltarawy@vt.edu', 'bpp4@vt.edu'])
     SECRET_KEY = 'SecretKeyForSessionSigning'
     EDIT_SOFTWARE_SALT = 'ThisIsAnotherSalt'
     THREADS_PER_PAGE = 8
@@ -23,9 +21,9 @@ class BaseConfig:
         ['true', 'on', '1']
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME', 'userhere')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD', 'passhere')
-    MAIL_SUBJECT_PREFIX = '[MolSSI Molecular Software DB]'
-    MAIL_SENDER = 'MolSSI Molecular DB Admin <info@molssi.org>'
-    APP_ADMIN = os.environ.get('APP_ADMIN', 'janash@vt.edu')
+    MAIL_SUBJECT_PREFIX = '[MolSSI QCArchive Dashboard]'
+    MAIL_SENDER = 'MolSSI QCArchive Dashboard <bpp4@vt.edu>'
+    APP_ADMIN = os.environ.get('APP_ADMIN', 'bpp4@vt.edu')
     EMAIL_CONFIRMATION_ENABLED = False
 
     # Client-side config
@@ -72,6 +70,8 @@ class ProductionConfig(BaseConfig):
 
 
 config = {
+    'default': DevelopmentConfig,
     'development': DevelopmentConfig,
     'testing': TestingConfig,
+    'production': ProductionConfig,
 }

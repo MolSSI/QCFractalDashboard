@@ -19,7 +19,6 @@ from config import config
 from .template_filters import replace_empty
 from .setup_logging import setup_logging
 from .setup_argparsing import options
-# to cache all the data once instead of connecting to the server unnecesarily
 from flask import Flask
 from flask_caching import Cache
 
@@ -28,6 +27,7 @@ from flask_caching import Cache
 datastore = options.datastore
 setup_logging(datastore, options)
 logger = logging.getLogger('dashboard')
+
 
 # Two of the Flask options cannot be reset, and should (apparently) be
 # handled with environment variables ... so if they are in the options
@@ -83,50 +83,45 @@ ma = Marshmallow()
 # call the function the prepares the data here
 
 
-def create_app(config_name=None):
+def create_app(config_name='default'):
     """Flask app factory pattern
       separately creating the extensions and later initializing"""
 
     conn_app = connexion.App(__name__, specification_dir='./')
     app = conn_app.app
-    # to cache all the data once instead of connecting to the server unnecesarily
-    cache = Cache(config={'CACHE_TYPE': 'simple'})
-    cache.init_app(app)
 
+    logger.info('Configuring from configuration ' + config_name)
+    app.config.from_object(config[config_name])
+
+    options.initialize = True
+#     options.no_check = True
+
+    # Report where options come from
+    parser = configargparse.get_argument_parser('dashboard')
+    logger.info('Where options are set:')
+    logger.info(60*'-')
+    for line in parser.format_values().splitlines():
+        logger.info(line)
+
+    # Now set the options!
     logger.info('')
-    if config_name is not None:
-        logger.info('Configuring from configuration ' + config_name)
-        app.config.from_object(config[config_name])
-
-        options.initialize = False
-        options.no_check = True
-    else:
-        # Report where options come from
-        parser = configargparse.get_argument_parser('dashboard')
-        logger.info('Where options are set:')
-        logger.info(60*'-')
-        for line in parser.format_values().splitlines():
-            logger.info(line)
-
-        # Now set the options!
-        logger.info('')
-        logger.info('Configuration:')
-        logger.info(60*'-')
-        for key, value in vars(options).items():
-            if key not in (
-                    'env',
-                    'debug',
-                    'initialize',
-                    'log_dir',
-                    'log_level',
-                    'console_log_level',
-                    'dashboard_configfile'
-            ):
-                key = key.upper()
-                if isinstance(value, str):
-                    value = value.replace('%datastore%', datastore)
-                logger.info('\t{:>30s} = {}'.format(key, value))
-                app.config[key] = value
+    logger.info('Configuration:')
+    logger.info(60*'-')
+    for key, value in vars(options).items():
+        if key not in (
+                'env',
+                'debug',
+                'initialize',
+                'log_dir',
+                'log_level',
+                'console_log_level',
+                'dashboard_configfile'
+        ):
+            key = key.upper()
+            if isinstance(value, str):
+                value = value.replace('%datastore%', datastore)
+            logger.info('\t{:>30s} = {}'.format(key, value))
+            app.config[key] = value
 
     logger.info('')
 
@@ -175,6 +170,7 @@ def create_app(config_name=None):
     # app_admin.init_app(app)
     moment.init_app(app)
     # toolbar.init_app(app)
+    cache.init_app(app)
 
     # jinja template
     app.jinja_env.filters['empty'] = replace_empty

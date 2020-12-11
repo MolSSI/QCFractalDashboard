@@ -5,12 +5,11 @@ from . import trial_tab
 import qcportal as ptl
 import pandas as pd
 from flask import jsonify
-from plotly import graph_objects as go
-from ipywidgets import widgets
 import math
-# from flask_caching import Cache
-from app import cache
+from ... import cache
 import time
+import os
+
 
 @trial_tab.route("/views/trial_tab_page")
 def trial_tab_page():
@@ -63,12 +62,13 @@ def getdata2():
 def call_data():
     return list_managers()
 
-@cache.cached(timeout=1000)
+@cache.cached()
 def list_managers(status=None, modified_after=None):
     # call the function X here
     # move this part to another function X
-    client = ptl.FractalClient("api.qcarchive.molssi.org", username='eman',
-                               password='_m2xkveob6VJq3frvwkhYCLDMsY9VESDTmguC8y0BZ0')
+
+    client = ptl.FractalClient("api.qcarchive.molssi.org", username=os.environ.get('QCFRACTAL_USER', None),
+                               password=os.environ.get('QCFRACTAL_PASSWORD', None))
     ret_modified = client.query_managers(status=None, full_return=True) # [Need to discuss this]
     ret_modified_data = ret_modified.data
     print(type(ret_modified_data))

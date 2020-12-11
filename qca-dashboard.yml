@@ -1,10 +1,11 @@
-name: seamm-dashboard
+name: qca-dashboard
 channels:
   - defaults
 dependencies:
   - python>=3.8
   # Nodejs needed for npm! Pip version is different
   - nodejs
+  - qcportal
   - pip
   - pip:
     - configargparse
@@ -15,7 +16,7 @@ dependencies:
     - flask_cors
     - flask_debugtoolbar
     - flask_login
-    - flask_cache
+    - flask_caching
     - flask_mail
     - flask_marshmallow
     - flask_moment
@@ -28,6 +29,7 @@ dependencies:
     - selenium
     - sqlalchemy 
     - wtforms
+    - python-dotenv
     # For testing:
     - chromedriver-binary==80.0.3987.106.0
     - pytest
