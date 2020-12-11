@@ -20,6 +20,7 @@ from .template_filters import replace_empty
 from .setup_logging import setup_logging
 from .setup_argparsing import options
 # to cache all the data once instead of connecting to the server unnecesarily
+from flask import Flask
 from flask_caching import Cache
 
 
@@ -89,6 +90,7 @@ def create_app(config_name=None):
     conn_app = connexion.App(__name__, specification_dir='./')
     app = conn_app.app
     # to cache all the data once instead of connecting to the server unnecesarily
+    cache = Cache(config={'CACHE_TYPE': 'simple'})
     cache.init_app(app)
 
     logger.info('')

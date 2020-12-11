@@ -3,11 +3,11 @@ This application is a results Dashboard for MolSSI projects.
 
 The server runs Flask on Passenger and Apache, or can run flask testing server.
 
-### Install the SEAMM dashboard
+### Install the QCA dashboard
 
-This repository has a Makefile included to help install the SEAMM dashboard. First, you must create the `conda` environment and install the necessary Javascript packages.
+This repository has a Makefile included to help install the QCA dashboard. First, you must create the `conda` environment and install the necessary Javascript packages.
 
-To create the seamm dashboard environment and install the necessary packages, type
+To create the qca dashboard environment and install the necessary packages, type
 
 ~~~bash
 $ make environment
@@ -18,7 +18,7 @@ in the top level of your directory.
 After the script is finished running, activate the seamm dashboard conda environment:
 
 ~~~
-conda activate seamm-dashboard
+conda activate qca-dashboard
 ~~~
 
 If your conda environment is activated, you're ready to start running the dashboard.
@@ -29,7 +29,7 @@ You can then run the dashboard after you have installed and activated the dashbo
 
 ### Run a demo dashboard
 
-If you do not have SEAMM installed, you can view a demo dashboard by using the data in this repository. Use the command
+If you do not have QCA installed, you can view a demo dashboard by using the data in this repository. Use the command
 
 ```
 ./results_dashboard.py --initialize --datastore $(pwd)/data
@@ -37,9 +37,9 @@ If you do not have SEAMM installed, you can view a demo dashboard by using the d
 
 Open a browser and navigate to `http://localhost:5000/` to  view the sample dashboard. 
 
-### Running with SEAMM installed
+### Running with QCA installed
 
-If you have SEAMM installed, you can connect to your seamm datastore. In the top level of the repository, type the following command into the terminal:
+If you have QCA installed, you can connect to your datastore. In the top level of the repository, type the following command into the terminal:
 
 ```
 results_dashboard.py

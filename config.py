@@ -1,6 +1,9 @@
 """Flask app configuration
 """
 import os
+#Eman: added the following
+from flask import Flask
+from flask_caching import Cache
 
 
 class BaseConfig:
