@@ -62,9 +62,14 @@ $(document).ready(function () {
           options = options.sort(function (a, b) {
             return a.toLowerCase().localeCompare(b.toLowerCase());
           });
+
+          var default_selected_hostnames_3 = []
           //Populate dropdown of hostnames available 
           for (var i = 0; i < options.length; i++) {
             var opt = options[i];
+            if(i<3){
+              default_selected_hostnames_3.push(opt);
+            }
             var el = document.createElement("option");
             el.textContent = opt;
             el.value = opt;
@@ -76,12 +81,13 @@ $(document).ready(function () {
             // options,//This creates issues, therefore commented
             plugins: ['remove_button'],
             maxItems: null,
+           items: default_selected_hostnames_3
           });
 
           var hostnamesDiv = document.getElementById("hostnamesDiv");
 
           var layout_hostnames = {
-            title: 'Completed and Failed Tasks of Hostnames Selected',
+            title: 'Task Status for Selected Hosts',
 
             // height: 300,//in pixels
             // width: 480,//in pixels
@@ -120,9 +126,19 @@ $(document).ready(function () {
             Plotly.newPlot(plottingDiv, d_test, layout_hostnames);
 
           }; //end of getClusternamesData function
-
+          
           var selectizeControl_hostname = $selectize_hostname[0].selectize;
           getHostnameData(selectizeControl_hostname.getValue(), hostnamesDiv);
+
+          // console.log(selectizeControl_hostname.getOptions())
+          // console.log("typeof(selectizeControl_hostname)");
+
+          // console.log(typeof(selectizeControl_hostname));
+          // for (var i=1;i<3;i++){
+          //    selectizeControl_hostname = $selectize_hostname[i].selectize;
+          //    getHostnameData(selectizeControl_hostname.getValue(), hostnamesDiv);
+
+          // }
 
           selectizeControl_hostname.on('change', function () {
             var chosenhostname = selectizeControl_hostname.getValue();
@@ -138,9 +154,14 @@ $(document).ready(function () {
           options_clusters = options_clusters.sort(function (a, b) {
             return a.toLowerCase().localeCompare(b.toLowerCase());
           });
+
+          var default_selected_clusternames_3 = []
           //Populate dropdown of hostnames available 
           for (var i = 0; i < options_clusters.length; i++) {
             var opt = options_clusters[i];
+            if(i<3){
+              default_selected_clusternames_3.push(opt);
+            }
             var el = document.createElement("option");
             el.textContent = opt;
             el.value = opt;
@@ -152,12 +173,13 @@ $(document).ready(function () {
             // options: options_clusters, //This creates issues, therefore commented
             plugins: ['remove_button'],
             maxItems: null,
+            items: default_selected_clusternames_3
           });
 
           var clusternamesDiv = document.getElementById("clusternamesDiv");
 
           var layout_clusters = {
-            title: 'Completed and Failed Tasks of Clusternames Selected',
+            title: 'Task Status for Selected Clusters',
 
             // height: 300,//in pixels
             // width: 480,//in pixels

@@ -7,8 +7,9 @@ from flask import jsonify
 from plotly import graph_objects as go
 from ipywidgets import widgets
 import math
-from flask_caching import Cache
-
+# from flask_caching import cache
+from app import cache
+import time
 
 @trial_tab.route("/views/trial_tab_page")
 def trial_tab_page():
@@ -58,23 +59,32 @@ def getdata2():
 
 
 @trial_tab.route("/views/managers_status_tab")
-# @cache.cached()
+def call_data():
+    return list_managers()
+
+@cache.cached(timeout=1000)
 def list_managers(status=None, modified_after=None):
     # call the function X here
     # move this part to another function X
     client = ptl.FractalClient("api.qcarchive.molssi.org", username='eman',
                                password='_m2xkveob6VJq3frvwkhYCLDMsY9VESDTmguC8y0BZ0')
-    ret_modified = client.query_managers(status=None, full_return=True)
+    ret_modified = client.query_managers(status=None, full_return=True) # [Need to discuss this]
     ret_modified_data = ret_modified.data
     print(type(ret_modified_data))
     print(len(ret_modified_data))
     n_found = ret_modified.meta.n_found
     trips = math.ceil(n_found/1000)
     print(ret_modified.meta.n_found)
-    # for i in range (trips):
-    #     ret_chunk = client.query_managers(status=None, skip= (i+1)*1000,full_return= True)
-    #     ret_modified_data.extend(ret_chunk.data)
-    #     print(len(ret_modified_data))
+    start = time.time()
+    for i in range (4):
+        ret_chunk = client.query_managers(status=None, skip= (i+1)*1000,full_return= True) # [Need to discuss this]
+        ret_modified_data.extend(ret_chunk.data)
+        # print(len(ret_modified_data))
+    end = time.time()
+    print("Time Taken")
+    print(end - start)
+
+
 # ###############
 
     return jsonify(ret_modified_data)

@@ -15,6 +15,7 @@ dependencies:
     - flask_cors
     - flask_debugtoolbar
     - flask_login
+    - flask_cache
     - flask_mail
     - flask_marshmallow
     - flask_moment
@@ -25,7 +26,7 @@ dependencies:
     - python_dateutil
     - requests
     - selenium
-    - sqlalchemy
+    - sqlalchemy 
     - wtforms
     # For testing:
     - chromedriver-binary==80.0.3987.106.0

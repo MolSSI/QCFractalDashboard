@@ -19,7 +19,8 @@ from config import config
 from .template_filters import replace_empty
 from .setup_logging import setup_logging
 from .setup_argparsing import options
-from flask_caching import Cache #to cache all the data once instead of connecting to the server unnecesarily
+# to cache all the data once instead of connecting to the server unnecesarily
+from flask_caching import Cache
 
 
 # Setup the logging, now that we know where the datastore is
@@ -56,7 +57,7 @@ if 'debug' in options:
 # continue the setup
 mail = Mail()
 cors = CORS()
-cache = Cache()#to cache all the data once instead of connecting to the server unnecesarily
+cache = Cache()  # to cache all the data once instead of connecting to the server unnecesarily
 
 # cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 # For: @app.route("/api/v1/users")
@@ -78,14 +79,17 @@ toolbar = DebugToolbarExtension()
 db = SQLAlchemy()
 ma = Marshmallow()
 
+# call the function the prepares the data here
+
 
 def create_app(config_name=None):
     """Flask app factory pattern
       separately creating the extensions and later initializing"""
 
-    conn_app = connexion.App(__name__, specification_dir='./') 
+    conn_app = connexion.App(__name__, specification_dir='./')
     app = conn_app.app
-    cache.init_app(app) #to cache all the data once instead of connecting to the server unnecesarily 
+    # to cache all the data once instead of connecting to the server unnecesarily
+    cache.init_app(app)
 
     logger.info('')
     if config_name is not None:
@@ -203,5 +207,6 @@ def create_app(config_name=None):
             )
 
 
+# here (call the cached data)
+    # _get_data()
     return app
-

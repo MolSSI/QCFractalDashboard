@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
-  title: SEAMM Dashboard API
-  description: This is an API for the SEAMM dashboard.
+  title: QCFractal Dashboard API
+  description: This is an API for the QCFractal dashboard.
   contact:
     email: janash@vt.edu
   version: "1.0.0"
@@ -385,6 +385,7 @@ paths:
             text/plain:
               schema:
                 type: string
+
 components:
   schemas:
     Flowchart:
@@ -439,4 +440,4 @@ components:
         name:
           type: string
           example: MyProject
-      
+  
