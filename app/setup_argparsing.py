@@ -20,7 +20,7 @@ parser.add_argument(
 parser.add_argument(
     '--datastore',
     dest='datastore',
-    default='.',
+    default='./data',
     action='store',
     env_var='SEAMM_DATASTORE',
     help='The datastore (directory).'
