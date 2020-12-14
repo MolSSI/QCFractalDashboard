@@ -303,30 +303,54 @@ $(document).ready(function () {
           ///////////////////////////////////// Clusternames dropdown////////////////////////////////////////////////////////////////////////////
           // Third plot
           var clusternames_activeTasksDiv = document.getElementById('clusternames_activeTasksDiv');
-          var randomColor;
-          var data_traces = [];
-          for (var i = 0; i < size_dict_clusters_active_tasks; i++) {
-            console.log("data_traces gowa el loop")
-            console.log(typeof (data_traces))
-            var trace_x = Object.keys(dict_clusters_active_tasks)[i];
-            var trace_y = Object.values(dict_clusters_active_tasks)[i];
-            randomColor = [Math.floor(Math.random() * 16777215).toString(16)]
-            var combined =
-            {
-              x: trace_x,
-              y: trace_y,
-              marker: randomColor,
-              type: 'bar'
-            };
+          var randomColor = [];
+          const data_traces = new Array(size_dict_clusters_active_tasks);
+          console.log(size_dict_clusters_active_tasks)
+          // for (var i = 0; i < size_dict_clusters_active_tasks; i++) {
+          //   var trace_x = Object.keys(dict_clusters_active_tasks)[i];
+          //   var trace_y = Object.values(dict_clusters_active_tasks)[i];
+          //   randomColor = Math.floor(Math.random() * 16777215).toString(16);
+          //   var combined =
+          //   {
+          //     x: trace_x,
+          //     y: trace_y,
+          //     marker: { color: randomColor },
+          //     type: 'bar'
+          //   };
 
-            console.log("combined")
-            console.log(combined)
-            data_traces.push(combined)
+          //   data_traces[i] = combined;
+
+          // }
+
+          for (var i = 0; i < size_dict_clusters_active_tasks; i++) {
+            randomColor.push(Math.floor(Math.random() * 16777215).toString(16))
+
           }
-          console.log("data_traces")
-          console.log(typeof (data_traces))
+          console.log(data_traces)
           var data_plot = [data_traces]
-          console.log(typeof (data_plot))
+
+          var trial = [
+            {
+              marker: { color: "baf363" },
+              type: "bar",
+              x: "PacificResearchPlatformQM",
+              y: 62
+            },
+            {
+              marker: { color: "fe56bb" },
+              type: "bar",
+              x: "lilac_multithread",
+              y: 143
+            },
+            {
+              marker: { color: "7bb5b0" },
+              type: "bar",
+              x: "PacificResearchPlatformML",
+              y: 32
+            }]
+
+          // Plotly.newPlot(clusternames_activeTasksDiv, trial, layout_clusters_active_tasks);
+
           var data_cluster_active_tasks = [
             {
               // histfunc: "count",
@@ -336,7 +360,7 @@ $(document).ready(function () {
 
               name: "Number of Active tasks",
               // marker: Object.values(dict_clusters_active_tasks).map(String),
-              marker: randomColor,
+              marker: { color: randomColor },
 
               hoverinfo: 'Number of Active Tasks',
             }
@@ -349,7 +373,7 @@ $(document).ready(function () {
               label: 'Number of Active tasks'
             }
           };
-          // Plotly.newPlot(clusternames_activeTasksDiv, data_plot, layout_clusters_active_tasks);
+          // Plotly.newPlot(clusternames_activeTasksDiv, data_traces, layout_clusters_active_tasks);
           Plotly.newPlot(clusternames_activeTasksDiv, data_cluster_active_tasks, layout_clusters_active_tasks);
 
 
