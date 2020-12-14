@@ -16,6 +16,8 @@ $(document).ready(function () {
 
   var dict_hostname_failed = {};
   var dict_hostname_completed = {};
+  var dict_clusters_active_tasks = {}
+  var size_dict_clusters_active_tasks;
 
 
   $.ajax
@@ -51,11 +53,21 @@ $(document).ready(function () {
             completed.push(data_ret[i].completed)// total for all returned data
             failures.push(data_ret[i].failures)// total for all returned data
 
-            if (data_ret[i].active_tasks != null) {
-              clusters_active_tasks.push(data_ret[i].active_tasks)
+            if (data_ret[i].status == "ACTIVE") {
+              if (data_ret[i].active_tasks != null) {
+                if (data_ret[i].cluster in dict_clusters_active_tasks) {
+                  dict_clusters_active_tasks[data_ret[i].cluster] = dict_clusters_active_tasks[data_ret[i].cluster] + data_ret[i].active_tasks
+                }
+                else {
+                  dict_clusters_active_tasks[data_ret[i].cluster] = data_ret[i].active_tasks
+                }
+              }
+              console.log(dict_clusters_active_tasks)
             }
 
+
           }
+          size_dict_clusters_active_tasks = Object.keys(dict_clusters_active_tasks).length
           ////////////////////////////////////// hostnames dropdown, the way countries example was made////////////////////////////////////////////////////////////////////////
           var select = document.getElementById("hostnamesdata");
           var options = [...new Set(hostnames)]; //changed this to cluster names to compare
@@ -67,7 +79,7 @@ $(document).ready(function () {
           //Populate dropdown of hostnames available 
           for (var i = 0; i < options.length; i++) {
             var opt = options[i];
-            if(i<3){
+            if (i < 3) {
               default_selected_hostnames_3.push(opt);
             }
             var el = document.createElement("option");
@@ -81,7 +93,7 @@ $(document).ready(function () {
             // options,//This creates issues, therefore commented
             plugins: ['remove_button'],
             maxItems: null,
-           items: default_selected_hostnames_3
+            items: default_selected_hostnames_3
           });
 
           var hostnamesDiv = document.getElementById("hostnamesDiv");
@@ -126,7 +138,7 @@ $(document).ready(function () {
             Plotly.newPlot(plottingDiv, d_test, layout_hostnames);
 
           }; //end of getClusternamesData function
-          
+
           var selectizeControl_hostname = $selectize_hostname[0].selectize;
           getHostnameData(selectizeControl_hostname.getValue(), hostnamesDiv);
 
@@ -142,7 +154,7 @@ $(document).ready(function () {
 
           selectizeControl_hostname.on('change', function () {
             var chosenhostname = selectizeControl_hostname.getValue();
-            getHostnameData(chosenhostname, hostnamesDiv); 
+            getHostnameData(chosenhostname, hostnamesDiv);
 
           });
 
@@ -159,7 +171,7 @@ $(document).ready(function () {
           //Populate dropdown of hostnames available 
           for (var i = 0; i < options_clusters.length; i++) {
             var opt = options_clusters[i];
-            if(i<3){
+            if (i < 3) {
               default_selected_clusternames_3.push(opt);
             }
             var el = document.createElement("option");
@@ -289,6 +301,58 @@ $(document).ready(function () {
 
 
           ///////////////////////////////////// Clusternames dropdown////////////////////////////////////////////////////////////////////////////
+          // Third plot
+          var clusternames_activeTasksDiv = document.getElementById('clusternames_activeTasksDiv');
+          var randomColor;
+          var data_traces = [];
+          for (var i = 0; i < size_dict_clusters_active_tasks; i++) {
+            console.log("data_traces gowa el loop")
+            console.log(typeof (data_traces))
+            var trace_x = Object.keys(dict_clusters_active_tasks)[i];
+            var trace_y = Object.values(dict_clusters_active_tasks)[i];
+            randomColor = [Math.floor(Math.random() * 16777215).toString(16)]
+            var combined =
+            {
+              x: trace_x,
+              y: trace_y,
+              marker: randomColor,
+              type: 'bar'
+            };
+
+            console.log("combined")
+            console.log(combined)
+            data_traces.push(combined)
+          }
+          console.log("data_traces")
+          console.log(typeof (data_traces))
+          var data_plot = [data_traces]
+          console.log(typeof (data_plot))
+          var data_cluster_active_tasks = [
+            {
+              // histfunc: "count",
+              x: Object.keys(dict_clusters_active_tasks),
+              y: Object.values(dict_clusters_active_tasks),
+              type: "bar",
+
+              name: "Number of Active tasks",
+              // marker: Object.values(dict_clusters_active_tasks).map(String),
+              marker: randomColor,
+
+              hoverinfo: 'Number of Active Tasks',
+            }
+          ]
+          var layout_clusters_active_tasks = {
+            title: 'Clusters with Active tasks',
+            yaxis:
+            {
+              rangemode: 'tozero',
+              label: 'Number of Active tasks'
+            }
+          };
+          // Plotly.newPlot(clusternames_activeTasksDiv, data_plot, layout_clusters_active_tasks);
+          Plotly.newPlot(clusternames_activeTasksDiv, data_cluster_active_tasks, layout_clusters_active_tasks);
+
+
         } //end of ajax "success"
       }); //end of ajax call
 }); //end of: $(document).ready

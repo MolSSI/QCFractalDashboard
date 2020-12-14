@@ -77,7 +77,7 @@ def list_managers(status=None, modified_after=None):
     trips = math.ceil(n_found/1000)
     print(ret_modified.meta.n_found)
     start = time.time()
-    for i in range (4):
+    for i in range (trips):
         ret_chunk = client.query_managers(status=None, skip= (i+1)*1000,full_return= True) # [Need to discuss this]
         ret_modified_data.extend(ret_chunk.data)
         # print(len(ret_modified_data))
