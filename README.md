@@ -6,13 +6,12 @@ This application is a results Dashboard for QCArchive projects.
 
 This repository has a Makefile included to help install the QCA dashboard. First, you must create the `conda` environment and install the necessary Javascript packages.
 
-To create the qca dashboard environment and install the necessary packages, type
+To create the qca dashboard environment and install the necessary packages, make sure you are at the top level of your directory (QCFractalDashboard directory), then type the following command.
 
 ~~~bash
 $ make environment
 ~~~
 
-in the top level of your directory.
 
 After the script is finished running, activate the seamm dashboard conda environment:
 
