@@ -69,26 +69,30 @@ def list_managers(status=None, modified_after=None):
 
     client = ptl.FractalClient("api.qcarchive.molssi.org", username=os.environ.get('QCFRACTAL_USER', None),
                                password=os.environ.get('QCFRACTAL_PASSWORD', None))
-    ret_modified = client.query_managers(status=None, full_return=True) # [Need to discuss this]
-    ret_modified_data = ret_modified.data
-    print(type(ret_modified_data))
-    print(len(ret_modified_data))
-    n_found = ret_modified.meta.n_found
-    trips = math.ceil(n_found/1000)
-    print(ret_modified.meta.n_found)
+    # ret_modified = client.query_managers(status=None, full_return=True) # [Need to discuss this]
+    ret_modified = client.query_managers(status=None) # [Need to discuss this]
+
+    # ret_modified_data = ret_modified.data
+    # print(type(ret_modified_data))
+    # print(len(ret_modified_data))
+    # n_found = ret_modified.meta.n_found
+    # trips = math.ceil(n_found/1000)
+    # print(ret_modified.meta.n_found)
     start = time.time()
-    for i in range (trips):
-        ret_chunk = client.query_managers(status=None, skip= (i+1)*1000,full_return= True) # [Need to discuss this]
-        ret_modified_data.extend(ret_chunk.data)
-        # print(len(ret_modified_data))
+    # for i in range (4):
+    #     # ret_chunk = client.query_managers(status=None, skip= (i+1)*1000,full_return= True) # [Need to discuss this]
+    #     ret_chunk = client.query_managers(status=None) # [Need to discuss this]
+
+    #     ret_modified_data.extend(ret_chunk.data)
+    #     # print(len(ret_modified_data))
     end = time.time()
     print("Time Taken")
     print(end - start)
 
 
 # ###############
-
-    return jsonify(ret_modified_data)
+    return jsonify(ret_modified)
+    # return jsonify(ret_modified_data)
 
 ##############################################################################
 

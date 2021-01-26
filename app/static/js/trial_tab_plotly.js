@@ -167,8 +167,8 @@ var clusters_names = [];
         name: "Failed"
       }
     ]
-    console.log("da:")
-    console.log(da)
+    // console.log("da:")
+    // console.log(da)
       // plot_data(da, lineDiv, "Hostnames")
       // plot_data(d_active_inactive, lineDiv2, "Status")
       // plot_data(d_clusters_names, lineDiv4, "Clusters Names")
