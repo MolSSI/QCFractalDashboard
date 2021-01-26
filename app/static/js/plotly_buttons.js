@@ -214,8 +214,8 @@ $(document).ready(function () {
               data.title='bla'
 
             }
-            selectizeControl_hostname.addOptionGroup(data);
-            selectizeControl_hostname.refreshOptions();
+            // selectizeControl_hostname.addOptionGroup(data);
+            // selectizeControl_hostname.refreshOptions();
           }
           console.log("typepeof(selectizeControl_hostname)")
           console.log(typeof (selectizeControl_hostname))
