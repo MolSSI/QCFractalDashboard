@@ -6,18 +6,17 @@ This application is a results Dashboard for QCArchive projects.
 
 This repository has a Makefile included to help install the QCA dashboard. First, you must create the `conda` environment and install the necessary Javascript packages.
 
-To create the qca dashboard environment and install the necessary packages, type
+To create the qca dashboard environment and install the necessary packages, make sure you are at the top level of your directory (QCFractalDashboard directory), then type the following command.
 
 ~~~bash
 $ make environment
 ~~~
 
-in the top level of your directory.
 
 After the script is finished running, activate the seamm dashboard conda environment:
 
 ~~~
-conda activate qca-dashboard
+$ conda activate qca-dashboard
 ~~~
 
 If your conda environment is activated, you're ready to start running the dashboard.
@@ -41,7 +40,7 @@ You can then run the dashboard after you have installed and activated the dashbo
 If you do not have QCA installed, you can view a demo dashboard by using the data in this repository. Use the command
 
 ```
-./results_dashboard.py
+$ ./results_dashboard.py
 ```
 
 Open a browser and navigate to `http://localhost:5000/` to  view the sample dashboard. 
@@ -51,7 +50,7 @@ Open a browser and navigate to `http://localhost:5000/` to  view the sample dash
 If you have QCA installed, you can connect to your datastore. In the top level of the repository, type the following command into the terminal:
 
 ```
-results_dashboard.py
+$ results_dashboard.py
 ```
 
 
