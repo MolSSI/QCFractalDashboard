@@ -109,11 +109,11 @@ var clusters_names = [];
         // alert("success /views/managers_status_tab: "+ret);
         data = ret;
         
-        console.log("linediv managers_status is ")
-        console.log(lineDiv) //to use always
-        console.log("data.length")
-        console.log(data.length)
-        console.log("data active")
+        // console.log("linediv managers_status is ")
+        // console.log(lineDiv) //to use always
+        // console.log("data.length")
+        // console.log(data.length)
+        // console.log("data active")
 
         
         for(i=0; i<data.length ; i++)

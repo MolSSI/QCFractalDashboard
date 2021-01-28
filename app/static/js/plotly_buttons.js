@@ -41,25 +41,25 @@ $(document).ready(function () {
             // hostname_clustername_json.hostname = data_ret[i].hostname
             // hostname_clustername_json.clustername = data_ret[i].cluster
             hostname_clustername_json = { "hostname": data_ret[i].hostname, "clustername": data_ret[i].cluster }
-            console.log("data_ret[i].hostname")
-            console.log(data_ret[i].hostname)
+            // console.log("data_ret[i].hostname")
+            // console.log(data_ret[i].hostname)
 
             if (hostname_clustername_json_array.includes(hostname_clustername_json)==false)
             {
               hostname_clustername_json_array.push(hostname_clustername_json)
             }
 
-            console.log("hostname_clustername_json:")
-            console.log(hostname_clustername_json)
+            // console.log("hostname_clustername_json:")
+            // console.log(hostname_clustername_json)
 
-            console.log("hostname_clustername_json.hostname")
-            console.log(hostname_clustername_json.hostname)
+            // console.log("hostname_clustername_json.hostname")
+            // console.log(hostname_clustername_json.hostname)
 
-            console.log("hostname_clustername_json.clustername")
-            console.log(hostname_clustername_json.clustername)
+            // console.log("hostname_clustername_json.clustername")
+            // console.log(hostname_clustername_json.clustername)
 
-            console.log("hostname_clustername_json_array so far:")
-            console.log(hostname_clustername_json_array)
+            // console.log("hostname_clustername_json_array so far:")
+            // console.log(hostname_clustername_json_array)
 
 
             if (data_ret[i].hostname in dict_hostname_completed) {
@@ -91,15 +91,15 @@ $(document).ready(function () {
                   dict_clusters_active_tasks[data_ret[i].cluster] = data_ret[i].active_tasks
                 }
               }
-              console.log("dict_clusters_active_tasks")
-              console.log(dict_clusters_active_tasks)
+              // console.log("dict_clusters_active_tasks")
+              // console.log(dict_clusters_active_tasks)
             }
 
-            console.log("hostname_clustername_json_array.length:")
-            console.log(hostname_clustername_json_array.length)
+            // console.log("hostname_clustername_json_array.length:")
+            // console.log(hostname_clustername_json_array.length)
           }//end of for loop
-          console.log("hostname_clustername_json_array.length: out of the loop")
-          console.log(hostname_clustername_json_array.length)
+          // console.log("hostname_clustername_json_array.length: out of the loop")
+          // console.log(hostname_clustername_json_array.length)
 
           size_dict_clusters_active_tasks = Object.keys(dict_clusters_active_tasks).length
           ////////////////////////////////////// hostnames dropdown, the way countries example was made////////////////////////////////////////////////////////////////////////
@@ -114,16 +114,17 @@ $(document).ready(function () {
           //Populate dropdown of hostnames available 
           for (var i = 0; i < hostname_clustername_json_array.length; i++) {
             // var opt = options[i];
-            console.log("i= ")
-            console.log(i)
+            // console.log("i= ")
+            // console.log(i)
 
             var opt = hostname_clustername_json_array[i].hostname;
 
-            console.log("hostname_clustername_json_array.clustername")
-            console.log(hostname_clustername_json_array[i].clustername)
+            // console.log("hostname_clustername_json_array.clustername")
+            // console.log(hostname_clustername_json_array[i].clustername)
 
-            console.log("hostname_clustername_json_array[i].hostname;")
-            console.log(hostname_clustername_json_array[i].hostname)
+            // console.log("hostname_clustername_json_array[i].hostname;")
+            // console.log(hostname_clustername_json_array[i].hostname)
+
             if (default_selected_hostnames_3.length < 3) {
               if(default_selected_hostnames_3.includes(opt)==false){
                 default_selected_hostnames_3.push(opt);
@@ -136,18 +137,23 @@ $(document).ready(function () {
             select.appendChild(el);
           }// End of for loop that populates the dropdown of hostnames available
           
-
+          var optgroup_array = []
+          for  (var i=0; i< hostname_clustername_json_array.length;i++){
+            var json_obj = {value: hostname_clustername_json_array[i].clustername, label: hostname_clustername_json_array[i].clustername}
+            optgroup_array.push(json_obj)
+          }
+            
           // initialize selectize 
           var $selectize_hostname = $('.hostnamesdata').selectize({
             options: hostname_clustername_json_array, //An array of the initial options available to select; array of objects. 
             plugins: ["remove_button"],
             maxItems: null,
-            optgroupField: hostname_clustername_json_array["clustername"],
-            // optgroups: [{ value: hostname_clustername_json_array.clustername}],
+            optgroupField: "clustername",
+            optgroups: optgroup_array,
             // optgroups: [],
             render: {
               optgroup_header: function (data, escape) {
-                return '<div class="optgroup-header">' + escape(data.title) +  '</div>';
+                return '<div class="optgroup-header">' + escape(data.label) +  '</div>';
               }
               
            },
@@ -168,8 +174,8 @@ $(document).ready(function () {
           };
 
           function getHostnameData(chosenHostname, plottingDiv) {
-            console.log("default_selected_hostnames_3")
-            console.log(default_selected_hostnames_3)
+            // console.log("default_selected_hostnames_3")
+            // console.log(default_selected_hostnames_3)
 
             currentCompleted_hostname = {};
             currentFailed_hostname = {};
@@ -206,9 +212,9 @@ $(document).ready(function () {
             var data = {
               'title':item.clustername,
             };
-            console.log("data option to add")
-            console.log(data)
-            console.log(i)
+            // console.log("data option to add")
+            // console.log(data)
+            // console.log(i)
             if(data.title=='unknown' || data.title=='unlabeled')
             {
               data.title='bla'
@@ -217,9 +223,9 @@ $(document).ready(function () {
             // selectizeControl_hostname.addOptionGroup(data);
             // selectizeControl_hostname.refreshOptions();
           }
-          console.log("typepeof(selectizeControl_hostname)")
-          console.log(typeof (selectizeControl_hostname))
-          console.log(selectizeControl_hostname)
+          // console.log("typepeof(selectizeControl_hostname)")
+          // console.log(typeof (selectizeControl_hostname))
+          // console.log(selectizeControl_hostname)
           getHostnameData(selectizeControl_hostname.getValue(), hostnamesDiv);
           
 
@@ -386,8 +392,8 @@ $(document).ready(function () {
           var clusternames_activeTasksDiv = document.getElementById('clusternames_activeTasksDiv');
           var randomColor = [];
           const data_traces = new Array(size_dict_clusters_active_tasks);
-          console.log("size_dict_clusters_active_tasks")
-          console.log(size_dict_clusters_active_tasks)
+          // console.log("size_dict_clusters_active_tasks")
+          // console.log(size_dict_clusters_active_tasks)
           // for (var i = 0; i < size_dict_clusters_active_tasks; i++) {
           //   var trace_x = Object.keys(dict_clusters_active_tasks)[i];
           //   var trace_y = Object.values(dict_clusters_active_tasks)[i];
