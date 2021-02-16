@@ -62,7 +62,7 @@ def getdata2():
 def call_data():
     return list_managers()
 
-# @cache.cached()
+@cache.cached()
 def list_managers(status=None, modified_after=None):
 
     client = ptl.FractalClient("api.qcarchive.molssi.org", username=os.environ.get('QCFRACTAL_USER', None),
@@ -110,13 +110,16 @@ def list_managers(status=None, modified_after=None):
         hostnames_clusternames_tuple_py = tuple((i["hostname"], i["cluster"]))
         hostnames_clusternames_tuple_set_py.add(hostnames_clusternames_tuple_py)
         returned_data_dict={"hostnames_clusternames_tuple_set":hostnames_clusternames_tuple_set_py}
+        #{}
 
         print (type(returned_data_dict))
         print(len(returned_data_dict))
 
+        
 
-
+    #var1 --> dictionary 
     # return jsonify(ret_modified)
+    # return jsonify({'variabl1': var1, 'variable2': var2})
     return jsonify(ret_modified_data)
 
 ##############################################################################
