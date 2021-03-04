@@ -65,23 +65,15 @@ def tasksQueue():
     print('Tasks Queue got clicked!')
     return render_template("trial_tab/tasks_queue.html")
 
-
-@trial_tab.route("/views/managers_status")
-def getdata2():
-    traceA = {
-        "x": {1, 2, 3, 4, 16, 17, 26},
-        "y": {1, 40, 9, 60, 4, 20, 10},
-        "type": 'scatter'
-    }
-    return json.dumps(traceA, default=set_default)
+@trial_tab.route("/views/users_access_tab_render")
+def usersAcess():
+    print('Users Access Tab got clicked!')
+    return render_template("trial_tab/users_access.html")
 
 
 @trial_tab.route("/views/managers_status_tab")
 def call_data():
-    print("lets see")
     return list_managers()
-
-
 @cache.cached()
 def list_managers(status=None, modified_after=None):
     printVar = False
@@ -100,7 +92,7 @@ def list_managers(status=None, modified_after=None):
     print("ret_modified.meta.n_found")
     print(ret_modified.meta.n_found)
     start = time.time()
-    for i in range(trips):
+    for i in range(2):
         ret_chunk = client.query_managers(status=None, skip=(
             i+1)*2000, full_return=True)  # [Need to discuss this]
         # ret_chunk = client.query_managers(status=None) # [Need to discuss this]
@@ -111,22 +103,43 @@ def list_managers(status=None, modified_after=None):
     end = time.time()
     print("Time Taken to get the data")
     print(end - start)
-# Use pandas dataframe
+    #################################### Using pandas dataframe ############################################
+    startPrepare = time.time()
+
     df = pd.DataFrame(ret_modified_data)
-    hostnameClusterCompletedFailure = df.groupby(['hostname','cluster']).sum()[['completed', 'failures', 'active_tasks']]
-    df= df.sort_values(by = 'modified_on') #may need by or not
-    # latest modified on
-    df.groupby(['hostname','cluster']).apply(lambda rows: rows[-1])['modified_on'] #
-    df.groupby(['hostname','cluster']).apply(lambda rows: getActiveStatus(rows))['status'] #
+    df['modified_on'] = pd.to_datetime( df['modified_on'])
+    df['year'] = pd.DatetimeIndex(df['modified_on']).year
+    df['month'] = pd.DatetimeIndex(df['modified_on']).month
+    # df.to_csv('/Users/emanhussein/Desktop/experimental_CSV.csv')
+    sortedDF = df.sort_values(by = 'modified_on')
 
+    hostClusterCompletedFailureModifiedOnDF = sortedDF.groupby(['hostname','cluster']).tail(1)[['hostname','cluster','modified_on','month', 'year']]
+    # print(hostClusterCompletedFailureModifiedOnDF)
 
-    def getActiveStatus(rows): #row is a dataframe
-        for i in rows.index:
-            if rows.iloc[i]['status'] == 'ACTIVE': #rows.loc in case iloc gave an error
-                return rows.iloc[i]
-        return rows.iloc[0]
+    hostClusterCompletedFailureModifiedOnDF = sortedDF.groupby(['hostname','cluster']).sum()[['completed', 'failures']]
+    # print(hostClusterCompletedFailureModifiedOnDF)
+    # hostClusterActiveTasksDF = sortedDF.groupby(['hostname','cluster']).sum()[['active_tasks']]
+    # hostClusterActiveTasksDF = sortedDF.groupby(['hostname','cluster']).sum()[['active_tasks']]
+    # print(hostClusterActiveTasksDF)
+    # activeStatusDF = df_sorted.groupby(['hostname','cluster'])['status']
+
+    # # latest modified on
+    # df.groupby(['hostname','cluster']).apply(lambda rows: rows[-1])['modified_on'] #
+    # df.groupby(['hostname','cluster']).apply(lambda rows: getActiveStatus(rows))['status'] #
+    # def getActiveStatus(rows): #row is a dataframe
+    #     for i in rows.index:
+    #         if rows.iloc[i]['status'] == 'ACTIVE': #rows.loc in case iloc gave an error
+    #             return rows.iloc[i]
+    #     return rows.iloc[0]
 
     # df.to_json(orient='record')  #rec or row
+    endPrepare = time.time()
+    print("Time Taken to prepare the data")
+    print(endPrepare - startPrepare)
+######################################################################################################3
+    
+
+
     # Each element in the list looks like the following:
     # {
     # 'id': '1',
@@ -155,116 +168,114 @@ def list_managers(status=None, modified_after=None):
     # 'procedures': None
     # }
 
-    clusternameHostnameModifiedOnMonthYearDict = {}
-    hostnamesArray = []
-    hostnamesCompletedDict = {}
-    hostnamesFailedDict = {}
+    # clusternameHostnameModifiedOnMonthYearDict = {}
+    # hostnamesArray = []
+    # hostnamesCompletedDict = {}
+    # hostnamesFailedDict = {}
 
-    clusterCompletedDict = {}
-    clusterFailedDict = {}
+    # clusterCompletedDict = {}
+    # clusterFailedDict = {}
 
-    clusterActiceTasksDict = {}
-    # hostnameDetails = {}
-    # clusternameDict = {}
-    startPrepare = time.time()
-    for i in ret_modified_data:
-        clustername = i['cluster']
-        hostname = i['hostname']
+    # clusterActiceTasksDict = {}
+    # # hostnameDetails = {}
+    # # clusternameDict = {}
+    # startPrepare = time.time()
+    # for i in ret_modified_data:
+    #     clustername = i['cluster']
+    #     hostname = i['hostname']
 
-        # example of the modified_on field: 2019-07-04T22:36:28.618504
-        dateString = i['modified_on']
-        dateString = dateString.split('T', 1)
-        dateObj = datetime.strptime(dateString[0], "%Y-%m-%d")
-        modifiedOnMonth = dateObj.month
-        modifiedOnYear = dateObj.year
-        hostname_modifiedOn = {'Hostname': i['hostname'], 'Modified On Month':  modifiedOnMonth,
-                               'Modified On Year': modifiedOnYear}
+    #     # example of the modified_on field: 2019-07-04T22:36:28.618504
+    #     dateString = i['modified_on']
+    #     dateString = dateString.split('T', 1)
+    #     dateObj = datetime.strptime(dateString[0], "%Y-%m-%d")
+    #     modifiedOnMonth = dateObj.month
+    #     modifiedOnYear = dateObj.year
+    #     hostname_modifiedOn = {'Hostname': i['hostname'], 'Modified On Month':  modifiedOnMonth,
+    #                            'Modified On Year': modifiedOnYear}
 
-        if printVar==True:
-            print("clustername:")
-            print(clustername)
+    #     if printVar==True:
+    #         print("clustername:")
+    #         print(clustername)
 
-            print("hostname:")
-            print(hostname)
+    #         print("hostname:")
+    #         print(hostname)
 
-        if clustername in clusternameHostnameModifiedOnMonthYearDict:
-            if printVar ==True:
-                print("cluster key exists in the dictionary")
-                # Check if the corresponding array contains the current hostname
-                # if not append to the array
-                print("**********************************")
-                print("clusternameHostnameModifiedOnMonthYearDict[clustername]= ")
-                print(clusternameHostnameModifiedOnMonthYearDict[clustername])
-                print("**********************************")
+    #     if clustername in clusternameHostnameModifiedOnMonthYearDict:
+    #         if printVar ==True:
+    #             print("cluster key exists in the dictionary")
+    #             # Check if the corresponding array contains the current hostname
+    #             # if not append to the array
+    #             print("**********************************")
+    #             print("clusternameHostnameModifiedOnMonthYearDict[clustername]= ")
+    #             print(clusternameHostnameModifiedOnMonthYearDict[clustername])
+    #             print("**********************************")
 
-            hostnamesArray = clusternameHostnameModifiedOnMonthYearDict[clustername]
-            if printVar==True:
-                print("**********************************")
-                print("hostnamesArray")
-                print(hostnamesArray)
-                print("**********************************")
+    #         hostnamesArray = clusternameHostnameModifiedOnMonthYearDict[clustername]
+    #         if printVar==True:
+    #             print("**********************************")
+    #             print("hostnamesArray")
+    #             print(hostnamesArray)
+    #             print("**********************************")
 
-            if not hostname_modifiedOn in hostnamesArray:
-                if printVar==True:
-                    print("hostname doesn't exists in the array of hostnames, so add it")
-                # we don't want to use append
-                hostnamesArray.append(hostname_modifiedOn)
-        else:
-            if printVar==True:
-                print("cluster key doesn't exists in the dictionary")
-            clusternameHostnameModifiedOnMonthYearDict[clustername] = [
-                hostname_modifiedOn]
-        if printVar==True:
-            print("**********************************")
-            print("clusternameHostnameModifiedOnMonthYearDict")
-            print(clusternameHostnameModifiedOnMonthYearDict)
-            print("**********************************")
+    #         if not hostname_modifiedOn in hostnamesArray:
+    #             if printVar==True:
+    #                 print("hostname doesn't exists in the array of hostnames, so add it")
+    #             # we don't want to use append
+    #             hostnamesArray.append(hostname_modifiedOn)
+    #     else:
+    #         if printVar==True:
+    #             print("cluster key doesn't exists in the dictionary")
+    #         clusternameHostnameModifiedOnMonthYearDict[clustername] = [
+    #             hostname_modifiedOn]
+    #     if printVar==True:
+    #         print("**********************************")
+    #         print("clusternameHostnameModifiedOnMonthYearDict")
+    #         print(clusternameHostnameModifiedOnMonthYearDict)
+    #         print("**********************************")
 
-        # Save the number of Compeleted per hostnames
-        completed = i['completed']
-        failures = i['failures']
-        if hostname in hostnamesCompletedDict:
-            hostnamesCompletedDict[hostname] = hostnamesCompletedDict[hostname] + completed
-        else:
-            hostnamesCompletedDict[hostname] = completed
+    #     # Save the number of Compeleted per hostnames
+    #     completed = i['completed']
+    #     failures = i['failures']
+    #     if hostname in hostnamesCompletedDict:
+    #         hostnamesCompletedDict[hostname] = hostnamesCompletedDict[hostname] + completed
+    #     else:
+    #         hostnamesCompletedDict[hostname] = completed
 
-            # Save the number of Failures per hostnames
-        if hostname in hostnamesFailedDict:
-            hostnamesFailedDict[hostname] = hostnamesFailedDict[hostname] + failures
-        else:
-            hostnamesFailedDict[i['hostname']] = failures
-        if printVar==True:
-            print("**********************************")
-            print("hostnamesCompletedDict")
-            print(hostnamesCompletedDict)
-            print("**********************************")
+    #         # Save the number of Failures per hostnames
+    #     if hostname in hostnamesFailedDict:
+    #         hostnamesFailedDict[hostname] = hostnamesFailedDict[hostname] + failures
+    #     else:
+    #         hostnamesFailedDict[i['hostname']] = failures
+    #     if printVar==True:
+    #         print("**********************************")
+    #         print("hostnamesCompletedDict")
+    #         print(hostnamesCompletedDict)
+    #         print("**********************************")
 
-            print("hostnamesFailedDict")
-            print(hostnamesFailedDict)
+    #         print("hostnamesFailedDict")
+    #         print(hostnamesFailedDict)
 
-        if i['status'] == "ACTIVE":
-            if i['active_tasks'] != None:
-                if i['cluster'] in clusterActiceTasksDict:
-                    clusterActiceTasksDict[i['cluster']] = clusterActiceTasksDict[i['cluster']] + i['active_tasks']
+    #     if i['status'] == "ACTIVE":
+    #         if i['active_tasks'] != None:
+    #             if i['cluster'] in clusterActiceTasksDict:
+    #                 clusterActiceTasksDict[i['cluster']] = clusterActiceTasksDict[i['cluster']] + i['active_tasks']
                 
-                else :
-                    clusterActiceTasksDict[i['cluster']] = i['active_tasks']
-        if printVar==True:
-            print("**********************************")
-            print("clusterActiceTasksDict")
-            print(clusterActiceTasksDict)
-            print("**********************************")
+    #             else :
+    #                 clusterActiceTasksDict[i['cluster']] = i['active_tasks']
+    #     if printVar==True:
+    #         print("**********************************")
+    #         print("clusterActiceTasksDict")
+    #         print(clusterActiceTasksDict)
+    #         print("**********************************")
 
 
-            print("=========================================================================================================")
+    #         print("=========================================================================================================")
 
     # Type: 'flask.wrappers.Response'
     # jsonified_data = jsonify(ret_modified_data)
     # print(jsonified_data.data)
-    endPrepare = time.time()
-    print("Time Taken to prepare the data")
-    print(endPrepare - startPrepare)
-    returned_data_dict = {}
+   
+    # returned_data_dict = {}
 
     # for i in ret_modified_data:
 
