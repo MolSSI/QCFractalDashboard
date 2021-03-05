@@ -30,12 +30,27 @@ $(document).ready(function () {
           alert("error /views/managers_status_tab: " + xhr);
         },
         success: function (ret) {
+        
+
           var hostname_clustername_json_array = [];
+          var jsonhostClusterModifiedOn = ret['jsonhostClusterModifiedOnDF']
+          var parsed = JSON.parse(jsonhostClusterModifiedOn);
+
+          var jsonhostClusterCompletedFailure = ret['jsonhostClusterCompletedFailureDF']
+          console.log(jsonhostClusterCompletedFailure)
+          var parsed_jsonhostClusterCompletedFailure = JSON.parse(jsonhostClusterCompletedFailure);
+          
+
+          data_ret = parsed;
+          data_ret_hostClusterCompletedFailure = parsed_jsonhostClusterCompletedFailure
+          
+          // console.log('data_ret_hostClusterCompletedFailure')
+          // console.log(data_ret_hostClusterCompletedFailure[0].get_group)
           var stringRepresentationSet = new Set(); //to store premitive representation of the object
           var default_selected_hostnames_3 = []
           var df_trial = []
 
-          data_ret = ret;
+          
           // sessionStorage.setItem('dataFromPython', JSON.stringify(data_ret))
           // console.log('dataFromPython: ', JSON.parse(sessionStorage.getItem('dataFromPython')));
 
@@ -46,9 +61,11 @@ $(document).ready(function () {
             hostnames.push(data_ret[i].hostname)
 
             // example of the modified_on field: 2019-07-04T22:36:28.618504
-            modified_on_year = data_ret[i].modified_on.substring(0, 4);
-            modified_on_month = data_ret[i].modified_on.substring(5, 7);
-            modified_on_day = data_ret[i].modified_on.substring(8, 10);
+            // modified_on_year = data_ret[i].modified_on.substring(0, 4);
+            // modified_on_month = data_ret[i].modified_on.substring(5, 7);
+            // modified_on_day = data_ret[i].modified_on.substring(8, 10);
+            modified_on_year = data_ret[i].year;
+            modified_on_month = data_ret[i].month;
             var concatString = String(modified_on_year) + "," + String(modified_on_month)
             modified_on_date = new Date(concatString); //To be added to the list of hostnames data
 
@@ -66,7 +83,7 @@ $(document).ready(function () {
               "hostname": data_ret[i].hostname, "clustername": data_ret[i].cluster,
               // "modified_on_date": modified_on_date,
               "modified_on_year": modified_on_year, "modified_on_month": modified_on_month,
-              "modified_day": modified_on_day
+              // "modified_day": modified_on_day
             }
 
             var stringRepresentation = data_ret[i].hostname + " " + data_ret[i].cluster
@@ -84,22 +101,28 @@ $(document).ready(function () {
               "clustername": data_ret[i].cluster,
               "modified_on_date": modified_on_date,
               "modified_on_year": modified_on_year, "modified_on_month": modified_on_month,
-              "modified_day": modified_on_day
+              // "modified_day": modified_on_day
             }
-
-            if (data_ret[i].hostname in dict_hostname_completed) {
-              dict_hostname_completed[data_ret[i].hostname] = dict_hostname_completed[data_ret[i].hostname] + data_ret[i].completed;
-            }
-            else {
-              dict_hostname_completed[data_ret[i].hostname] = data_ret[i].completed;
-            }
-
-            if (data_ret[i].hostname in dict_hostname_failed) {
-              dict_hostname_failed[data_ret[i].hostname] = dict_hostname_failed[data_ret[i].hostname] + data_ret[i].failures;
+            console.log("data_ret_hostClusterCompletedFailure[i].hostname")
+            console.log( data_ret_hostClusterCompletedFailure[i])
+            if (data_ret_hostClusterCompletedFailure[i].hostname in dict_hostname_completed) {
+              dict_hostname_completed[data_ret_hostClusterCompletedFailure[i].hostname] = dict_hostname_completed[data_ret_hostClusterCompletedFailure[i].hostname] + data_ret_hostClusterCompletedFailure[i].completed;
             }
             else {
-              dict_hostname_failed[data_ret[i].hostname] = data_ret[i].failures;
+              dict_hostname_completed[data_ret_hostClusterCompletedFailure[i].hostname] = data_ret_hostClusterCompletedFailure[i].completed;
             }
+
+            if (data_ret_hostClusterCompletedFailure[i].hostname in dict_hostname_failed) {
+              dict_hostname_failed[data_ret_hostClusterCompletedFailure[i].hostname] = dict_hostname_failed[data_ret_hostClusterCompletedFailure[i].hostname] + data_ret_hostClusterCompletedFailure[i].failures;
+            }
+            else {
+              dict_hostname_failed[data_ret_hostClusterCompletedFailure[i].hostname] = data_ret_hostClusterCompletedFailure[i].failures;
+            }
+            
+            console.log("dict_hostname_completed")
+            console.log(typeof(dict_hostname_completed))
+            console.log(dict_hostname_completed)
+            
 
             active_inactive.push(data_ret[i].status) // total for all returned data 
             clusters_names.push(data_ret[i].cluster)
@@ -127,6 +150,7 @@ $(document).ready(function () {
           var select = document.getElementById("hostnamesdata");
           var optgroup_array = []; // Contains Cluternames to group Hostnames accordingly
           var clustArray = [];
+
           //Populate dropdown of hostnames available 
           for (var i = 0; i < hostname_clustername_json_array.length; i++) {
             var el = document.createElement("option");
@@ -293,17 +317,17 @@ $(document).ready(function () {
             console.log("Time taken to execut filterAccordingToSlider function in getHostnameData in milliseconds =")
             console.log(t1 - t0)
 
-            // console.log("filteredList to get their data (getHostnameData):")
-            // console.log(filteredList)
+            console.log("filteredList to get their data (getHostnameData):")
+            console.log(filteredList)
 
             for (var i = 0; i < filteredList.length; i++) {
               currentFailed_hostname[filteredList[i]] = dict_hostname_failed[filteredList[i]]
               currentCompleted_hostname[filteredList[i]] = dict_hostname_completed[filteredList[i]]
               // hoverData.push("Modified on: " + map_month(hostnamesDict[filteredList[i]].modified_on_month) + " " + hostnamesDict[filteredList[i]].modified_on_year)
-              // console.log("currentCompleted_hostname")
-              // console.log(currentCompleted_hostname)
-              // console.log("filteredList[i] and its modified_on_month:")
-              // console.log(filteredList[i])
+              console.log("currentCompleted_hostname")
+              console.log(currentCompleted_hostname)
+              console.log(" dict_hostname_completed[filteredList[i]]")
+              console.log( dict_hostname_completed[filteredList[i]])
               // console.log(hostnamesDict[filteredList[i]].modified_on_month)
             }//end of for loop
             // console.log("currentCompleted_hostname after for loop:")
