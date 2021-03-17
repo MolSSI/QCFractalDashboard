@@ -30,33 +30,37 @@ $(document).ready(function () {
           alert("error /views/managers_status_tab: " + xhr);
         },
         success: function (ret) {
-        
-
           var hostname_clustername_json_array = [];
           var jsonhostClusterModifiedOn = ret['jsonhostClusterModifiedOnDF']
           var parsed = JSON.parse(jsonhostClusterModifiedOn);
 
           var jsonhostClusterCompletedFailure = ret['jsonhostClusterCompletedFailureDF']
-          console.log(jsonhostClusterCompletedFailure)
+          // console.log(jsonhostClusterCompletedFailure)
           var parsed_jsonhostClusterCompletedFailure = JSON.parse(jsonhostClusterCompletedFailure);
-          
+
 
           data_ret = parsed;
           data_ret_hostClusterCompletedFailure = parsed_jsonhostClusterCompletedFailure
-          
+
           // console.log('data_ret_hostClusterCompletedFailure')
           // console.log(data_ret_hostClusterCompletedFailure[0].get_group)
           var stringRepresentationSet = new Set(); //to store premitive representation of the object
           var default_selected_hostnames_3 = []
           var df_trial = []
 
-          
+
           // sessionStorage.setItem('dataFromPython', JSON.stringify(data_ret))
           // console.log('dataFromPython: ', JSON.parse(sessionStorage.getItem('dataFromPython')));
 
           var dateSet = new Set()
           var hostnamesDict = {}
-
+          Date.shortMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+          function short_months(dt) {
+            var d = Date.shortMonths[dt.getMonth()]
+            return d;
+          }
+          // use for each and see if it would be faster
+          // data_ret.each(function) --> check syntax
           for (var i = 0; i < data_ret.length; i++) {
             hostnames.push(data_ret[i].hostname)
 
@@ -69,11 +73,7 @@ $(document).ready(function () {
             var concatString = String(modified_on_year) + "," + String(modified_on_month)
             modified_on_date = new Date(concatString); //To be added to the list of hostnames data
 
-            Date.shortMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            function short_months(dt) {
-              var d = Date.shortMonths[dt.getMonth()]
-              return d;
-            }
+
 
             if (!dateSet.has(concatString)) {
               dateSet.add(concatString)
@@ -103,8 +103,8 @@ $(document).ready(function () {
               "modified_on_year": modified_on_year, "modified_on_month": modified_on_month,
               // "modified_day": modified_on_day
             }
-            console.log("data_ret_hostClusterCompletedFailure[i].hostname")
-            console.log( data_ret_hostClusterCompletedFailure[i])
+            // console.log("data_ret_hostClusterCompletedFailure[i].hostname")
+            // console.log( data_ret_hostClusterCompletedFailure[i])
             if (data_ret_hostClusterCompletedFailure[i].hostname in dict_hostname_completed) {
               dict_hostname_completed[data_ret_hostClusterCompletedFailure[i].hostname] = dict_hostname_completed[data_ret_hostClusterCompletedFailure[i].hostname] + data_ret_hostClusterCompletedFailure[i].completed;
             }
@@ -118,11 +118,11 @@ $(document).ready(function () {
             else {
               dict_hostname_failed[data_ret_hostClusterCompletedFailure[i].hostname] = data_ret_hostClusterCompletedFailure[i].failures;
             }
-            
-            console.log("dict_hostname_completed")
-            console.log(typeof(dict_hostname_completed))
-            console.log(dict_hostname_completed)
-            
+
+            // console.log("dict_hostname_completed")
+            // console.log(typeof(dict_hostname_completed))
+            // console.log(dict_hostname_completed)
+
 
             active_inactive.push(data_ret[i].status) // total for all returned data 
             clusters_names.push(data_ret[i].cluster)
@@ -165,8 +165,8 @@ $(document).ready(function () {
               optgroup_array.push(json_obj)
             }
           }// End of for loop that populates the dropdown of hostnames available
-          console.log("optgroup_array.length")
-          console.log(optgroup_array.length)
+          // console.log("optgroup_array.length")
+          // console.log(optgroup_array.length)
 
           // console.log("optgroup_array")
           // console.log(optgroup_array)
@@ -174,9 +174,9 @@ $(document).ready(function () {
           // console.log(hostname_clustername_json_array)
 
 
-          
+
           var df = [hostname_clustername_json_array[0].hostname, hostname_clustername_json_array[1].hostname, hostname_clustername_json_array[2].hostname]
-          
+
 
           // initialize the Selectize control
           var $selectize_hostname = $('.hostnamesdata').selectize({
@@ -194,13 +194,13 @@ $(document).ready(function () {
               item: function (item, escape) {
                 // alert(item.hostname);
                 return '<div>' +
-                  '<span>' + escape(item.hostname) + '</span>' + '<span>' + ', Cluster: ' + escape(item.clustername) + '</span>'
+                  '<span>' + escape(item.hostname) + '</span>' //+ '<span>' + ', Cluster: ' + escape(item.clustername) + '</span>'
                 '</div>';
               },
               option: function (item, escape) {
                 // alert(item.hostname);
                 return '<div>' +
-                  '<span>' + escape(item.hostname) + '</span>' + '<span>' + ', Cluster: ' + escape(item.clustername) + '</span>'
+                  '<span>' + escape(item.hostname) + '</span>' //+ '<span>' + ', Cluster: ' + escape(item.clustername) + '</span>'
                 '</div>';
               }
             },
@@ -324,15 +324,15 @@ $(document).ready(function () {
               currentFailed_hostname[filteredList[i]] = dict_hostname_failed[filteredList[i]]
               currentCompleted_hostname[filteredList[i]] = dict_hostname_completed[filteredList[i]]
               // hoverData.push("Modified on: " + map_month(hostnamesDict[filteredList[i]].modified_on_month) + " " + hostnamesDict[filteredList[i]].modified_on_year)
-              console.log("currentCompleted_hostname")
-              console.log(currentCompleted_hostname)
-              console.log(" dict_hostname_completed[filteredList[i]]")
-              console.log( dict_hostname_completed[filteredList[i]])
+              // console.log("currentCompleted_hostname")
+              // console.log(currentCompleted_hostname)
+              // console.log(" dict_hostname_completed[filteredList[i]]")
+              // console.log( dict_hostname_completed[filteredList[i]])
               // console.log(hostnamesDict[filteredList[i]].modified_on_month)
             }//end of for loop
             // console.log("currentCompleted_hostname after for loop:")
-            console.log("dict_hostname_completed")
-            console.log(dict_hostname_completed)
+            // console.log("dict_hostname_completed")
+            // console.log(dict_hostname_completed)
 
             var toReturn = [{ currentCompleted_hostname }, { currentFailed_hostname }]
             // console.log("toReturn[0] in get hostnameData function")
@@ -350,7 +350,7 @@ $(document).ready(function () {
 
           function sliderChangeReflect(dataReturnedParam, chosenHostname, plottingDiv, layout) {
             $(this).on('plotly_sliderchange', function (e) {
-              console.log("===============================================")
+              // console.log("===============================================")
               var t0 = performance.now()
               var dataReturned = getHostnameData(chosenHostname, plottingDiv);
               var t1 = performance.now()
@@ -390,7 +390,7 @@ $(document).ready(function () {
           // $selectize_hostname[0].selectize.setValue(default_selected_clusternames_3);
 
           var tempVar = selectizeControl_hostname.getValue()
-          
+
           dataReturned = getHostnameData(tempVar, hostnamesDiv);
           var dataToPlot = [
             {
@@ -464,8 +464,8 @@ $(document).ready(function () {
 
           selectizeControl_hostname.on('change', function () {
             var chosenhostname = selectizeControl_hostname.getValue();
-            console.log("typeof chosenhostname")
-            console.log(typeof (chosenhostname))
+            // console.log("typeof chosenhostname")
+            // console.log(typeof (chosenhostname))
             dataReturned = getHostnameData(chosenhostname, hostnamesDiv);
 
             var dataToPlot = [
@@ -559,18 +559,18 @@ $(document).ready(function () {
 
             for (var i = 0; i < chosenClustername.length; i++) {
 
-              for (var j = 0; j < data_ret.length; j++) {
-                if (data_ret[j].cluster === chosenClustername[i]) {
+              for (var j = 0; j < data_ret_hostClusterCompletedFailure.length; j++) {
+                if (data_ret_hostClusterCompletedFailure[j].cluster === chosenClustername[i]) {
                   // console.log("data_ret[i]");
                   // console.log(data_ret[i]);
                   if (clustername_completed[chosenClustername[i]] != null) {
-                    clustername_completed[chosenClustername[i]] = clustername_completed[chosenClustername[i]] + data_ret[j].completed;
-                    clustername_failed[chosenClustername[i]] = clustername_failed[chosenClustername[i]] + data_ret[j].failures;
+                    clustername_completed[chosenClustername[i]] = clustername_completed[chosenClustername[i]] + data_ret_hostClusterCompletedFailure[j].completed;
+                    clustername_failed[chosenClustername[i]] = clustername_failed[chosenClustername[i]] + data_ret_hostClusterCompletedFailure[j].failures;
                     // clustername_active_tasks[chosenClustername] = clustername_active_tasks[chosenClustername] + data_ret[i].active_tasks;
                   }
                   else {
-                    clustername_completed[chosenClustername[i]] = data_ret[j].completed;
-                    clustername_failed[chosenClustername[i]] = data_ret[j].failures;
+                    clustername_completed[chosenClustername[i]] = data_ret_hostClusterCompletedFailure[j].completed;
+                    clustername_failed[chosenClustername[i]] = data_ret_hostClusterCompletedFailure[j].failures;
                     // clustername_active_tasks[chosenClustername] = data_ret[i].active_tasks;
                   }
 
@@ -579,17 +579,17 @@ $(document).ready(function () {
 
                 }//end of if (data_ret[i].cluster === chosenClustername)
 
-                if (data_ret[j].hostname === chosenClustername[i]) {
+                if (data_ret_hostClusterCompletedFailure[j].hostname === chosenClustername[i]) {
                   // console.log("data_ret[i]");
                   // console.log(data_ret[i]);
                   if (hostname_completed[chosenClustername[i]] != null) {
-                    hostname_completed[chosenClustername[i]] = hostname_completed[chosenClustername[i]] + data_ret[j].completed;
-                    hostname_failed[chosenClustername[i]] = hostname_failed[chosenClustername[i]] + data_ret[j].failures;
+                    hostname_completed[chosenClustername[i]] = hostname_completed[chosenClustername[i]] + data_ret_hostClusterCompletedFailure[j].completed;
+                    hostname_failed[chosenClustername[i]] = hostname_failed[chosenClustername[i]] + data_ret_hostClusterCompletedFailure[j].failures;
                     // clustername_active_tasks[chosenClustername] = clustername_active_tasks[chosenClustername] + data_ret[i].active_tasks;
                   }
                   else {
-                    hostname_completed[chosenClustername[i]] = data_ret[j].completed;
-                    hostname_failed[chosenClustername[i]] = data_ret[j].failures;
+                    hostname_completed[chosenClustername[i]] = data_ret_hostClusterCompletedFailure[j].completed;
+                    hostname_failed[chosenClustername[i]] = data_ret_hostClusterCompletedFailure[j].failures;
                     // clustername_active_tasks[chosenClustername] = data_ret[i].active_tasks;
                   }
 
