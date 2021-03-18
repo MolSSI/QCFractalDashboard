@@ -1,18 +1,11 @@
 
 $(document).ready(function () {
-
-  // var lineDiv = document.getElementById('myDiv2');
-
   var data_ret = null;
   var hostnames = [];
   var active_inactive = [];
   var completed = [];
   var failures = [];
   var clusters_names = [];
-  var clusters_active_tasks = [];
-
-  var dict_clustername_failed = {};
-  var dict_clustername_completed = {};
 
   var dict_hostname_failed = {};
   var dict_hostname_completed = {};
@@ -31,23 +24,17 @@ $(document).ready(function () {
         },
         success: function (ret) {
           var hostname_clustername_json_array = [];
+
           var jsonhostClusterModifiedOn = ret['jsonhostClusterModifiedOnDF']
           var parsed = JSON.parse(jsonhostClusterModifiedOn);
 
           var jsonhostClusterCompletedFailure = ret['jsonhostClusterCompletedFailureDF']
-          // console.log(jsonhostClusterCompletedFailure)
           var parsed_jsonhostClusterCompletedFailure = JSON.parse(jsonhostClusterCompletedFailure);
-
 
           data_ret = parsed;
           data_ret_hostClusterCompletedFailure = parsed_jsonhostClusterCompletedFailure
 
-          // console.log('data_ret_hostClusterCompletedFailure')
-          // console.log(data_ret_hostClusterCompletedFailure[0].get_group)
           var stringRepresentationSet = new Set(); //to store premitive representation of the object
-          var default_selected_hostnames_3 = []
-          var df_trial = []
-
 
           // sessionStorage.setItem('dataFromPython', JSON.stringify(data_ret))
           // console.log('dataFromPython: ', JSON.parse(sessionStorage.getItem('dataFromPython')));
@@ -59,8 +46,7 @@ $(document).ready(function () {
             var d = Date.shortMonths[dt.getMonth()]
             return d;
           }
-          // use for each and see if it would be faster
-          // data_ret.each(function) --> check syntax
+          
           for (var i = 0; i < data_ret.length; i++) {
             hostnames.push(data_ret[i].hostname)
 
@@ -72,8 +58,6 @@ $(document).ready(function () {
             modified_on_month = data_ret[i].month;
             var concatString = String(modified_on_year) + "," + String(modified_on_month)
             modified_on_date = new Date(concatString); //To be added to the list of hostnames data
-
-
 
             if (!dateSet.has(concatString)) {
               dateSet.add(concatString)
@@ -90,11 +74,6 @@ $(document).ready(function () {
             if (stringRepresentationSet.has(stringRepresentation) == false) {
               stringRepresentationSet.add(stringRepresentation)
               hostname_clustername_json_array.push(hostname_clustername_json)
-
-              // if (default_selected_hostnames_3.length < 3) {
-              //   default_selected_hostnames_3.push(hostname_clustername_json);
-              //   df_trial.push(data_ret[i].hostname + ", Cluster: " + data_ret[i].clustername)
-              // }//end of if condition checking the size of default_selected_hostnames_3
             } //end of if (stringRepresentationSet.has(stringRepresentation) == false) {
 
             hostnamesDict[data_ret[i].hostname] = {
@@ -103,8 +82,7 @@ $(document).ready(function () {
               "modified_on_year": modified_on_year, "modified_on_month": modified_on_month,
               // "modified_day": modified_on_day
             }
-            // console.log("data_ret_hostClusterCompletedFailure[i].hostname")
-            // console.log( data_ret_hostClusterCompletedFailure[i])
+            
             if (data_ret_hostClusterCompletedFailure[i].hostname in dict_hostname_completed) {
               dict_hostname_completed[data_ret_hostClusterCompletedFailure[i].hostname] = dict_hostname_completed[data_ret_hostClusterCompletedFailure[i].hostname] + data_ret_hostClusterCompletedFailure[i].completed;
             }
@@ -118,11 +96,6 @@ $(document).ready(function () {
             else {
               dict_hostname_failed[data_ret_hostClusterCompletedFailure[i].hostname] = data_ret_hostClusterCompletedFailure[i].failures;
             }
-
-            // console.log("dict_hostname_completed")
-            // console.log(typeof(dict_hostname_completed))
-            // console.log(dict_hostname_completed)
-
 
             active_inactive.push(data_ret[i].status) // total for all returned data 
             clusters_names.push(data_ret[i].cluster)
@@ -140,8 +113,6 @@ $(document).ready(function () {
               }
             }
           }//end of for loop ==> for (var i = 0; i < data_ret.length; i++)
-          // console.log("df_trial")
-          // console.log(df_trial)
 
           size_dict_clusters_active_tasks = Object.keys(dict_clusters_active_tasks).length
 
@@ -156,6 +127,9 @@ $(document).ready(function () {
             var el = document.createElement("option");
             el.textContent = hostname_clustername_json_array[i]
             el.value = hostname_clustername_json_array[i].hostname
+            console.log("el")
+            console.log(el.textContent)
+            console.log(el.value)
             select.appendChild(el);
 
             var clustName = hostname_clustername_json_array[i].clustername
@@ -165,18 +139,8 @@ $(document).ready(function () {
               optgroup_array.push(json_obj)
             }
           }// End of for loop that populates the dropdown of hostnames available
-          // console.log("optgroup_array.length")
-          // console.log(optgroup_array.length)
-
-          // console.log("optgroup_array")
-          // console.log(optgroup_array)
-          // console.log("hostname_clustername_json_array")
-          // console.log(hostname_clustername_json_array)
-
-
-
+         
           var df = [hostname_clustername_json_array[0].hostname, hostname_clustername_json_array[1].hostname, hostname_clustername_json_array[2].hostname]
-
 
           // initialize the Selectize control
           var $selectize_hostname = $('.hostnamesdata').selectize({
@@ -186,21 +150,19 @@ $(document).ready(function () {
             maxItems: null,
             optgroups: optgroup_array,
             optgroupField: "clustername",
-            closeAfterSelect: true,
+            // closeAfterSelect: true,
             render: {
               // optgroup_header: function (data, escape) {
               //   return '<div class="optgroup-header">' + escape(data.clustername) + '</div>';
               // },
               item: function (item, escape) {
-                // alert(item.hostname);
                 return '<div>' +
-                  '<span>' + escape(item.hostname) + '</span>' //+ '<span>' + ', Cluster: ' + escape(item.clustername) + '</span>'
+                  '<span>' + escape(item.hostname) + '</span>' +// '<span>' + ', Cluster: ' + escape(item.clustername) + '</span>'
                 '</div>';
               },
               option: function (item, escape) {
-                // alert(item.hostname);
                 return '<div>' +
-                  '<span>' + escape(item.hostname) + '</span>' //+ '<span>' + ', Cluster: ' + escape(item.clustername) + '</span>'
+                  '<span>' + escape(item.hostname) + '</span>' + //'<span>' + ', Cluster: ' + escape(item.clustername) + '</span>'
                 '</div>';
               }
             },
@@ -208,10 +170,7 @@ $(document).ready(function () {
           });
 
           var hostnamesDiv = document.getElementById("hostnamesDiv");
-
           var layout_hostnames = {
-
-            // title: 'Task Status for Selected Hosts',
             yaxis:
             {
               rangemode: 'tozero'
@@ -221,16 +180,9 @@ $(document).ready(function () {
             },
             sliders: [{
               pad: { t: 85 },
-              // margin: {
-              //   t: 100,
-
-              //   pad: 40
-              // },
-
               currentvalue: {
                 automargin: true,
                 xanchor: 'center',
-
                 prefix: 'Select Month to Start Filtering from: ',
                 font: {
                   color: '#888',
@@ -239,20 +191,8 @@ $(document).ready(function () {
               },
               transition: { duration: 500 },
               steps: calculateSteps(dateSet)
-            }],
-            // margin: {
-            //   t: 100
-            //   // ,
-            //   // t: 100
-            //   // ,
-            //   // pad: 4
-            // },
+            }]
           };
-
-          var te = layout_hostnames.sliders[0]
-          var initialSelection = te.steps[0].label
-          // console.log(te.steps[0].label)
-          var sl = layout_hostnames.sliders[0].active
 
           function calculateSteps(dateSetParam) {
             var t0 = performance.now();
@@ -294,73 +234,41 @@ $(document).ready(function () {
               // }]
             }
             steps.push(step)
-            var t1 = performance.now()
-            console.log("Time taken to calculate steps of the slider in milliseconds =")
-            console.log(t1 - t0)
+            // var t1 = performance.now()
+            // console.log("Time taken to calculate steps of the slider in milliseconds =")
+            // console.log(t1 - t0)
             return steps
 
           }//end of calculateSteps function
 
-
           function getHostnameData(chosenHostname, plottingDiv) {
-
-            var hoverData = [];
-            // console.log("chosenHostname to get their data (getHostnameData):")
-            // console.log(chosenHostname)
+            // var hoverData = [];
+            // var t0 = performance.now()
+            var filteredList = filterAccordingToSlider(chosenHostname, layout_hostnames)
+            // var t1 = performance.now()
+            // console.log("Time taken to execut filterAccordingToSlider function in getHostnameData in milliseconds =")
+            // console.log(t1 - t0)
 
             currentCompleted_hostname = {};
             currentFailed_hostname = {};
-
-            var t0 = performance.now()
-            var filteredList = filterAccordingToSlider(chosenHostname, layout_hostnames)
-            var t1 = performance.now()
-            console.log("Time taken to execut filterAccordingToSlider function in getHostnameData in milliseconds =")
-            console.log(t1 - t0)
-
-            console.log("filteredList to get their data (getHostnameData):")
-            console.log(filteredList)
-
             for (var i = 0; i < filteredList.length; i++) {
               currentFailed_hostname[filteredList[i]] = dict_hostname_failed[filteredList[i]]
               currentCompleted_hostname[filteredList[i]] = dict_hostname_completed[filteredList[i]]
               // hoverData.push("Modified on: " + map_month(hostnamesDict[filteredList[i]].modified_on_month) + " " + hostnamesDict[filteredList[i]].modified_on_year)
-              // console.log("currentCompleted_hostname")
-              // console.log(currentCompleted_hostname)
-              // console.log(" dict_hostname_completed[filteredList[i]]")
-              // console.log( dict_hostname_completed[filteredList[i]])
-              // console.log(hostnamesDict[filteredList[i]].modified_on_month)
             }//end of for loop
-            // console.log("currentCompleted_hostname after for loop:")
-            // console.log("dict_hostname_completed")
-            // console.log(dict_hostname_completed)
 
             var toReturn = [{ currentCompleted_hostname }, { currentFailed_hostname }]
-            // console.log("toReturn[0] in get hostnameData function")
-            // console.log(Object.keys(toReturn[0].currentCompleted_hostname))
-            // console.log(toReturn[1])
-
-            var returnedObject = {
-              'currentCompleted_hostname': currentCompleted_hostname,
-              'currentFailed_hostname': currentFailed_hostname
-            }
-
-
             return toReturn;
           }; //end of getHostnamesData function
 
           function sliderChangeReflect(dataReturnedParam, chosenHostname, plottingDiv, layout) {
             $(this).on('plotly_sliderchange', function (e) {
               // console.log("===============================================")
-              var t0 = performance.now()
+              // var t0 = performance.now()
               var dataReturned = getHostnameData(chosenHostname, plottingDiv);
-              var t1 = performance.now()
-              console.log("Time taken to get hostname data in sliderChange Reflect function in milliseconds =")
-              console.log(t1 - t0)
-              // var hoverData = d_testParam[0].text;
-              // console.log("hoverData initially")
-              // console.log(hoverData)
-
-              // var stepLabel = getActiveSliderStep(layout)
+              // var t1 = performance.now()
+              // console.log("Time taken to get hostname data in sliderChange Reflect function in milliseconds =")
+              // console.log(t1 - t0)
 
               var dataToPlot = [
                 {
@@ -387,10 +295,8 @@ $(document).ready(function () {
           }
           // fetch the instance
           var selectizeControl_hostname = $selectize_hostname[0].selectize;
-          // $selectize_hostname[0].selectize.setValue(default_selected_clusternames_3);
-
           var tempVar = selectizeControl_hostname.getValue()
-
+          console.log(tempVar)
           dataReturned = getHostnameData(tempVar, hostnamesDiv);
           var dataToPlot = [
             {
@@ -421,7 +327,6 @@ $(document).ready(function () {
           // Plotly.newPlot(hostnamesDiv, dataToPlot, layout_hostnames) //first plot
 
           function getActiveSliderStep(layout) {
-
             var stepLabelIndex = layout.sliders[0].active
             if (stepLabelIndex == undefined) {
               stepLabelIndex = 0
@@ -429,45 +334,36 @@ $(document).ready(function () {
             var stepVar = layout.sliders[0].steps[stepLabelIndex]
             var stepLabel = stepVar.label
             return stepLabel
-          }
-          function filterAccordingToSlider(chosenHostnamedList, layout) {
-            var t0 = performance.now()
-            var activeSliderStepVar = getActiveSliderStep(layout);
-            var t1 = performance.now()
-            console.log("Time taken to execute getActiveSliderStep function in milliseconds =")
-            console.log(t1 - t0)
-            var stepLabelDate = new Date(activeSliderStepVar);
+          } // end of getActiveSliderStep function
 
+          function filterAccordingToSlider(chosenHostnamedList, layout) {
+            // var t0 = performance.now()
+            var activeSliderStepVar = getActiveSliderStep(layout);
+            var stepLabelDate = new Date(activeSliderStepVar);
+            // var t1 = performance.now()
+            // console.log("Time taken to execute getActiveSliderStep function in milliseconds =")
+            // console.log(t1 - t0)
             if (activeSliderStepVar == layout.sliders[0].steps[0].label) {
               var filteredHostnamesList = chosenHostnamedList
             }
             else {
               var filteredHostnamesList = []
               for (var i = 0; i < chosenHostnamedList.length; i++) {
-                // console.log("chosenHostnamedList[i] in filterAccordingToSlider:")
-                // console.log(chosenHostnamedList[i])
-                // console.log("hostnamesDict[chosenHostnamedList[i]].modified_on_date:")
-                // console.log(hostnamesDict[chosenHostnamedList[i]].modified_on_date)
                 //if this element has modified_on_month that is > the selected slider value, remove it from chosen hostnames
                 if (hostnamesDict[chosenHostnamedList[i]].modified_on_date >= stepLabelDate) {
-                  // console.log(String(chosenHostnamedList[i]) + " has modified_on month after the selected month, so including it")
                   filteredHostnamesList.push(chosenHostnamedList[i]) // potential bottleneck
-                }
-              }
-
-            }
-            // console.log("filteredHostnamesList in filterAccordingToSlider:")
-            // console.log(filteredHostnamesList)
-
+                } // end of if condition
+              } // end of for loop
+            } // end of else
             return filteredHostnamesList
           }//end of filterAccordingToSlider function
 
           selectizeControl_hostname.on('change', function () {
             var chosenhostname = selectizeControl_hostname.getValue();
-            // console.log("typeof chosenhostname")
-            // console.log(typeof (chosenhostname))
+            console.log(chosenhostname)
             dataReturned = getHostnameData(chosenhostname, hostnamesDiv);
-
+            console.log(dataReturned)
+            console.log(Object.keys(dataReturned[0].currentCompleted_hostname))
             var dataToPlot = [
               {
                 histfunc: "count",
@@ -487,16 +383,15 @@ $(document).ready(function () {
               }
             ]
             Plotly.react(hostnamesDiv, dataToPlot, layout_hostnames)
-            var t0 = performance.now()
+            // var t0 = performance.now()
             sliderChangeReflect(dataToPlot, chosenhostname, hostnamesDiv, layout_hostnames)
-            var t1 = performance.now()
-            console.log("Time taken to execute sliderChangeReflect function in milliseconds =")
-            console.log(t1 - t0)
+            // var t1 = performance.now()
+            // console.log("Time taken to execute sliderChangeReflect function in milliseconds =")
+            // console.log(t1 - t0)
           });
-
-          ////////////////////////////////////// End of Hostnames example //////////////////////////////////////////
-
-          ///////////////////////////////////// Clusternames dropdown////////////////////////////////////////////////////////////////////////////
+          ////////////////////////////////////// End of Hostnames Related Part ////////////////////////////////////////////
+          // ********************************************************************************************************** //
+          ///////////////////////////////////// Beginning of Clusternames dropdown///////////////////////////////////////
           var select = document.getElementById("clusternamesdata");
           var options_clusters = [...new Set(clusters_names)]; //changed this to cluster names to compare
           options_clusters = options_clusters.sort(function (a, b) {
