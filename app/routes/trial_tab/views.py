@@ -609,9 +609,9 @@ def list_managers(status=None, modified_after=None):
         orient='records')
     # jsonDF_3 = hostClusterActiveDF.to_json(orient='index')
 
-    # print('jsonhostClusterModifiedOnDF')
-    # print(jsonhostClusterModifiedOnDF)
-    # print("===========================")
+    print('hostClusterModifiedOnDF')
+    print(hostClusterModifiedOnDF.shape[0])
+    print("===========================")
 
     # print('jsonhostClusterCompletedFailureDF')
     # print(jsonhostClusterCompletedFailureDF)
@@ -627,6 +627,7 @@ def list_managers(status=None, modified_after=None):
 ############################################## End of using Dataframe to prepare data #######################
     jsonAll = {'jsonhostClusterModifiedOnDF': jsonhostClusterModifiedOnDF,
                'jsonhostClusterCompletedFailureDF': jsonhostClusterCompletedFailureDF}
+    print(jsonAll)
     # print(jsonAll)
     # var1 --> dictionary
     # return jsonify(ret_modified)

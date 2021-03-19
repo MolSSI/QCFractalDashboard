@@ -12,7 +12,8 @@ $(document).ready(function () {
   var dict_clusters_active_tasks = {}
   var size_dict_clusters_active_tasks;
   var hostname_clustername_json;
-
+  var optgroup_array = []; // Contains Cluternames to group Hostnames accordingly
+  var clustArray = [];
   $.ajax
     (
       {
@@ -27,9 +28,13 @@ $(document).ready(function () {
 
           var jsonhostClusterModifiedOn = ret['jsonhostClusterModifiedOnDF']
           var parsed = JSON.parse(jsonhostClusterModifiedOn);
+          console.log("parsed")
+          console.log(parsed)
 
           var jsonhostClusterCompletedFailure = ret['jsonhostClusterCompletedFailureDF']
           var parsed_jsonhostClusterCompletedFailure = JSON.parse(jsonhostClusterCompletedFailure);
+          console.log("parsed_jsonhostClusterCompletedFailure")
+          console.log(parsed_jsonhostClusterCompletedFailure)
 
           data_ret = parsed;
           data_ret_hostClusterCompletedFailure = parsed_jsonhostClusterCompletedFailure
@@ -46,7 +51,7 @@ $(document).ready(function () {
             var d = Date.shortMonths[dt.getMonth()]
             return d;
           }
-          
+
           for (var i = 0; i < data_ret.length; i++) {
             hostnames.push(data_ret[i].hostname)
 
@@ -76,13 +81,20 @@ $(document).ready(function () {
               hostname_clustername_json_array.push(hostname_clustername_json)
             } //end of if (stringRepresentationSet.has(stringRepresentation) == false) {
 
+              var clustName = hostname_clustername_json_array[i].clustername
+              var json_obj = { value: clustName, label: clustName }
+              if (clustArray.includes(clustName) == false) {
+                clustArray.push(clustName)
+                optgroup_array.push(json_obj)
+              }//end of if condition
+
             hostnamesDict[data_ret[i].hostname] = {
               "clustername": data_ret[i].cluster,
               "modified_on_date": modified_on_date,
               "modified_on_year": modified_on_year, "modified_on_month": modified_on_month,
               // "modified_day": modified_on_day
             }
-            
+
             if (data_ret_hostClusterCompletedFailure[i].hostname in dict_hostname_completed) {
               dict_hostname_completed[data_ret_hostClusterCompletedFailure[i].hostname] = dict_hostname_completed[data_ret_hostClusterCompletedFailure[i].hostname] + data_ret_hostClusterCompletedFailure[i].completed;
             }
@@ -118,35 +130,16 @@ $(document).ready(function () {
 
           //////////////////////////////////////      hostnames dropdown       ////////////////////////////////////////////////////////////////////////
 
-          var select = document.getElementById("hostnamesdata");
-          var optgroup_array = []; // Contains Cluternames to group Hostnames accordingly
-          var clustArray = [];
-
-          //Populate dropdown of hostnames available 
-          for (var i = 0; i < hostname_clustername_json_array.length; i++) {
-            var el = document.createElement("option");
-            el.textContent = hostname_clustername_json_array[i]
-            el.value = hostname_clustername_json_array[i].hostname
-            console.log("el")
-            console.log(el.textContent)
-            console.log(el.value)
-            select.appendChild(el);
-
-            var clustName = hostname_clustername_json_array[i].clustername
-            var json_obj = { value: clustName, label: clustName }
-            if (clustArray.includes(clustName) == false) {
-              clustArray.push(clustName)
-              optgroup_array.push(json_obj)
-            }
-          }// End of for loop that populates the dropdown of hostnames available
-         
           var df = [hostname_clustername_json_array[0].hostname, hostname_clustername_json_array[1].hostname, hostname_clustername_json_array[2].hostname]
-
+          
           // initialize the Selectize control
           var $selectize_hostname = $('.hostnamesdata').selectize({
-            options: hostname_clustername_json_array, //An array of the initial options available to select; array of objects. 
+            options: hostname_clustername_json_array, //An array of the options available to select; array of objects. 
+            valueField: 'hostname',
+            labelField: 'hostname',
             plugins: ["remove_button"],
-            items: df, //An array of the initial selected values
+            // persist: false,
+            items: df, //An array of the initial(default) selected values
             maxItems: null,
             optgroups: optgroup_array,
             optgroupField: "clustername",
@@ -157,13 +150,13 @@ $(document).ready(function () {
               // },
               item: function (item, escape) {
                 return '<div>' +
-                  '<span>' + escape(item.hostname) + '</span>' +// '<span>' + ', Cluster: ' + escape(item.clustername) + '</span>'
-                '</div>';
+                  '<span>' + escape(item.hostname) + //'</span>' + '<span>' + ', Cluster: ' + escape(item.clustername) + '</span>'
+                  '</div>';
               },
               option: function (item, escape) {
                 return '<div>' +
-                  '<span>' + escape(item.hostname) + '</span>' + //'<span>' + ', Cluster: ' + escape(item.clustername) + '</span>'
-                '</div>';
+                  '<span>' + escape(item.hostname) + //'</span>' + '<span>' + ', Cluster: ' + escape(item.clustername) + '</span>'
+                  '</div>';
               }
             },
 
@@ -263,7 +256,6 @@ $(document).ready(function () {
 
           function sliderChangeReflect(dataReturnedParam, chosenHostname, plottingDiv, layout) {
             $(this).on('plotly_sliderchange', function (e) {
-              // console.log("===============================================")
               // var t0 = performance.now()
               var dataReturned = getHostnameData(chosenHostname, plottingDiv);
               // var t1 = performance.now()
@@ -296,7 +288,6 @@ $(document).ready(function () {
           // fetch the instance
           var selectizeControl_hostname = $selectize_hostname[0].selectize;
           var tempVar = selectizeControl_hostname.getValue()
-          console.log(tempVar)
           dataReturned = getHostnameData(tempVar, hostnamesDiv);
           var dataToPlot = [
             {
@@ -360,10 +351,7 @@ $(document).ready(function () {
 
           selectizeControl_hostname.on('change', function () {
             var chosenhostname = selectizeControl_hostname.getValue();
-            console.log(chosenhostname)
             dataReturned = getHostnameData(chosenhostname, hostnamesDiv);
-            console.log(dataReturned)
-            console.log(Object.keys(dataReturned[0].currentCompleted_hostname))
             var dataToPlot = [
               {
                 histfunc: "count",
@@ -424,9 +412,6 @@ $(document).ready(function () {
 
           var layout_clusters = {
             title: 'Task Status for Selected Clusters',
-
-            // height: 300,//in pixels
-            // width: 480,//in pixels
             yaxis:
             {
               rangemode: 'tozero'
