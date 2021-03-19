@@ -9,36 +9,17 @@ $(document).ready(function () {
             success: function (ret) {
 
                 var d = ret.data
-                var x = [];
-                var x_manager = []
-                // var t0 = performance.now()
-                // for (var i = 0; i < ret.length; i++) {
-                //     console.log(d[i][1])
-
-                //     x[i] = d[i][1]
-                //     x_manager[i] = d[i][2]
-                //     // console.log(x[i])
-                // }
-                // var t1 = performance.now()
-                // console.log("Time taken using for(var i=0...) in milliseconds =")
-                // console.log(t1 - t0)
-
+                console.log(d)
                 var x2 = [];
                 var x_manager2 = []
-
                 var t0 = performance.now()
-                var i = 0
-                $.each(ret, function (d) {
-                    x2[i] = d[i][1]
-                    x_manager2[i] = d[i][2]
-                    i = i + 1
-                    // console.log(x2[i])
+                d.forEach(function(d_element, index) {
+                    x2[index] = d_element['status']
+                    x_manager2[index] = d_element['manager']
                 });
                 var t1 = performance.now()
                 console.log("Time taken using .each in milliseconds =")
                 console.log(t1 - t0)
-
-                dataToPlot = ret
 
                 var task_queueDiv = document.getElementById("task_queueDiv");
                 var task_queue_managersDiv = document.getElementById("task_queue_managersDiv");
@@ -52,10 +33,12 @@ $(document).ready(function () {
                 };
 
                 var trace = {
-                    x: x,
+                    x: x2,
                     type: 'histogram',
                 };
                 var data = [trace];
+                // console.log("data")
+                // console.log(data)
                 Plotly.newPlot(task_queueDiv, data, layout)
 
                 var layout_2 = {
@@ -66,22 +49,24 @@ $(document).ready(function () {
                     }
                 };
                 var trace_2 = {
-                    x: x_manager,
+                    x: x_manager2,
                     type: 'histogram',
                 };
                 var data_2 = [trace_2];
+                // console.log("data_2")
+                // console.log(data_2)
                 Plotly.newPlot(task_queue_managersDiv, data_2, layout_2)
 
 
                 $('#users_info_2').DataTable({
                     ajax: '/views/tasks_queue_data_2',
                     columns: [
-                        { title: "base result id" },
-                        { title: "status" },
-                        { title: "manager" },
-                        { title: "priority" },
-                        { title: "modified_on" },
-                        { title: "created_on" }
+                        { title: "base result id", data: "base_result" },
+                        { title: "status", data: "status" },
+                        { title: "manager", data: "manager" },
+                        { title: "priority" , data: "priority"},
+                        { title: "modified_on", data: "modified_on" },
+                        { title: "created_on" , data: "created_on"}
                     ]
                 });
             }

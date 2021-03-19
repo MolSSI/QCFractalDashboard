@@ -113,13 +113,24 @@ def get_tasks_queue_2():
     arr = [None] * 2000 # since the server's limit is 2000
     iter = 0
     for ob in dataSet_2:
-        # print("adding")
-        arr[iter]=ob.dict()
-        arr[iter] = [ob.base_result, ob.status, ob.manager, ob.priority, ob.modified_on,ob.created_on]
-        iter = iter +1
+        specArgs = ob.spec.args
+
+        # arr[iter]=ob.dict()
         
-        # rowRecord = {'id': ob.id, 'status': ob.status, 'manager': ob.manager, 'priority': ob.priority,
-                    #  'error': ob.error, 'modified_on': ob.modified_on, 'created_on': ob.created_on}
+        # arr[iter] = [ob.base_result, ob.status, ob.manager, ob.priority, ob.modified_on,ob.created_on]
+        # print(arr[iter])
+        
+        # rowRecord = {'id': ob.id, 'spec_args': specArgs, 'spec_kwargs': ob.spec.kwargs, 'parser': ob.parser, 'status': ob.status,
+        # 'program': ob.program, 'procedure': ob.procedure, 'manager': ob.manager, 'priority': ob.priority,
+        #              'tag': ob.tag, 'base_result': ob.base_result, 'error': ob.error, 'modified_on': ob.modified_on, 'created_on': ob.created_on}
+        rowRecord = {'id': ob.id, 'parser': ob.parser, 'status': ob.status,
+        'program': ob.program, 'procedure': ob.procedure, 'manager': ob.manager, 'priority': ob.priority,
+                     'tag': ob.tag, 'base_result': ob.base_result, 'error': ob.error, 'modified_on': ob.modified_on, 'created_on': ob.created_on}
+        
+        
+        arr[iter] = rowRecord
+        iter = iter +1
+
         # print(rowRecord)
         # df_task_queue = df_task_queue.append(rowRecord, ignore_index=True)
     # print(df_task_queue)
@@ -360,9 +371,10 @@ def get_tasks_queue_2():
 # 	}
 # }, 'geometric'], kwargs = {}), parser = 'optimization', status = < TaskStatusEnum.error: 'ERROR' > , program = 'psi4', procedure = 'geometric', manager = 'MolSSI_ARC_Cascades_Parsl-calogin1-961d02f8-c95e-4c8f-8653-5e54013914a9', priority = < PriorityEnum.HIGH: 2 > , tag = None, base_result = '1792183', error = None, modified_on = datetime.datetime(2019, 7, 19, 8, 45, 28, 738978), created_on = datetime.datetime(2019, 6, 9, 19, 33, 5, 925087))
     return_data = {"data":arr}
-    
-    # return return_data
+    print("type(arr)")
+    print(type(arr))
     return jsonify(return_data)
+    # return jsonify(return_data['data'].tolist())
 
 
 @trial_tab.route('/views/tasks_queue_data')
