@@ -37,7 +37,9 @@ $(document).ready(function () {
                     title: 'Histogram of Managers of Tasks Queue',
                     yaxis:
                     {
-                        rangemode: 'tozero'
+                        rangemode: 'tozero',
+                        automargin: true
+
                     }
                 };
                 var trace_2 = {
