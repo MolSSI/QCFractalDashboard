@@ -31,14 +31,11 @@ $(document).ready(function () {
                         rangemode: 'tozero'
                     }
                 };
-
                 var trace = {
                     x: x2,
                     type: 'histogram',
                 };
                 var data = [trace];
-                // console.log("data")
-                // console.log(data)
                 Plotly.newPlot(task_queueDiv, data, layout)
 
                 var layout_2 = {
@@ -53,12 +50,10 @@ $(document).ready(function () {
                     type: 'histogram',
                 };
                 var data_2 = [trace_2];
-                // console.log("data_2")
-                // console.log(data_2)
                 Plotly.newPlot(task_queue_managersDiv, data_2, layout_2)
 
 
-                $('#users_info_2').DataTable({
+                $('#task_queue_table').DataTable({
                     ajax: '/views/tasks_queue_data_2',
                     columns: [
                         { title: "base result id", data: "base_result" },
