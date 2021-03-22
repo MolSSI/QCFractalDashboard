@@ -6,13 +6,16 @@ $(document).ready(function () {
   var completed = [];
   var failures = [];
   var clusters_names = [];
+  var stringRepresentationClusterSet = new Set()
 
   var dict_hostname_failed = {};
   var dict_hostname_completed = {};
   var dict_clusters_active_tasks = {}
   var size_dict_clusters_active_tasks;
   var hostname_clustername_json;
-  var optgroup_array = []; // Contains Cluternames to group Hostnames accordingly
+  var randomColorArray = [];
+
+  var optgroup_array = []; // Contains Cluternames to group Hostnames accordingly for the dropdown
   var clustArray = [];
   $.ajax
     (
@@ -28,16 +31,16 @@ $(document).ready(function () {
 
           var jsonhostClusterModifiedOn = ret['jsonhostClusterModifiedOnDF']
           var parsed = JSON.parse(jsonhostClusterModifiedOn);
-         
+
           var jsonhostClusterCompletedFailure = ret['jsonhostClusterCompletedFailureDF']
           var parsed_jsonhostClusterCompletedFailure = JSON.parse(jsonhostClusterCompletedFailure);
-         
+
           data_ret = parsed;
           data_ret_hostClusterCompletedFailure = parsed_jsonhostClusterCompletedFailure
 
           var stringRepresentationSet = new Set(); //to store premitive representation of the object
 
-          // sessionStorage.setItem('dataFromPython', JSON.stringify(data_ret))
+          sessionStorage.setItem('dataFromPython', JSON.stringify(data_ret))
           // console.log('dataFromPython: ', JSON.parse(sessionStorage.getItem('dataFromPython')));
 
           var dateSet = new Set()
@@ -72,12 +75,12 @@ $(document).ready(function () {
               hostname_clustername_json_array.push(hostname_clustername_json)
             } //end of if (stringRepresentationSet.has(stringRepresentation) == false) {
 
-              var clustName = hostname_clustername_json_array[i].clustername
-              var json_obj = { value: clustName, label: clustName }
-              if (clustArray.includes(clustName) == false) {
-                clustArray.push(clustName)
-                optgroup_array.push(json_obj)
-              }//end of if condition
+            var clustName = hostname_clustername_json_array[i].clustername
+            var json_obj = { value: clustName, label: clustName }
+            if (clustArray.includes(clustName) == false) {
+              clustArray.push(clustName)
+              optgroup_array.push(json_obj)
+            }//end of if condition
 
             hostnamesDict[data_ret[i].hostname] = {
               "clustername": data_ret[i].cluster,
@@ -101,7 +104,15 @@ $(document).ready(function () {
             }
 
             active_inactive.push(data_ret[i].status) // total for all returned data 
-            clusters_names.push(data_ret[i].cluster)
+
+            // Set containing clusters
+            var stringRepresentationCluster = String(data_ret[i].cluster)
+            var clustername_json = { "clustername": data_ret[i].cluster}
+            if (stringRepresentationClusterSet.has(stringRepresentationCluster) == false) {
+              stringRepresentationClusterSet.add(stringRepresentationCluster)
+              clusters_names.push(clustername_json)
+            } //end of if (stringRepresentationSet.has(stringRepresentation) == false)
+            
             completed.push(data_ret[i].completed)// total for all returned data
             failures.push(data_ret[i].failures)// total for all returned data
 
@@ -115,6 +126,9 @@ $(document).ready(function () {
                 }
               }
             }
+            randomColorArray.push(Math.floor(Math.random() * 16777215).toString(16))
+
+
           }//end of for loop ==> for (var i = 0; i < data_ret.length; i++)
 
           size_dict_clusters_active_tasks = Object.keys(dict_clusters_active_tasks).length
@@ -122,7 +136,7 @@ $(document).ready(function () {
           //////////////////////////////////////      hostnames dropdown       ////////////////////////////////////////////////////////////////////////
 
           var df = [hostname_clustername_json_array[0].hostname, hostname_clustername_json_array[1].hostname, hostname_clustername_json_array[2].hostname]
-          
+
           // initialize the Selectize control
           var $selectize_hostname = $('.hostnamesdata').selectize({
             options: hostname_clustername_json_array, //An array of the options available to select; array of objects. 
@@ -219,7 +233,7 @@ $(document).ready(function () {
           function getHostnameData(chosenHostname, plottingDiv) {
             // var hoverData = [];
             var filteredList = filterAccordingToSlider(chosenHostname, layout_hostnames)
-          
+
             currentCompleted_hostname = {};
             currentFailed_hostname = {};
             for (var i = 0; i < filteredList.length; i++) {
@@ -270,6 +284,7 @@ $(document).ready(function () {
               y: Object.values(dataReturned[0].currentCompleted_hostname),
               type: "bar",
               name: "Completed",
+              // text: Object.values(dataReturned[0].currentCompleted_hostname).map(String),
               // text: hoverData
             },
             {
@@ -278,12 +293,13 @@ $(document).ready(function () {
               y: Object.values(dataReturned[1].currentFailed_hostname),
               type: "bar",
               name: "Failed",
+              // text: Object.values(dataReturned[1].currentFailed_hostname).map(String),
               // text: hoverData
             }
           ]
           Plotly.react(hostnamesDiv, dataToPlot, layout_hostnames)
           sliderChangeReflect(dataReturned, tempVar, hostnamesDiv, layout_hostnames)
-          
+
           function getActiveSliderStep(layout) {
             var stepLabelIndex = layout.sliders[0].active
             if (stepLabelIndex == undefined) {
@@ -297,7 +313,7 @@ $(document).ready(function () {
           function filterAccordingToSlider(chosenHostnamedList, layout) {
             var activeSliderStepVar = getActiveSliderStep(layout);
             var stepLabelDate = new Date(activeSliderStepVar);
-        
+
             if (activeSliderStepVar == layout.sliders[0].steps[0].label) {
               var filteredHostnamesList = chosenHostnamedList
             }
@@ -323,6 +339,7 @@ $(document).ready(function () {
                 y: Object.values(dataReturned[0].currentCompleted_hostname),
                 type: "bar",
                 name: "Completed",
+                // text: Object.values(dataReturned[0].currentCompleted_hostname).map(String),
                 // text: hoverData
               },
               {
@@ -331,6 +348,7 @@ $(document).ready(function () {
                 y: Object.values(dataReturned[1].currentFailed_hostname),
                 type: "bar",
                 name: "Failed",
+                // text: Object.values(dataReturned[1].currentFailed_hostname).map(String),
                 // text: hoverData
               }
             ]
@@ -340,32 +358,21 @@ $(document).ready(function () {
           ////////////////////////////////////// End of Hostnames Related Part ////////////////////////////////////////////
           // ********************************************************************************************************** //
           ///////////////////////////////////// Beginning of Clusternames dropdown///////////////////////////////////////
-          var select = document.getElementById("clusternamesdata");
-          var options_clusters = [...new Set(clusters_names)]; //changed this to cluster names to compare
-          options_clusters = options_clusters.sort(function (a, b) {
-            return a.toLowerCase().localeCompare(b.toLowerCase());
-          });
+          // var options_clusters = [...new Set(clusters_names)]; //changed this to cluster names to compare
+          // options_clusters = options_clusters.sort(function (a, b) {
+          //   return a.clustername.toLowerCase().localeCompare(b.clustername.toLowerCase());
+          // });
+          console.log(clusters_names)
 
-          var default_selected_clusternames_3 = []
-          //Populate dropdown of hostnames available 
-
-          for (var i = 0; i < options_clusters.length; i++) {
-            var opt = options_clusters[i];
-            if (i < 3) {
-              default_selected_clusternames_3.push(opt);
-            }
-            var el = document.createElement("option");
-            el.textContent = opt;
-            el.value = opt; // concatenate the clustername_hostaname
-            select.appendChild(el);
-          }
-
+          var df_cluster = [clusters_names[0].clustername, clusters_names[1].clustername, clusters_names[2].clustername]
           // initialize selectize 
           var $selectize = $('#clusternamesdata').selectize({
-            // options: options_clusters, //This creates issues, therefore commented
+            options: clusters_names, 
+            valueField: 'clustername',
+            labelField: 'clustername',
             plugins: ['remove_button'],
             maxItems: null,
-            items: default_selected_clusternames_3
+            items: df_cluster
           });
 
           var clusternamesDiv = document.getElementById("clusternamesDiv");
@@ -401,8 +408,6 @@ $(document).ready(function () {
 
               for (var j = 0; j < data_ret_hostClusterCompletedFailure.length; j++) {
                 if (data_ret_hostClusterCompletedFailure[j].cluster === chosenClustername[i]) {
-                  // console.log("data_ret[i]");
-                  // console.log(data_ret[i]);
                   if (clustername_completed[chosenClustername[i]] != null) {
                     clustername_completed[chosenClustername[i]] = clustername_completed[chosenClustername[i]] + data_ret_hostClusterCompletedFailure[j].completed;
                     clustername_failed[chosenClustername[i]] = clustername_failed[chosenClustername[i]] + data_ret_hostClusterCompletedFailure[j].failures;
@@ -474,84 +479,19 @@ $(document).ready(function () {
 
 
           ///////////////////////////////////// Clusternames dropdown////////////////////////////////////////////////////////////////////////////
-          // Third plot
+          // Third plot [If there are clusters with active_tasks >0]
           var clusternames_activeTasksDiv = document.getElementById('clusternames_activeTasksDiv');
-          var randomColor = [];
-          const data_traces = new Array(size_dict_clusters_active_tasks);
-          // console.log("size_dict_clusters_active_tasks")
-          // console.log(size_dict_clusters_active_tasks)
-          // for (var i = 0; i < size_dict_clusters_active_tasks; i++) {
-          //   var trace_x = Object.keys(dict_clusters_active_tasks)[i];
-          //   var trace_y = Object.values(dict_clusters_active_tasks)[i];
-          //   randomColor = Math.floor(Math.random() * 16777215).toString(16);
-          //   var combined =
-          //   {
-          //     x: trace_x,
-          //     y: trace_y,
-          //     marker: { color: randomColor },
-          //     type: 'bar'
-          //   };
-
-          //   data_traces[i] = combined;
-
-          // }
-
-          for (var i = 0; i < size_dict_clusters_active_tasks; i++) {
-            randomColor.push(Math.floor(Math.random() * 16777215).toString(16))
-
-          }
-          // console.log(data_traces)
-          // var data_plot = [data_traces]
-
-          var trial = [
+          var data = [
             {
-              marker: { color: "baf363" },
-              type: "bar",
-              x: "PacificResearchPlatformQM",
-              y: 62
-            },
-            {
-              marker: { color: "fe56bb" },
-              type: "bar",
-              x: "lilac_multithread",
-              y: 143
-            },
-            {
-              marker: { color: "7bb5b0" },
-              type: "bar",
-              x: "PacificResearchPlatformML",
-              y: 32
-            }]
-
-          // console.log("trial")
-          // console.log(trial)
-          Plotly.newPlot(clusternames_activeTasksDiv, trial);
-
-          var data_cluster_active_tasks = [
-            {
-              // histfunc: "count",
               x: Object.keys(dict_clusters_active_tasks),
               y: Object.values(dict_clusters_active_tasks),
-              type: "bar",
-
-              name: "Number of Active tasks",
-              // marker: Object.values(dict_clusters_active_tasks).map(String),
-              marker: { color: randomColor },
-
+              type: 'bar',
+              marker:  {color:randomColorArray},
               hoverinfo: 'Number of Active Tasks',
             }
-          ]
-          var layout_clusters_active_tasks = {
-            title: 'Clusters with Active tasks',
-            yaxis:
-            {
-              rangemode: 'tozero',
-              label: 'Number of Active tasks'
-            }
-          };
-          // Plotly.newPlot(clusternames_activeTasksDiv, data_traces, layout_clusters_active_tasks);
-          // Plotly.newPlot(clusternames_activeTasksDiv, data_cluster_active_tasks, layout_clusters_active_tasks);
-
+          ];
+          if (size_dict_clusters_active_tasks >0)
+            Plotly.newPlot(clusternames_activeTasksDiv, data);
 
         } //end of ajax "success"
       }); //end of ajax call
