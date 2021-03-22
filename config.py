@@ -7,7 +7,7 @@ import os
 class BaseConfig:
 
     _basedir = os.path.abspath(os.path.dirname(__file__))
-    STATIC_FOLDER = 'static'
+    # STATIC_FOLDER = 'static'
     ADMINS = frozenset(['daltarawy@vt.edu', 'bpp4@vt.edu'])
     SECRET_KEY = 'SecretKeyForSessionSigning'
     EDIT_SOFTWARE_SALT = 'ThisIsAnotherSalt'

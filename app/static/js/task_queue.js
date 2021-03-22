@@ -1,10 +1,10 @@
 $(document).ready(function () {
     $.ajax
         ({
-            url: "/views/tasks_queue_data_2",
+            url: "/views/tasks_queue_data",
             dataType: 'json',
             error: function (xhr, error) {
-                alert("error /views/tasks_queue_data_2: " + xhr);
+                alert("error /views/tasks_queue_data: " + xhr);
             },
             success: function (ret) {
 
