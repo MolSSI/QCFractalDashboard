@@ -9,18 +9,13 @@ $(document).ready(function () {
             success: function (ret) {
 
                 var d = ret.data
-                console.log(d)
                 var x2 = [];
                 var x_manager2 = []
-                var t0 = performance.now()
                 d.forEach(function(d_element, index) {
                     x2[index] = d_element['status']
                     x_manager2[index] = d_element['manager']
                 });
-                var t1 = performance.now()
-                console.log("Time taken using .each in milliseconds =")
-                console.log(t1 - t0)
-
+                
                 var task_queueDiv = document.getElementById("task_queueDiv");
                 var task_queue_managersDiv = document.getElementById("task_queue_managersDiv");
 
@@ -54,7 +49,7 @@ $(document).ready(function () {
 
 
                 $('#task_queue_table').DataTable({
-                    ajax: '/views/tasks_queue_data_2',
+                    ajax: '/views/tasks_queue_data',
                     columns: [
                         { title: "base result id", data: "base_result" },
                         { title: "status", data: "status" },
@@ -66,6 +61,5 @@ $(document).ready(function () {
                 });
             }
         })
-
 }
 );
