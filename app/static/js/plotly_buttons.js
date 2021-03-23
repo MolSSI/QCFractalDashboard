@@ -41,7 +41,6 @@ $(document).ready(function () {
           var stringRepresentationSet = new Set(); //to store premitive representation of the object
 
           sessionStorage.setItem('dataFromPython', JSON.stringify(data_ret))
-          // console.log('dataFromPython: ', JSON.parse(sessionStorage.getItem('dataFromPython')));
 
           var dateSet = new Set()
           var hostnamesDict = {}
@@ -128,12 +127,11 @@ $(document).ready(function () {
             }
             randomColorArray.push(Math.floor(Math.random() * 16777215).toString(16))
 
-
           }//end of for loop ==> for (var i = 0; i < data_ret.length; i++)
 
           size_dict_clusters_active_tasks = Object.keys(dict_clusters_active_tasks).length
 
-          //////////////////////////////////////      hostnames dropdown       ////////////////////////////////////////////////////////////////////////
+          //////////////////////////////////////      hostnames dropdown       ///////////////////////
 
           var df = [hostname_clustername_json_array[0].hostname, hostname_clustername_json_array[1].hostname, hostname_clustername_json_array[2].hostname]
 
@@ -143,12 +141,11 @@ $(document).ready(function () {
             valueField: 'hostname',
             labelField: 'hostname',
             plugins: ["remove_button"],
-            // persist: false,
             items: df, //An array of the initial(default) selected values
             maxItems: null,
             optgroups: optgroup_array,
             optgroupField: "clustername",
-            // closeAfterSelect: true,
+            closeAfterSelect: true,
             render: {
               item: function (item, escape) {
                 return '<div>' +
@@ -203,12 +200,6 @@ $(document).ready(function () {
                 label: sliderLabel,
                 method: 'skip',
                 execute: false
-                // method: 'restyle',
-                // args: [['red'], {
-                //   mode: 'immediate',
-                //   frame: { redraw: false, duration: 500 },
-                //   transition: { duration: 500 }
-                // }]
               }
               steps.push(step)
             }
@@ -219,12 +210,6 @@ $(document).ready(function () {
               label: maxStepLabel,
               method: 'skip',
               execute: false
-              // method: 'restyle',
-              // args: [['red'], {
-              //   mode: 'immediate',
-              //   frame: { redraw: false, duration: 500 },
-              //   transition: { duration: 500 }
-              // }]
             }
             steps.push(step)
             return steps
@@ -284,8 +269,6 @@ $(document).ready(function () {
               y: Object.values(dataReturned[0].currentCompleted_hostname),
               type: "bar",
               name: "Completed",
-              // text: Object.values(dataReturned[0].currentCompleted_hostname).map(String),
-              // text: hoverData
             },
             {
               histfunc: "count",
@@ -293,8 +276,6 @@ $(document).ready(function () {
               y: Object.values(dataReturned[1].currentFailed_hostname),
               type: "bar",
               name: "Failed",
-              // text: Object.values(dataReturned[1].currentFailed_hostname).map(String),
-              // text: hoverData
             }
           ]
           Plotly.react(hostnamesDiv, dataToPlot, layout_hostnames)
@@ -339,8 +320,6 @@ $(document).ready(function () {
                 y: Object.values(dataReturned[0].currentCompleted_hostname),
                 type: "bar",
                 name: "Completed",
-                // text: Object.values(dataReturned[0].currentCompleted_hostname).map(String),
-                // text: hoverData
               },
               {
                 histfunc: "count",
@@ -348,21 +327,13 @@ $(document).ready(function () {
                 y: Object.values(dataReturned[1].currentFailed_hostname),
                 type: "bar",
                 name: "Failed",
-                // text: Object.values(dataReturned[1].currentFailed_hostname).map(String),
-                // text: hoverData
               }
             ]
             Plotly.react(hostnamesDiv, dataToPlot, layout_hostnames)
             sliderChangeReflect(dataToPlot, chosenhostname, hostnamesDiv, layout_hostnames)
           });
-          ////////////////////////////////////// End of Hostnames Related Part ////////////////////////////////////////////
-          // ********************************************************************************************************** //
-          ///////////////////////////////////// Beginning of Clusternames dropdown///////////////////////////////////////
-          // var options_clusters = [...new Set(clusters_names)]; //changed this to cluster names to compare
-          // options_clusters = options_clusters.sort(function (a, b) {
-          //   return a.clustername.toLowerCase().localeCompare(b.clustername.toLowerCase());
-          // });
-          console.log(clusters_names)
+          ////////////////////////////////////// End of Hostnames Related Part ///////////////////////********************************************************************************************
+          ///////////////////////////////////// Beginning of Clusternames dropdown////////////////////
 
           var df_cluster = [clusters_names[0].clustername, clusters_names[1].clustername, clusters_names[2].clustername]
           // initialize selectize 
@@ -384,7 +355,6 @@ $(document).ready(function () {
               rangemode: 'tozero'
             }
           };
-
 
           function getClusternameData(chosenClustername, plottingDiv) {
 
@@ -421,12 +391,9 @@ $(document).ready(function () {
 
                   break; //no need to keep iterating
 
-
                 }//end of if (data_ret[i].cluster === chosenClustername)
 
                 if (data_ret_hostClusterCompletedFailure[j].hostname === chosenClustername[i]) {
-                  // console.log("data_ret[i]");
-                  // console.log(data_ret[i]);
                   if (hostname_completed[chosenClustername[i]] != null) {
                     hostname_completed[chosenClustername[i]] = hostname_completed[chosenClustername[i]] + data_ret_hostClusterCompletedFailure[j].completed;
                     hostname_failed[chosenClustername[i]] = hostname_failed[chosenClustername[i]] + data_ret_hostClusterCompletedFailure[j].failures;
