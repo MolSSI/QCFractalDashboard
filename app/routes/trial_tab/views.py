@@ -112,13 +112,3 @@ def set_default(obj):
     if isinstance(obj, set):
         return list(obj)
     raise TypeError
-
-# can remove the following functions (Need to double check first)
-@trial_tab.route("/views/trial_tab_page")
-def trial_tab_page():
-    return render_template("trial_tab/trial_tab_page.html")
-
-
-@trial_tab.route("/views/template")
-def my_link():
-    return render_template("trial_tab/template.html")
