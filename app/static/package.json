@@ -18,7 +18,7 @@
     "buble": "^0.19.3",
     "chart.js": "^2.7.2",
     "cytoscape": "^3.12.1",
-    "datatables.net": "^1.10.20",
+    "datatables.net": "^1.10.22",
     "datatables.net-bs4": "^1.10.21",
     "datatables.net-buttons": "^1.6.2",
     "datatables.net-buttons-bs4": "^1.6.2",
