@@ -77,13 +77,13 @@ coverage: ## check code coverage quickly with the default Python
 environment: ## create the environment for running the dashboard
 	@echo 'Creating the Conda/pip environment. This will take some time!'
 	@echo ''
-	@conda env create --force --file seamm-dashboard.yml
+	@conda env create --force --file qca-dashboard.yml
 	@echo ''
 	@echo 'Installing the Javascript, which will also take a couple minutes!'
 	@echo ''
 	@echo 'Sometimes the next step will fail because it cannot find the'
 	@echo 'executable "npm". If it does, just activate the new environment:'
-	@echo '     conda activate seamm-dashboard'
+	@echo '     conda activate qca-dashboard'
 	@echo 'The run make again:'
 	@echo '     make finish_dashboard'
 	@echo ''
@@ -91,7 +91,7 @@ environment: ## create the environment for running the dashboard
 	@cd app/static && npm install
 	@echo ''
 	@echo 'To use the environment, type'
-	@echo '   conda activate seamm-dashboard'
+	@echo '   conda activate qca-dashboard'
 
 finish_dashboard: ## finish create the environment for running the dashboard
 	@echo 'Installing the Javascript, which will also take a couple minutes!'
@@ -99,7 +99,7 @@ finish_dashboard: ## finish create the environment for running the dashboard
 	@cd app/static && npm install
 	@echo ''
 	@echo 'To use the environment, type'
-	@echo '   conda activate seamm-dashboard'
+	@echo '   conda activate qca-dashboard'
 
 docs: ## generate Sphinx HTML documentation, including API docs
 	rm -f docs/app.rst
@@ -125,4 +125,4 @@ install: uninstall ## install the package to the active Python's site-packages
 	python setup.py install
 
 uninstall: clean ## uninstall the package
-	pip uninstall --yes seamm-dashboard
+	pip uninstall --yes qca-dashboard

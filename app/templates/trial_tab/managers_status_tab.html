@@ -1,0 +1,74 @@
+<!doctype html>
+<meta charset=utf-8>
+<html>
+
+<head lang="en">
+  <meta charset="UTF-8">
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/css/selectize.bootstrap3.min.css"
+    integrity="sha512-nATinx3+kN7dKuXEB0XLIpTd7j8QahdyJjE24jTJf4HASidUCFFN/TkSVn3CifGmWwfC2mO/VmFQ6hRn2IcAwg=="
+    crossorigin="anonymous" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.6/js/standalone/selectize.min.js"
+    integrity="sha512-hgoywpb1bcTi1B5kKwogCTG4cvTzDmFCJZWjit4ZimDIgXu7Dwsreq8GOQjKVUxFwxCWkLcJN5EN0W0aOngs4g=="
+    crossorigin="anonymous"></script>
+  <script src="{{ url_for('static', filename='js/trial_tab_plotly.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/plotly_buttons.js') }}"></script>
+
+</head>
+
+<body>
+  <div>
+
+    <!--id here is used-->
+    <div class="showcase__section" id="bubble" style="padding: 40px; border: 5px;">
+      <div class="spacer --small"></div>
+      <div id="bubbleplots">
+        <div class="bubbleplot" data-num="0">
+          <!--data-num is used -->
+          <div class="plot" id="plotdiv"></div>
+          <!--class name here is used-->
+          <div class="control-group">
+            Choose Hostnames to plot:
+            <!-- <select id="hostnamesdata" class="hostnamesdata" multiple="multiple"></select> -->
+            <select id="hostnamesdata" class="hostnamesdata" style="margin-top: 5px;">
+              <!-- <option disabled> Choose Hostnames to Plot</option> -->
+            </select>
+            <div id='range_slider'></div>
+
+
+            <!--class name here is used-->
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id='hostnamesDiv'></div>
+
+
+    <!--id here is used-->
+    <div class="showcase__section" id="bubble" style="padding: 50px; border: 5px;">
+      <div class="spacer --small"></div>
+      <div id="bubbleplots">
+        <div class="bubbleplot" data-num="2">
+          <!--data-num is used -->
+          <div class="plot" id="plotdiv"></div>
+          <!--class name here is used-->
+          <div class="control-group ">
+            <!--control-row-->
+            Choose Clusternames:
+            <select id="clusternamesdata" class="clusternamesdata">
+              <option disabled> Choose Clusternames to Plot</option>
+            </select>
+
+            <!--class name here is used-->
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id='clusternamesDiv'></div>
+
+    <div id='clusternames_activeTasksDiv'></div>
+  </div>
+</body>
+</html>

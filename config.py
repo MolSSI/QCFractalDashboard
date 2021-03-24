@@ -3,11 +3,12 @@
 import os
 
 
+
 class BaseConfig:
 
     _basedir = os.path.abspath(os.path.dirname(__file__))
-    STATIC_FOLDER = 'static'
-    ADMINS = frozenset(['janash@vt.edu', 'psaxe@vt.edu'])
+    # STATIC_FOLDER = 'static'
+    ADMINS = frozenset(['daltarawy@vt.edu', 'bpp4@vt.edu'])
     SECRET_KEY = 'SecretKeyForSessionSigning'
     EDIT_SOFTWARE_SALT = 'ThisIsAnotherSalt'
     THREADS_PER_PAGE = 8
@@ -20,9 +21,9 @@ class BaseConfig:
         ['true', 'on', '1']
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME', 'userhere')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD', 'passhere')
-    MAIL_SUBJECT_PREFIX = '[MolSSI Molecular Software DB]'
-    MAIL_SENDER = 'MolSSI Molecular DB Admin <info@molssi.org>'
-    APP_ADMIN = os.environ.get('APP_ADMIN', 'janash@vt.edu')
+    MAIL_SUBJECT_PREFIX = '[MolSSI QCArchive Dashboard]'
+    MAIL_SENDER = 'MolSSI QCArchive Dashboard <bpp4@vt.edu>'
+    APP_ADMIN = os.environ.get('APP_ADMIN', 'bpp4@vt.edu')
     EMAIL_CONFIRMATION_ENABLED = False
 
     # Client-side config
@@ -33,6 +34,12 @@ class BaseConfig:
     GOOGLE_ANALYTICS_GTAG = 'UA-116673029-1'
     GOOGLE_ANALYTICS_GTAG_submit = 'UA-116673029-2'
     WTF_CSRF_ENABLED = True   # it's true by default, important to prevent CSRF attacks
+
+
+    # Flask-Caching configs: to cache all the data once instead of connecting to the server unnecesarily
+    # CACHE_TYPE = os.environ.get('CACHE_TYPE') or 'simple'
+    CACHE_TYPE =  'simple'
+    CACHE_DEFAULT_TIMEOUT = 60 * 60 * 24  # in seconds, one day
 
 class DevelopmentConfig(BaseConfig):
     _basedir = os.path.abspath(os.path.dirname(__file__))
@@ -63,6 +70,8 @@ class ProductionConfig(BaseConfig):
 
 
 config = {
+    'default': DevelopmentConfig,
     'development': DevelopmentConfig,
     'testing': TestingConfig,
+    'production': ProductionConfig,
 }
