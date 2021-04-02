@@ -1,5 +1,6 @@
 import qcportal as ptl
-from flask import render_template, url_for, jsonify, current_app
+from flask import render_template, url_for, jsonify, current_app, request
+
 import json
 import pandas as pd
 import numpy
@@ -64,6 +65,16 @@ def tasksQueue():
     return render_template("trial_tab/tasks_queue.html")
 
 
+@trial_tab.route("/views/tasks_queue_sub_tab_render_datatable")
+def tasksQueueSubtabDatatable():
+    return render_template("trial_tab/tasks_queue_sub_tab_datatable.html")
+
+
+@trial_tab.route("/views/tasks_queue_sub_tab_render_plots")
+def tasksQueueSubTabPlot():
+    return render_template("trial_tab/tasks_queue_sub_tab_plots.html")
+
+
 @cache.cached()
 @trial_tab.route('/views/tasks_queue_data')
 def get_tasks_queue():
@@ -76,12 +87,42 @@ def get_tasks_queue():
     for ob in dataSet_2:
         rowRecord = {'id': ob.id, 'parser': ob.parser, 'status': ob.status,
                      'program': ob.program, 'procedure': ob.procedure, 'manager': ob.manager, 'priority': ob.priority,
-                     'tag': ob.tag, 'base_result': ob.base_result, 'error': ob.error, 'modified_on': ob.modified_on, 'created_on': ob.created_on}
+                     'tag': ob.tag, 'base_result': ob.base_result, 'error': ob.error, 'modified_on': ob.modified_on.strftime('%Y-%m-%d-%H:%M:%S'), 'created_on': ob.created_on.strftime('%Y-%m-%d-%H:%M:%S')}
         arr[iter] = rowRecord
         iter = iter + 1
     return_data = {"data": arr}
     return jsonify(return_data)
 # End of Tasks Queue Tab-related functions
+
+
+@trial_tab.route('/views/tasks_queue_restart', methods=['GET', 'POST'])
+def tasks_queue_restart():
+    # print(request.get_data())
+    # josnA = {"mydata": request.get_data()}
+
+    client = ptl.FractalClient("api.qcarchive.molssi.org", username=os.environ.get(
+        'QCFRACTAL_USER', None), password=os.environ.get('QCFRACTAL_PASSWORD', None))
+    upd = client.modify_tasks("restart", base_result=request.get_data().decode('UTF-8'))
+    print(upd.n_updated)
+    # upd = Data(n_updated=1)
+
+    # upd = client.modify_tasks("restart", base_result=request.get_data().decode('UTF-8'), full_return= True)
+    # TaskQueuePUTResponse(meta=ResponseMeta(errors=[], success=True, error_description='False'), data=Data(n_updated=1))
+    
+    # class TaskQueuePUTResponse(ProtoModel):
+    #     class Data(ProtoModel):
+    #         n_updated: int = Field(..., description="The number of tasks which were changed.")
+
+    #     meta: ResponseMeta = Field(..., description=common_docs[ResponseMeta])
+    #     data: Data = Field(..., description="Information returned from attempting updates of Tasks.")
+
+
+    # register_model("task_queue", "PUT", TaskQueuePUTBody, TaskQueuePUTResponse)
+    return_data = {'number_of_updated':upd.n_updated }
+    # print(return_data)
+    # print(type(upd))
+    return return_data
+
 
 # Start of Users Access Tab-related functions
 @trial_tab.route("/views/users_access_tab_render")
@@ -107,6 +148,7 @@ def databaseStats():
 @trial_tab.route("/views/results_statistics_tab_render")
 def resultsStats():
     return render_template("trial_tab/results_statistics.html")
+
 
 def set_default(obj):
     if isinstance(obj, set):

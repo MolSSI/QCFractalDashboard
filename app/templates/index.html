@@ -38,7 +38,7 @@
 
 </head>
 
-<body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show">
+<body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show c-app">
   <header class="app-header navbar">
     <button class="navbar-toggler sidebar-toggler d-lg-none mr-auto" type="button" data-toggle="sidebar-show">
       <span class="navbar-toggler-icon"></span>
@@ -135,7 +135,7 @@
     </button>
   </header>
   <div class="app-body">
-    <div class="sidebar">
+    <div class="sidebar c-sidebar c-sidebar-show">
       <nav class="sidebar-nav">
         <ul class="nav">
           <li class="nav-item">
@@ -143,9 +143,24 @@
               <i class="nav-icon icon-speedometer"></i> Dashboard
             </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="tasks_queue_tab_render">
+          <li class="nav-item c-sidebar-nav-item c-sidebar-nav-dropdown c-show " id="chaps">
+            <a class="nav-link c-sidebar-nav-link c-sidebar-nav-dropdown-toggle" href="tasks_queue_tab_render">
               <i class="nav-icon fas fa-object-group"></i> Task Queue</a>
+
+            <ul class="c-sidebar-nav-dropdown-items">
+
+              <li class="nav-link c-sidebar-nav-item">
+                <a class="nav-link c-sidebar-nav-link" href="tasks_queue_sub_tab_render_datatable">
+                  <i class="nav-icon fas fa-object-group"></i> Data Table</a>
+              </li>
+
+              <li class="nav-link c-sidebar-nav-item">
+                <a class="nav-link c-sidebar-nav-link" href="tasks_queue_sub_tab_render_plots">
+                  <i class="nav-icon fas fa-object-group"></i> Plots</a>
+
+              </li>
+            </ul>
+
           </li>
           <li class="nav-item">
             <a class="nav-link" href="users_access_tab_render">
@@ -155,7 +170,7 @@
             <a class="nav-link" href="managers_status_tab_render">
               <i class="nav-icon fas fa-object-group"></i> Managers Status</a>
           </li>
-          
+
           <!-- Not Yet Designed or Developed -->
           <li class="nav-item">
             <a class="nav-link" href="database_statistics_tab_render">
