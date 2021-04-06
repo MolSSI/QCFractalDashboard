@@ -14,7 +14,7 @@
     <script src="https://cdn.datatables.net/buttons/1.7.0/js/dataTables.buttons.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/1.2.1/js/buttons.print.min.js"></script>
 
-    <script src="{{ url_for('static', filename='js/task_queue.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/task_queue_datatable.js') }}"></script>
 
 
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css" />
@@ -25,22 +25,27 @@
 <body>
     <div id="datatabels_wrapper">
         Tasks Queue Table
-        <table id="task_queue_table" class="display"> 
+        <table id="task_queue_table" class="display">
             <thead>
                 <tr>
                     <th>Base result ID</th>
                     <th>Status</th>
                     <th>Manager</th>
+                    <th>Tag</th>
                     <th>Priority</th>
                     <th>Modified_on</th>
                     <th>Created_on</th>
                 </tr>
             </thead>
         </table>
-        <div id='task_queueDiv'></div> <!-- will have this for now to avoid DOM element undefined or null error-->
-        <div id='task_queue_managersDiv' style="margin-bottom: 50px"></div>
-        <!-- will have this for now to avoid DOM element undefined or null error-->
+
     </div>
     </div>
+    <!-- <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Testing alert!</strong> You should check in on some of those fields below.
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div> -->
 
 </body>

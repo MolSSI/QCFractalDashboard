@@ -1,6 +1,7 @@
 import qcportal as ptl
+# from ..interface.models.task_models import PriorityEnum, TaskStatusEnum
 from flask import render_template, url_for, jsonify, current_app, request
-
+# from qcportal.interface.models.task_models import ManagerStatusEnum, PriorityEnum, TaskStatusEnum
 import json
 import pandas as pd
 import numpy
@@ -67,6 +68,7 @@ def tasksQueue():
 
 @trial_tab.route("/views/tasks_queue_sub_tab_render_datatable")
 def tasksQueueSubtabDatatable():
+    #  return render_template("trial_tab/tasks_queue.html")
     return render_template("trial_tab/tasks_queue_sub_tab_datatable.html")
 
 
@@ -84,6 +86,7 @@ def get_tasks_queue():
     dataSet_2 = client.query_tasks(limit=limitVar)
     arr = [None] * 2000  # since the server's limit is 2000
     iter = 0
+    # new_priority = PriorityEnum(new_priority).value
     for ob in dataSet_2:
         rowRecord = {'id': ob.id, 'parser': ob.parser, 'status': ob.status,
                      'program': ob.program, 'procedure': ob.procedure, 'manager': ob.manager, 'priority': ob.priority,
@@ -92,37 +95,36 @@ def get_tasks_queue():
         iter = iter + 1
     return_data = {"data": arr}
     return jsonify(return_data)
-# End of Tasks Queue Tab-related functions
 
 
-@trial_tab.route('/views/tasks_queue_restart', methods=['GET', 'POST'])
+@trial_tab.route('/views/tasks_queue_restart', methods=['POST'])
 def tasks_queue_restart():
-    # print(request.get_data())
-    # josnA = {"mydata": request.get_data()}
-
+    ids = request.get_json().values()
     client = ptl.FractalClient("api.qcarchive.molssi.org", username=os.environ.get(
         'QCFRACTAL_USER', None), password=os.environ.get('QCFRACTAL_PASSWORD', None))
-    upd = client.modify_tasks("restart", base_result=request.get_data().decode('UTF-8'))
-    print(upd.n_updated)
-    # upd = Data(n_updated=1)
+    # Will not call this for now:
+    # for id_entry in ids:
+    #     # upd = client.modify_tasks("restart", base_result=request.get_data().decode('UTF-8'), full_return= True)
+    #     upd = client.modify_tasks("restart", base_result=id_entry)
+    # return_data = {'number_of_updated': upd.n_updated}
+    # return return_data
+    return jsonify(1)
 
-    # upd = client.modify_tasks("restart", base_result=request.get_data().decode('UTF-8'), full_return= True)
-    # TaskQueuePUTResponse(meta=ResponseMeta(errors=[], success=True, error_description='False'), data=Data(n_updated=1))
-    
-    # class TaskQueuePUTResponse(ProtoModel):
-    #     class Data(ProtoModel):
-    #         n_updated: int = Field(..., description="The number of tasks which were changed.")
+@trial_tab.route('/views/tasks_queue_delete', methods=['POST'])
+def tasks_queue_delete():
+    print("request.get_json()")
+    print(request.get_json())
+    ids = request.get_json().get('ids')
+    print("len(ids)")
+    print(type(ids))
+    print(len(ids))
+    for id_entry in ids:
+        print(id_entry)
+    returned_data = {'deleted': len(ids)}
+    # return jsonify(1)
+    return returned_data
 
-    #     meta: ResponseMeta = Field(..., description=common_docs[ResponseMeta])
-    #     data: Data = Field(..., description="Information returned from attempting updates of Tasks.")
-
-
-    # register_model("task_queue", "PUT", TaskQueuePUTBody, TaskQueuePUTResponse)
-    return_data = {'number_of_updated':upd.n_updated }
-    # print(return_data)
-    # print(type(upd))
-    return return_data
-
+# End of Tasks Queue Tab-related functions
 
 # Start of Users Access Tab-related functions
 @trial_tab.route("/views/users_access_tab_render")
