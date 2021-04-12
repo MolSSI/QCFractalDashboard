@@ -1,7 +1,7 @@
 import qcportal as ptl
 # from ..interface.models.task_models import PriorityEnum, TaskStatusEnum
 from flask import render_template, url_for, jsonify, current_app, request
-# from qcportal.interface.models.task_models import ManagerStatusEnum, PriorityEnum, TaskStatusEnum
+# from qcportal.interface.models.task_models import PriorityEnum
 import json
 import pandas as pd
 import numpy
@@ -11,6 +11,9 @@ import time
 from datetime import datetime
 import os
 from . import trial_tab
+
+client = ptl.FractalClient("api.qcarchive.molssi.org", username=os.environ.get(
+        'QCFRACTAL_USER', None), password=os.environ.get('QCFRACTAL_PASSWORD', None))
 
 # Start of Managers Tab-related functions
 @trial_tab.route("/views/managers_status_tab_render")
@@ -25,8 +28,7 @@ def call_data():
 
 @cache.cached()
 def list_managers(status=None, modified_after=None):
-    client = ptl.FractalClient("api.qcarchive.molssi.org", username=os.environ.get(
-        'QCFRACTAL_USER', None), password=os.environ.get('QCFRACTAL_PASSWORD', None))
+    
     ret_modified = client.query_managers(status=None, full_return=True)
     ret_modified_data = ret_modified.data  # returns dictionaries
     n_found = ret_modified.meta.n_found
@@ -80,28 +82,34 @@ def tasksQueueSubTabPlot():
 @cache.cached()
 @trial_tab.route('/views/tasks_queue_data')
 def get_tasks_queue():
-    client = ptl.FractalClient("api.qcarchive.molssi.org", username=os.environ.get(
-        'QCFRACTAL_USER', None), password=os.environ.get('QCFRACTAL_PASSWORD', None))
+    
     limitVar = 5000
     dataSet_2 = client.query_tasks(limit=limitVar)
-    arr = [None] * 2000  # since the server's limit is 2000
+    # get the data size from meta, and use it to allocate the array (arr)
+    arr = [None] * 2000  # since the server's limit is 2000, 
     iter = 0
-    # new_priority = PriorityEnum(new_priority).value
     for ob in dataSet_2:
         rowRecord = {'id': ob.id, 'parser': ob.parser, 'status': ob.status,
-                     'program': ob.program, 'procedure': ob.procedure, 'manager': ob.manager, 'priority': ob.priority,
+                     'program': ob.program, 'procedure': ob.procedure, 'manager': ob.manager, 'priority': priorityText(ob.priority),
                      'tag': ob.tag, 'base_result': ob.base_result, 'error': ob.error, 'modified_on': ob.modified_on.strftime('%Y-%m-%d-%H:%M:%S'), 'created_on': ob.created_on.strftime('%Y-%m-%d-%H:%M:%S')}
         arr[iter] = rowRecord
         iter = iter + 1
     return_data = {"data": arr}
     return jsonify(return_data)
 
+def priorityText(pr):
+    if pr ==2:
+        return 'High'
+    elif pr ==1:
+        return 'Normal'
+    elif pr ==0:
+        return 'Low'
+
 
 @trial_tab.route('/views/tasks_queue_restart', methods=['POST'])
 def tasks_queue_restart():
     ids = request.get_json().values()
-    client = ptl.FractalClient("api.qcarchive.molssi.org", username=os.environ.get(
-        'QCFRACTAL_USER', None), password=os.environ.get('QCFRACTAL_PASSWORD', None))
+   
     # Will not call this for now:
     # for id_entry in ids:
     #     # upd = client.modify_tasks("restart", base_result=request.get_data().decode('UTF-8'), full_return= True)

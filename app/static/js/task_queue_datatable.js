@@ -106,6 +106,7 @@ $(document).ready(function () {
 
                                 extend: 'selected', // Bind to Selected row
                                 text: 'Delete',
+                                className: 'deleteButton' ,
                                 // name: 'delete',     // do not change name
                                 action: function () {
                                     var count = table.rows({ selected: true }).count();
@@ -130,7 +131,10 @@ $(document).ready(function () {
                                         },
                                         success: function (response) {
                                             alert(response.deleted + " Task(s) Deleted ")
-                                            table.ajax.reload(); // but the chosen tasks sometimes aren't shown in the table the first time, need to refresh again
+                                            table.rows({ selected: true })
+                                            .remove()
+                                            .draw();
+
                                         }
                                     })
                                     // end of restart ajax call
