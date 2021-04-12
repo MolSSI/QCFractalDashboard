@@ -142,18 +142,18 @@ def create_app(config_name='default'):
         # app.register_blueprint(auth_blueprint, url_prefix='/auth')
 
         from .routes.main import main as main_blueprint
-        from .routes.jobs import jobs as jobs_blueprint
-        from .routes.flowcharts import flowcharts as flowchart_blueprint
-        from .routes.projects import projects as project_blueprint
+        # from .routes.jobs import jobs as jobs_blueprint
+        # from .routes.flowcharts import flowcharts as flowchart_blueprint
+        # from .routes.projects import projects as project_blueprint
         from .routes.trial_tab import trial_tab as trial_tab_blueprint
         from .routes.trial_tab import managers_status_tab as managers_status_tab_blueprint
 
         from .routes.main import errors
 
         app.register_blueprint(main_blueprint)
-        app.register_blueprint(jobs_blueprint)
-        app.register_blueprint(flowchart_blueprint)
-        app.register_blueprint(project_blueprint)
+        # app.register_blueprint(jobs_blueprint)
+        # app.register_blueprint(flowchart_blueprint)
+        # app.register_blueprint(project_blueprint)
         app.register_blueprint(trial_tab_blueprint)
         app.register_blueprint(managers_status_tab_blueprint)
 
