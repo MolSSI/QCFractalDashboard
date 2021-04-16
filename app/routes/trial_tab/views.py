@@ -141,6 +141,16 @@ def tasks_queue_delete():
 def usersAcess():
     return render_template("trial_tab/users_access.html")
 
+@trial_tab.route('/views/users_access_data_table')
+def get_user_table():
+    # with open(url_for('static', filename='data/dummy_data_user_access.json')) as fp:
+    # app/static/data/dummy_data_user_access.json
+    start = time.time()
+
+    # with open('app/static/data/access_log_data.json') as fp:
+    with open('app/static/data/tiny_access_logs.json') as fp:
+        dataSet = json.load(fp)
+    return jsonify(dataSet)
 
 @trial_tab.route('/views/users_access_data')
 def get_user():
@@ -158,17 +168,24 @@ def get_user():
     sortedDF = df.sort_values(by='access_date')
     sortedDF.to_csv(
         '/Users/emanhussein/Desktop/experimental_CSV_users_logs.csv')
-    DateAccessesDF_grouped = sortedDF.groupby(['year', 'month']).size()
-    DateAccessesDF_grouped = DateAccessesDF_grouped.to_frame(  name='hits').reset_index()
-    DateAccessesDF_grouped['Combined'] =  DateAccessesDF_grouped['month'].astype(str) +", "+  DateAccessesDF_grouped['year'].astype(str) 
+    DateAccessesDF_grouped = sortedDF.groupby(
+        ['year', 'month', 'access_type']).size()
+    DateAccessesDF_grouped = DateAccessesDF_grouped.to_frame(
+        name='hits').reset_index()
+    DateAccessesDF_grouped['Combined'] = DateAccessesDF_grouped['month'].astype(
+        str) + ", " + DateAccessesDF_grouped['year'].astype(str)
 
     print(DateAccessesDF_grouped)
+    DateAccessesDF_grouped.to_csv(
+        '/Users/emanhussein/Desktop/DateAccessesDF_grouped.csv')
 
     DateAccessesJSON = DateAccessesDF_grouped.to_json(
         orient='records')
+    df = df.to_json(
+        orient='records')
     end = time.time()
     print(end - start)
-    allData = {'DateAccessesJSON': DateAccessesJSON}
+    allData = {'DateAccessesJSON': DateAccessesJSON, 'all_fields': df}
     return allData
     # return jsonify(allData)
 # arr = []
