@@ -38,7 +38,7 @@
 
 </head>
 
-<body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show">
+<body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show c-app">
   <header class="app-header navbar">
     <button class="navbar-toggler sidebar-toggler d-lg-none mr-auto" type="button" data-toggle="sidebar-show">
       <span class="navbar-toggler-icon"></span>
@@ -52,7 +52,7 @@
     <button class="navbar-toggler sidebar-toggler d-md-down-none" type="button" data-toggle="sidebar-lg-show">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <ul class="nav navbar-nav d-md-down-none">
+    <!-- <ul class="nav navbar-nav d-md-down-none">
       <li class="nav-item px-3">
         <a class="nav-link" href="#">Dashboard</a>
       </li>
@@ -62,7 +62,7 @@
       <li class="nav-item px-3">
         <a class="nav-link" href="#">Settings</a>
       </li>
-    </ul>
+    </ul> -->
     <ul class="nav navbar-nav ml-auto">
       {#        <li class="nav-item d-md-down-none">#}
       {#          <a class="nav-link" href="#">#}
@@ -135,7 +135,7 @@
     </button>
   </header>
   <div class="app-body">
-    <div class="sidebar">
+    <div class="sidebar c-sidebar c-sidebar-show">
       <nav class="sidebar-nav">
         <ul class="nav">
           <li class="nav-item">
@@ -143,19 +143,50 @@
               <i class="nav-icon icon-speedometer"></i> Dashboard
             </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="tasks_queue_tab_render">
-              <i class="nav-icon fas fa-object-group"></i> Task Queue</a>
+
+
+          <li class="nav-item nav-dropdown">
+            <a class="nav-link nav-dropdown-toggle" href="#">
+              <i class="nav-icon icon-settings"></i> Task Queue</a>
+            <ul class="nav-dropdown-items">
+              <li class="nav-item">
+                <a class="nav-link" href="tasks_queue_sub_tab_render_datatable">
+                  <!-- <i class="nav-icon icon-pencil"></i>--> Data Table</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="tasks_queue_sub_tab_render_plots">
+                  <!-- <i class="nav-icon icon-pencil"></i>--> Plots</a>
+              </li>
+            </ul>
           </li>
-          <li class="nav-item">
+
+          <li class="nav-item nav-dropdown">
+            <a class="nav-link nav-dropdown-toggle" href="#">
+              <i class="nav-icon icon-settings"></i> Users Access</a>
+            <ul class="nav-dropdown-items">
+              <li class="nav-item">
+                <a class="nav-link" href="users_access_tab_render">
+                  <!-- <i class="nav-icon icon-pencil"></i>--> Data Table & Plot</a>
+              </li>
+              
+              <li class="nav-item">
+                <a class="nav-link" href="users_access_tab_render_map">
+                  <!-- <i class="nav-icon icon-pencil"></i>-->Bubble Map</a>
+              </li>
+            </ul>
+          </li>
+
+          <!-- <li class="nav-item">
             <a class="nav-link" href="users_access_tab_render">
               <i class="nav-icon fas fa-object-group"></i> Users Access</a>
-          </li>
+          </li> -->
+
+
           <li class="nav-item">
             <a class="nav-link" href="managers_status_tab_render">
               <i class="nav-icon fas fa-object-group"></i> Managers Status</a>
           </li>
-          
+
           <!-- Not Yet Designed or Developed -->
           <li class="nav-item">
             <a class="nav-link" href="database_statistics_tab_render">
@@ -166,12 +197,8 @@
             <a class="nav-link" href="results_statistics_tab_render">
               <i class="nav-icon fas fa-object-group"></i> Results Statistics</a>
           </li>
-          <!-- Not Yet Designed or Developed -->
-          <li class="nav-item">
-            <a class="nav-link" href="jobs">
-              <i class="nav-icon icon-list"></i> Jobs List</a>
-          </li>
-          <li class="nav-title">Actions</li>
+
+          <!-- <li class="nav-title">Actions</li>
           <li class="nav-item">
             <a class="nav-link" href="#">
               <i class="nav-icon icon-puzzle"></i> Submit Job</a>
@@ -193,7 +220,7 @@
                 <a class="nav-link" href="#">
                   <i class="nav-icon icon-pencil"></i> Edit</a>
               </li>
-            </ul>
+            </ul> -->
           </li>
         </ul>
       </nav>

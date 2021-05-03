@@ -7,7 +7,7 @@ from dateutil import parser
 from app import create_app, db
 from app.models.util import process_flowchart
 from app.models import Job, Flowchart, Project
-from app.models.import_jobs import add_project
+# from app.models.import_jobs import add_project
 from selenium import webdriver
 import chromedriver_binary  # Adds chromedriver binary to path
 
