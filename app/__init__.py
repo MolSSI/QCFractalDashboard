@@ -186,23 +186,23 @@ def create_app(config_name='default'):
         logger.info('\t{:>30s} = {}'.format(key, value))
     logger.info('')
 
-    if not options.no_check:
-        # Ugly but avoids circular import.
-        from .models.import_jobs import import_jobs
+    # if not options.no_check:
+    #     # Ugly but avoids circular import.
+    #     from .models.import_jobs import import_jobs
 
-        t0 = time.perf_counter()
-        with app.app_context():
-            n_projects, n_added_projects, n_jobs, n_added_jobs = import_jobs(
-                os.path.join(options.datastore, 'projects')
-            )
-        t1 = time.perf_counter()
-        logger.info('Checked {} jobs and {} projects in {:.2f} s.'
-                    .format(n_jobs, n_projects, t1 - t0))
-        if n_added_jobs > 0 or n_added_projects > 0:
-            logger.info(
-                '  added {} jobs and {} projects'
-                .format(n_added_jobs, n_added_projects)
-            )
+    #     t0 = time.perf_counter()
+    #     with app.app_context():
+    #         n_projects, n_added_projects, n_jobs, n_added_jobs = import_jobs(
+    #             os.path.join(options.datastore, 'projects')
+    #         )
+    #     t1 = time.perf_counter()
+    #     logger.info('Checked {} jobs and {} projects in {:.2f} s.'
+    #                 .format(n_jobs, n_projects, t1 - t0))
+    #     if n_added_jobs > 0 or n_added_projects > 0:
+    #         logger.info(
+    #             '  added {} jobs and {} projects'
+    #             .format(n_added_jobs, n_added_projects)
+    #         )
 
 
 # here (call the cached data)

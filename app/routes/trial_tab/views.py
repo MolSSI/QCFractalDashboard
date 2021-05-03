@@ -1,4 +1,5 @@
-import qcportal as ptl
+
+import qcfractal.interface as ptl
 # from ..interface.models.task_models import PriorityEnum, TaskStatusEnum
 from flask import render_template, url_for, jsonify, current_app, request
 # from qcportal.interface.models.task_models import PriorityEnum
@@ -11,8 +12,11 @@ import time
 from datetime import datetime
 import os
 from . import trial_tab
+import matplotlib
 
-client = ptl.FractalClient("api.qcarchive.molssi.org", username=os.environ.get(
+# client = ptl.FractalClient(address="https://staging.qcarchive.molssi.org")
+
+client = ptl.FractalClient("https://staging.qcarchive.molssi.org", username=os.environ.get(
     'QCFRACTAL_USER', None), password=os.environ.get('QCFRACTAL_PASSWORD', None))
 
 # Start of Managers Tab-related functions
@@ -84,16 +88,24 @@ def tasksQueueSubTabPlot():
 def get_tasks_queue():
 
     limitVar = 5000
-    dataSet_2 = client.query_tasks(limit=limitVar)
+    dataSet_2 = client.query_tasks(limit=100)
+
     # get the data size from meta, and use it to allocate the array (arr)
     arr = [None] * 2000  # since the server's limit is 2000,
     iter = 0
+    print("=======================")
+    print(dataSet_2[0])
+
     for ob in dataSet_2:
-        rowRecord = {'id': ob.id, 'parser': ob.parser, 'status': ob.status,
-                     'program': ob.program, 'procedure': ob.procedure, 'manager': ob.manager, 'priority': priorityText(ob.priority),
-                     'tag': ob.tag, 'base_result': ob.base_result, 'error': ob.error, 'modified_on': ob.modified_on.strftime('%Y-%m-%d-%H:%M:%S'), 'created_on': ob.created_on.strftime('%Y-%m-%d-%H:%M:%S')}
-        arr[iter] = rowRecord
-        iter = iter + 1
+        print("--------------------")
+        print(ob)
+        if(ob != None):
+            rowRecord = {'id': ob.id, 'parser': ob.parser, 'status': ob.status,
+                        'program': ob.program, 'procedure': ob.procedure, 'manager': ob.manager, 'priority': priorityText(ob.priority),
+                        'tag': ob.tag, 'base_result': ob.base_result, 'modified_on': ob.modified_on.strftime('%Y-%m-%d-%H:%M:%S'), 'created_on': ob.created_on.strftime('%Y-%m-%d-%H:%M:%S')}
+            
+            arr[iter] = rowRecord
+            iter = iter + 1
     return_data = {"data": arr}
     return jsonify(return_data)
 
@@ -141,17 +153,40 @@ def tasks_queue_delete():
 def usersAcess():
     return render_template("trial_tab/users_access.html")
 
+
+@cache.cached()
 @trial_tab.route('/views/users_access_data_table')
 def get_user_table():
-    # with open(url_for('static', filename='data/dummy_data_user_access.json')) as fp:
-    # app/static/data/dummy_data_user_access.json
-    start = time.time()
-
-    # with open('app/static/data/access_log_data.json') as fp:
-    with open('app/static/data/tiny_access_logs.json') as fp:
-        dataSet = json.load(fp)
+    dataSet = client.query_access_log()  # new function
     return jsonify(dataSet)
 
+
+@cache.cached()
+@trial_tab.route('/views/users_access_data_map')
+def get_map_data():
+    with open('app/static/data/access_log_data.json') as fp:
+        # with open("app/static/data/tiny_access_logs.json") as fp:
+        dataSet = json.load(fp)
+    # dataSet =  client.query_access_log() #new function
+    df = pd.DataFrame(dataSet)
+    print("df=====================")
+    print(df)
+    map_df = df[['ip_lat', 'ip_long', 'country', 'city', 'id']]
+    print(map_df.shape)
+    map_df.dropna(subset=['ip_lat', 'ip_long'])
+    print("map_df.shape after removing nan")
+    print(map_df.shape)
+    map_df_grouped = map_df.groupby(['ip_lat', 'ip_long']).count()['id']
+    df_map_df_grouped = pd.DataFrame(map_df_grouped)
+    print(map_df_grouped)
+    # map_data_json = df_map_df_grouped.to_dict()
+    map_data_json = df_map_df_grouped.to_json()
+    print(map_data_json)
+    to_return = {'data': map_data_json, 'size': df_map_df_grouped.shape[0]}
+    return to_return
+
+
+@cache.cached()
 @trial_tab.route('/views/users_access_data')
 def get_user():
     # with open(url_for('static', filename='data/dummy_data_user_access.json')) as fp:
@@ -159,45 +194,60 @@ def get_user():
     start = time.time()
 
     # with open('app/static/data/access_log_data.json') as fp:
-    with open('app/static/data/tiny_access_logs.json') as fp:
-        dataSet = json.load(fp)
+    #     # with open("app/static/data/tiny_access_logs.json") as fp:
+    #     dataSet = json.load(fp)
+    dataSet = client.query_access_log()  # new function
+
     df = pd.DataFrame(dataSet)
     df['access_date'] = pd.to_datetime(df['access_date'])
-    df['year'] = pd.DatetimeIndex(df['access_date']).year
-    df['month'] = pd.DatetimeIndex(df['access_date']).month
-    sortedDF = df.sort_values(by='access_date')
-    sortedDF.to_csv(
-        '/Users/emanhussein/Desktop/experimental_CSV_users_logs.csv')
-    DateAccessesDF_grouped = sortedDF.groupby(
-        ['year', 'month', 'access_type']).size()
-    DateAccessesDF_grouped = DateAccessesDF_grouped.to_frame(
-        name='hits').reset_index()
-    DateAccessesDF_grouped['Combined'] = DateAccessesDF_grouped['month'].astype(
-        str) + ", " + DateAccessesDF_grouped['year'].astype(str)
+    df.set_index('access_date', inplace=True)
+    df.sort_index(inplace=True)
+    dateAccessesDF_grouped = df.groupby('access_type').resample(
+        'H').count()['id']  # group all data by month, but for dates
+    dateAccessesDF_grouped.to_frame()
+    # dateAccessesDF_grouped.rename(columns={'id':'count'}, inplace=True)
+    dateAccessesDF_grouped = dateAccessesDF_grouped.reset_index(level=1)
 
-    print(DateAccessesDF_grouped)
-    DateAccessesDF_grouped.to_csv(
-        '/Users/emanhussein/Desktop/DateAccessesDF_grouped.csv')
+    dateAccessesDF_grouped.to_csv('app/static/data/dateAccessesDF_grouped.csv')
 
-    DateAccessesJSON = DateAccessesDF_grouped.to_json(
+    access_type_list = dateAccessesDF_grouped.index.unique().to_list()
+    nested_dict = {}
+    for access_type_element in access_type_list:
+        print(access_type_element)
+        df_per_type = dateAccessesDF_grouped.loc[[access_type_element], :]
+        df_per_type = df_per_type.reset_index(level=0, drop=True)
+        dictionary_group = df_per_type.to_dict(orient='list')
+        nested_dict[access_type_element] = dictionary_group
+        print(nested_dict)
+        print("=======================")
+    # print("nested_dict after loop")
+    # print(nested_dict)
+
+    DateAccessesJSON = dateAccessesDF_grouped.to_json(
         orient='records')
-    df = df.to_json(
-        orient='records')
-    end = time.time()
-    print(end - start)
-    allData = {'DateAccessesJSON': DateAccessesJSON, 'all_fields': df}
+
+    # group all data by month, but for dates
+    subdivision_df = df.groupby('subdivision').count()['id']
+
+    subdivision_df = subdivision_df.reset_index(level=0)
+    subdivision_df.sort_values(by=['id'])
+    # subdivision_df.to_frame()
+    print(subdivision_df)
+    top_x_subdivisions = subdivision_df.head(20)
+    subdivision_json = top_x_subdivisions.to_json(orient='records')
+
+    allData = {'DateAccessesJSON': DateAccessesJSON,
+               'access_date_type': nested_dict, 'subdivision': subdivision_json}
     return allData
     # return jsonify(allData)
-# arr = []
-# for ob in dataSet:
-#     rowRecord = {'id': ob.id, 'parser': ob.parser, 'status': ob.status,
-#                  'program': ob.program, 'procedure': ob.procedure, 'manager': ob.manager, 'priority': priorityText(ob.priority),
-#                  'tag': ob.tag, 'base_result': ob.base_result, 'error': ob.error, 'modified_on': ob.modified_on.strftime('%Y-%m-%d-%H:%M:%S'), 'created_on': ob.created_on.strftime('%Y-%m-%d-%H:%M:%S')}
-#     arr[iter] = rowRecord
-#     iter = iter + 1
-# return_data = {"data": arr}
-# return jsonify(return_data)
+
+
 # End of Users Access Tab-related functions
+
+@trial_tab.route("/views/users_access_tab_render_map")
+def user_access_map():
+    return render_template("trial_tab/users_access_map.html")
+
 
 # Placeholder for Tabs that are needed, but not yet designed or developed.
 @trial_tab.route("/views/database_statistics_tab_render")

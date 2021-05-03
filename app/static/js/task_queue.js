@@ -12,9 +12,17 @@ $(document).ready(function () {
                     var d = ret.data
                     var x2 = [];
                     var x_manager2 = []
+                    console.log(d)
                     d.forEach(function (d_element, index) {
-                        x2[index] = d_element['status']
-                        x_manager2[index] = d_element['manager']
+
+                        console.log(d_element)
+                        if (d_element != null) {
+                            x2[index] = d_element['status']
+                            x_manager2[index] = d_element['manager']
+                        }
+                        else{
+                            console.log("null encountered")
+                        }
                     });
 
                     var task_queueDiv = document.getElementById("task_queueDiv");
@@ -74,7 +82,7 @@ $(document).ready(function () {
                             { title: "Base result ID", data: "base_result" },
                             { title: "Status", data: "status" },
                             { title: "Manager", data: "manager" },
-                            { title: "Priority", data:"priority" },
+                            { title: "Priority", data: "priority" },
                             { title: "Modified_on", data: "modified_on" },
                             { title: "Created_on", data: "created_on" }
                         ],
