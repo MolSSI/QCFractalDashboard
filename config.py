@@ -4,7 +4,7 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 import os
-from   decouple import config
+import  decouple
 from pathlib import Path
 
 
@@ -13,14 +13,14 @@ class Config(object):
     basedir    = os.path.abspath(os.path.dirname(__file__))
 
     # Set up the App SECRET_KEY
-    SECRET_KEY = config('SECRET_KEY', default='S#perS3crEt_007')
+    SECRET_KEY = decouple.config('SECRET_KEY', default='S#perS3crEt_007')
 
     # This will create a file in <app> FOLDER
     _db_path = Path(basedir, 'db-data')
     _db_path.mkdir(parents=True, exist_ok=True)
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + str(_db_path / 'db.sqlite3')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    DEFAULT_SERVER = 'https://staging.qcarchive.molssi.org'
+    DEFAULT_SERVER = decouple.config('DEFAULT_SERVER', 'https://staging.qcarchive.molssi.org')
 
 class ProductionConfig(Config):
     DEBUG = False
@@ -32,12 +32,12 @@ class ProductionConfig(Config):
 
     # PostgreSQL database
     SQLALCHEMY_DATABASE_URI = '{}://{}:{}@{}:{}/{}'.format(
-        config( 'DB_ENGINE'   , default='postgresql'    ),
-        config( 'DB_USERNAME' , default='appseed'       ),
-        config( 'DB_PASS'     , default='pass'          ),
-        config( 'DB_HOST'     , default='localhost'     ),
-        config( 'DB_PORT'     , default=5432            ),
-        config( 'DB_NAME'     , default='appseed-flask' )
+        decouple.config( 'DB_ENGINE'   , default='postgresql'    ),
+        decouple.config( 'DB_USERNAME' , default='appseed'       ),
+        decouple.config( 'DB_PASS'     , default='pass'          ),
+        decouple.config( 'DB_HOST'     , default='localhost'     ),
+        decouple.config( 'DB_PORT'     , default=5432            ),
+        decouple.config( 'DB_NAME'     , default='appseed-flask' )
     )
 
 class DebugConfig(Config):

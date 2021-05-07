@@ -10,6 +10,10 @@ from importlib import import_module
 from logging import basicConfig, DEBUG, getLogger, StreamHandler
 from os import path
 from flask_caching import Cache
+from pathlib import Path
+import logging
+from logging.handlers import RotatingFileHandler
+
 
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -37,10 +41,29 @@ def configure_database(app):
     def shutdown_session(exception=None):
         db.session.remove()
 
+def set_up_logging(app):
+    Path("logs").mkdir(parents=True, exist_ok=True)
+    # logging.basicConfig(filename='logs/flask.log')
+
+    handler = RotatingFileHandler('logs/flask.log', maxBytes=5 * 1024 * 1024)
+    formatter = logging.Formatter('[%(asctime)s] - %(name)s:%(filename)s:%(funcName)s:%(lineno)d - %(levelname)s - %(message)s', "%Y-%m-%d %H:%M:%S")
+    handler.setFormatter(formatter)
+
+    logging.getLogger('werkzeug').addHandler(handler)
+    logging.getLogger('werkzeug').setLevel(logging.WARNING)
+
+    app.logger.addHandler(handler)
+    app.logger.setLevel(logging.DEBUG)
+
 def create_app(config):
     app = Flask(__name__, static_folder='base/static')
     app.config.from_object(config)
+
     register_extensions(app)
     register_blueprints(app)
     configure_database(app)
+    set_up_logging(app)
+
+    app.logger.info('-- App started ---')
+
     return app

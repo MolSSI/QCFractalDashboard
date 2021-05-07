@@ -2,7 +2,9 @@ FLASK_APP=run.py
 FLASK_ENV=development
 
 
-# add to .env file
+# add to a .env file if needed
+
+#DEFAULT_SERVER=https://staging.qcarchive.molssi.org
 
 #SECRET_KEY=S3cr3t_K#Key
 #DB_ENGINE=postgresql
@@ -11,6 +13,3 @@ FLASK_ENV=development
 #DB_PORT=5432
 #DB_USERNAME=appseed
 #DB_PASS=pass
-
-#QCFRACTAL_USER=user
-#QCFRACTAL_PASSWORD=1234

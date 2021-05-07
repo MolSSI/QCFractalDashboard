@@ -1,6 +1,6 @@
 # MolSSI QCArchive Dashboard 
 
-This application is a results Dashboard for QCArchive projects.
+This application is a Dashboard for the QCArchive/QCFractal database.
 
 
 <br />
@@ -17,21 +17,16 @@ This application is a results Dashboard for QCArchive projects.
 ## How to use it
 
 ```bash
-$ # Get the code
-$ git clone https://github.com/MolSSI/QCFractalDashboard.git
-$ cd QCFractalDashboard
+# Get the code
+git clone https://github.com/MolSSI/QCFractalDashboard.git
+cd QCFractalDashboard
 ```
-
 `
 ### Add QCFractal user and password
 
-Create a private `.env` file in the root directory of the repo (i.e. QCFractalDashboard/), and set 
-the username and password to access the QCFractal server in that file:
+Create a private `.env` file in the root directory of the repo (i.e. QCFractalDashboard/), and set  any 
+cutomization to the config defined in `.flaskenv` or in `config.py`.
 
-```
-QCFRACTAL_USER=yourUser
-QCFRACTAL_PASSWORD=yourPassword
-```
 
 ### Create environment and install requirements
 
@@ -47,15 +42,23 @@ pip3 install -r requirements.txt
 # pip install -r requirements-pgsql.txt
 ```
 
-### Run the app 
+### Run the app in development mode
 
 ```bash
 # Start the application (development mode)
 # --host=0.0.0.0 - expose the app on all network interfaces (default 127.0.0.1)
 # --port=5000    - specify the app port (default 5000)  
 flask run --host=0.0.0.0 --port=5000
+
+# or just for defaults
+flask run
 ```
-Access the dashboard in browser: `http://127.0.0.1:5000/`
+
+Access the dashboard in browser using the host and post you chose: `http://127.0.0.1:5000/`.
+In the login page, enter the server address (the default is set in the `.flaskenv` and can 
+be overriden in the `.evn` file)
+
+For productoction, use guincorn or docker as described in the deployment section below.
 
 <br />
 
