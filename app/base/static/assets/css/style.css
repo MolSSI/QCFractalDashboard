@@ -50,7 +50,6 @@ File: style.css
      Google Font
 ==========================  **/
 @import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,600");
-@import url("../plugins/bootstrap/css/bootstrap.min.css");
 @import url("../fonts/feather/css/feather.css");
 @import url("../plugins/jquery-scrollbar/css/jquery.scrollbar.min.css");
 @import url("../fonts/datta/datta-icon.css");
@@ -60,9 +59,9 @@ File: style.css
 body {
   font-family: "Open Sans", sans-serif;
   font-size: 14px;
-  color: #888;
+  /* color: #888; */
   font-weight: 400;
-  background: #f4f7fa;
+  /* background: #f4f7fa; */
   position: relative;
 }
 
@@ -1532,6 +1531,13 @@ p.text-muted {
 }
 .b-brand .b-bg i {
   color: #fff;
+}
+.b-brand .b-bg i.molssi {
+  background: url('../images/molssi-favicon.png');
+  background-size: 35px 35px;
+  height: 35px;
+  width: 35px;
+  display: block;
 }
 .b-brand .b-title {
   margin-left: 10px;
@@ -6896,12 +6902,12 @@ pre[class*=language-]:after, pre[class*=language-]:before {
 /**  =====================
       Form Componant css start
 ==========================  **/
-.custom-select,
+/* .custom-select,
 .form-control {
   background: #f4f7fa;
   padding: 10px 20px;
   font-size: 14px;
-}
+} */
 .custom-select:focus,
 .form-control:focus {
   background: #f4f7fa;
@@ -6949,15 +6955,15 @@ pre[class*=language-]:after, pre[class*=language-]:before {
   height: 2.65rem;
 }
 
-.custom-select {
+/* .custom-select {
   height: calc(2.25rem + 9px);
-}
+} */
 
 /* input group End */
 /**====== Form Componant css end ======**/
-select.form-control:not([size]):not([multiple]) {
+/* select.form-control:not([size]):not([multiple]) {
   height: calc(2.55rem + 2px);
-}
+} */
 
 .input-group-lg > .input-group-append > select.btn:not([size]):not([multiple]),
 .input-group-lg > .input-group-append > select.input-group-text:not([size]):not([multiple]),
@@ -7274,7 +7280,7 @@ select.form-control-lg:not([size]):not([multiple]) {
 /**  =====================
       Data Tables css start
 ==========================  **/
-.table td,
+/* .table td,
 .table th {
   border-top: 1px solid #eaeaea;
   white-space: nowrap;
@@ -7285,29 +7291,29 @@ select.form-control-lg:not([size]):not([multiple]) {
 }
 .table tbody + tbody {
   border-top: 2px solid #eaeaea;
-}
+} */
 
 /* Border versions */
-.table-bordered {
+/* .table-bordered {
   border: 1px solid #eaeaea;
 }
 .table-bordered td,
 .table-bordered th {
   border: 1px solid #eaeaea;
-}
+} */
 
 /* Zebra-striping */
-.table-striped tbody tr:nth-of-type(2n+1) {
+/* .table-striped tbody tr:nth-of-type(2n+1) {
   background-color: rgba(4, 169, 245, 0.05);
-}
+} */
 
 /* Hover effect */
-.table-hover tbody tr:hover {
+/* .table-hover tbody tr:hover {
   background-color: rgba(4, 169, 245, 0.05);
-}
+} */
 
 /* Table backgrounds */
-.table .thead-dark th {
+/* .table .thead-dark th {
   color: #fff;
   background-color: #37474f;
   border-color: #222c31;
@@ -7327,13 +7333,13 @@ select.form-control-lg:not([size]):not([multiple]) {
 }
 .table-dark.table-hover tbody tr:hover {
   background-color: #2d3940;
-}
+} */
 
 /* fixed header position */
-table.dataTable.fixedHeader-floating {
+/* table.dataTable.fixedHeader-floating {
   top: 0 !important;
-}
-@media screen and (max-width: 992px) {
+} */
+/* @media screen and (max-width: 992px) {
   table.dataTable.fixedHeader-floating {
     display: none !important;
   }
@@ -7343,7 +7349,7 @@ table.dataTable.fixedHeader-floating {
   .fixedHeader-locked {
     display: none !important;
   }
-}
+} */
 /**  =====================
       Foo-table css start
 ==========================  **/
@@ -7436,7 +7442,7 @@ table.footable-paging-center > tfoot > tr.footable-paging > td {
 }
 .auth-wrapper .auth-content {
   position: relative;
-  width: 390px;
+  width: 450px;
   padding: 15px;
   z-index: 5;
 }

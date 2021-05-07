@@ -9,13 +9,18 @@ from flask_sqlalchemy import SQLAlchemy
 from importlib import import_module
 from logging import basicConfig, DEBUG, getLogger, StreamHandler
 from os import path
+from flask_caching import Cache
 
 db = SQLAlchemy()
 login_manager = LoginManager()
+login_manager.login_view = 'base_blueprint.login'
+cache = Cache(config={'CACHE_TYPE': 'SimpleCache'})
+
 
 def register_extensions(app):
     db.init_app(app)
     login_manager.init_app(app)
+    cache.init_app(app)
 
 def register_blueprints(app):
     for module_name in ('base', 'home'):

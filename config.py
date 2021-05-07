@@ -5,6 +5,8 @@ Copyright (c) 2019 - present AppSeed.us
 
 import os
 from   decouple import config
+from pathlib import Path
+
 
 class Config(object):
 
@@ -14,8 +16,11 @@ class Config(object):
     SECRET_KEY = config('SECRET_KEY', default='S#perS3crEt_007')
 
     # This will create a file in <app> FOLDER
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'db.sqlite3')
+    _db_path = Path(basedir, 'db-data')
+    _db_path.mkdir(parents=True, exist_ok=True)
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + str(_db_path / 'db.sqlite3')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    DEFAULT_SERVER = 'https://staging.qcarchive.molssi.org'
 
 class ProductionConfig(Config):
     DEBUG = False

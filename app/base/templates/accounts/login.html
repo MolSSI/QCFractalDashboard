@@ -2,7 +2,7 @@
 
 {% block title %} Login {% endblock %}
 
-{% block content %}   
+{% block content %}
 
     <div class="auth-wrapper">
         <div class="auth-content">
@@ -19,29 +19,33 @@
                     </div>
                     <h3 class="mb-4">Login</h3>
 
-                    <span class="mb-0 text-muted">
+                    <span class="mb-0 {{ msg_class or 'text-muted' }}">
                         {% if msg %}
                             {{ msg | safe }}
                         {% else %}
                             Add your credentials
-                        {% endif %} 
+                        {% endif %}
                     </span>
 
                     <br />
                     <br />
-                    
+
                     <form role="form" method="post" action="">
 
-                        {{ form.hidden_tag() }}                    
+                        {{ form.hidden_tag() }}
+
+                        <div class="input-group mb-3">
+                            {{ form.server_url(placeholder="Server URL", class="form-control") }}
+                        </div>
 
                         <div class="input-group mb-3">
                             {{ form.username(placeholder="Username", class="form-control") }}
                         </div>
-                        
+
                         <div class="input-group mb-4">
                             {{ form.password(placeholder="Password", class="form-control", type="password") }}
                         </div>
-                        
+
                         <div class="form-group text-left">
                             <div class="checkbox checkbox-fill d-inline">
                                 <input type="checkbox" name="checkbox-fill-1" id="checkbox-fill-a1" checked="">
@@ -55,9 +59,9 @@
                     <p class="mb-0 text-muted">Don’t have an account? <a href="{{ url_for('base_blueprint.register') }}" >Signup</a></p>
                     <br />
                     <p class="mb-2 text-muted">
-                        &copy; <a target="_blank" href="https://bit.ly/37fF9RT">CodedThemes</a> 
-                        - <a target="_blank" 
-                             href="https://appseed.us/admin-dashboards/flask-dashboard-dattaable">Flask Datta Able</a>.
+                        &copy; MolSSI 2021
+                        - <a target="_blank"
+                             href="https://molssi.org/">The Molecular Sciences Software Institute </a>.
                     </p>
                 </div>
             </div>

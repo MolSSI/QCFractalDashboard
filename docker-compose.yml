@@ -1,14 +1,21 @@
+
 version: '3'
+
 services:
-  appseed-app:
+
+  flask:
     restart: always
     env_file: .env
     build: .
-    ports:
-      - "5005:5005"
+#    ports:
+#      - "5005:5005"
     networks:
       - db_network
       - web_network
+    volumes:
+      - ./docker_data/app-data:/var/www/logs
+      - ./docker_data/db-data:/db-data
+
   nginx:
     restart: always
     image: "nginx:latest"
@@ -16,12 +23,13 @@ services:
       - "85:85"
     volumes:
       - ./nginx:/etc/nginx/conf.d
+      - ./docker_data/nginx-data:/var/log/nginx
     networks:
       - web_network
-    depends_on: 
-      - appseed-app
+    depends_on:
+      - flask
+
 networks:
   db_network:
     driver: bridge
   web_network:
-    driver: bridge

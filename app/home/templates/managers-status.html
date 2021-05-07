@@ -1,0 +1,64 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Managers Status {% endblock %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="pcoded-content">
+  <div class="pcoded-inner-content">
+    <!-- [ breadcrumb ] start -->
+    <div class="page-header">
+      <div class="page-block">
+        <div class="row align-items-center">
+          <div class="col-md-12">
+            <div class="page-header-title">
+              <h5 class="m-b-10">Managers Status</h5>
+            </div>
+            <ul class="breadcrumb">
+              <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
+              <li class="breadcrumb-item"><a href="javascript:">Managers Status</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- [ breadcrumb ] end -->
+    <div class="main-body" id='managers-status-main-body'>
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="card">
+            <div class="card-header">
+              <h5>Choose Hostnames to plot</h5>
+            </div>
+            <div class="card-block">
+              <select id="hostnamesdata"></select>
+              <div id='hostnamesDiv'></div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-12">
+          <div class="card">
+            <div class="card-header">
+              <h5>Choose Clusternames</h5>
+            </div>
+            <div class="card-block">
+              <select id="clusternamesdata" class="clusternamesdata">
+                <option disabled> Choose Clusternames to Plot</option>
+              </select>
+              <div id='clusternamesDiv'></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block javascripts %}
+<script src="/static/assets/js/pages/managers-status.js"></script>
+{% endblock javascripts %}
