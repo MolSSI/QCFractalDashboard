@@ -8,6 +8,7 @@ This application is a Dashboard for the QCArchive/QCFractal database.
 > Base template
 
 - [Datta Able Flask](https://appseed.us/admin-dashboards/flask-datta-able) - product page
+- [Datta Able Flask Pro (more examples)](https://appseed.us/admin-dashboards/flask-dashboard-dattaable-pro) - More examples, the pro version  
 - [Datta Able Flask - Demo](https://flask-datta-able.appseed-srv1.com/) - LIVE Deployment
 - [Flask Tutorial](https://github.com/app-generator/tutorial-flask) - Getting started with Flask
 

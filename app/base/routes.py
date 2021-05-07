@@ -21,16 +21,16 @@ from app.base.util import verify_pass
 
 store = {}
 
-def get_client(url=None, username=None, password=None, redirect=True, force_login=False):
+def get_client(url=None, username=None, password=None, redirect_to_login=True, force_login=False):
     if not force_login and 'client' in store:
         return store['client']
 
     try:
-        store['client'] = ptl.FractalClient(url, username=username, password=password)
+        store['client'] = ptl.FractalClient(address=url, username=username, password=password)
         return store['client']
     except Exception as e:
         app.logger.error(f'Error logging in: {e}')
-        if redirect:
+        if redirect_to_login:
             return redirect(url_for('base_blueprint.login'))
         return False
 
@@ -60,7 +60,7 @@ def login():
         #     login_user(user)
         #     return redirect(url_for('base_blueprint.route_default'))
 
-        if get_client(url, username, password, redirect=False, force_login=True):
+        if get_client(url, username, password, redirect_to_login=False, force_login=True):
             app.logger.info(f'User {username} loggged in to QCPortal successfully')
             login_user(ClientUser(username=username))
             return redirect(url_for('base_blueprint.route_default'))

@@ -1,7 +1,6 @@
 FLASK_APP=run.py
 FLASK_ENV=development
 
-
 # add to a .env file if needed
 
 #DEFAULT_SERVER=https://staging.qcarchive.molssi.org

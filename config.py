@@ -4,7 +4,7 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 import os
-import  decouple
+import decouple
 from pathlib import Path
 
 
@@ -20,7 +20,7 @@ class Config(object):
     _db_path.mkdir(parents=True, exist_ok=True)
     SQLALCHEMY_DATABASE_URI = 'sqlite:///' + str(_db_path / 'db.sqlite3')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    DEFAULT_SERVER = decouple.config('DEFAULT_SERVER', 'https://staging.qcarchive.molssi.org')
+    DEFAULT_SERVER = decouple.config('DEFAULT_SERVER', default='https://staging.qcarchive.molssi.org')
 
 class ProductionConfig(Config):
     DEBUG = False

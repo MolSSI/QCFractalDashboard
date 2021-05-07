@@ -15,10 +15,6 @@ from jinja2 import TemplateNotFound
 import pandas as pd
 import math, time, json
 
-# client = ptl.FractalClient("staging.qcarchive.molssi.org",
-#         username=os.environ.get('QCFRACTAL_USER', None),
-#         password=os.environ.get('QCFRACTAL_PASSWORD', None))
-
 
 
 @blueprint.route('/index')
@@ -63,6 +59,7 @@ def get_segment( request ):
         return None
 
 @blueprint.route("/views/managers_status")
+@login_required
 def call_data():
     return list_managers()
 
@@ -106,23 +103,27 @@ def list_managers(status=None, modified_after=None):
 
 # Start of Tasks Queue Tab-related functions
 @blueprint.route("/views/tasks_queue_tab_render")
+@login_required
 def tasksQueue():
     return render_template("blueprint/tasks_queue.html")
 
 
 @blueprint.route("/views/tasks_queue_sub_tab_render_datatable")
+@login_required
 def tasksQueueSubtabDatatable():
     #  return render_template("blueprint/tasks_queue.html")
     return render_template("blueprint/tasks_queue_sub_tab_datatable.html")
 
 
 @blueprint.route("/views/tasks_queue_sub_tab_render_plots")
+@login_required
 def tasksQueueSubTabPlot():
     return render_template("trial_tab/tasks_queue_sub_tab_plots.html")
 
 
 # @cache.cached()
 @blueprint.route('/views/tasks_queue_data')
+@login_required
 def get_tasks_queue():
 
     client = get_client()
@@ -161,6 +162,7 @@ def priorityText(pr):
 
 
 @blueprint.route('/views/tasks_queue_restart', methods=['POST'])
+@login_required
 def tasks_queue_restart():
     ids = request.get_json().values()
 
@@ -174,6 +176,7 @@ def tasks_queue_restart():
 
 
 @blueprint.route('/views/tasks_queue_delete', methods=['POST'])
+@login_required
 def tasks_queue_delete():
     ids = request.get_json().get('ids')
     # for id_entry in ids:
@@ -184,10 +187,12 @@ def tasks_queue_delete():
 
 # Start of Users Access Tab-related functions
 @blueprint.route("/views/users_access_tab_render")
+@login_required
 def usersAcess():
     return render_template("blueprint/users_access.html")
 
 @blueprint.route('/views/users_access_data_table')
+@login_required
 def get_user_table():
     client = get_client()
     dataSet = client.query_access_log()  # new function
@@ -196,6 +201,7 @@ def get_user_table():
 
 # @cache.cached()
 @blueprint.route('/views/users_access_data_map')
+@login_required
 def get_map_data():
     with open('app/base/static/data/access_log_data.json') as fp:
         dataSet = json.load(fp)
@@ -210,6 +216,7 @@ def get_map_data():
 
 
 @blueprint.route('/views/users_access_data')
+@login_required
 def get_user():
     # with open(url_for('static', filename='data/dummy_data_user_access.json')) as fp:
     # app/static/data/dummy_data_user_access.json
@@ -266,11 +273,13 @@ def get_user():
 
 # Placeholder for Tabs that are needed, but not yet designed or developed.
 @blueprint.route("/views/database_statistics_tab_render")
+@login_required
 def databaseStats():
     return render_template("blueprint/database_statistics.html")
 
 
 @blueprint.route("/views/results_statistics_tab_render")
+@login_required
 def resultsStats():
     return render_template("blueprint/results_statistics.html")
 
