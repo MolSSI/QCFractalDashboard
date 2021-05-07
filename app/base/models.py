@@ -5,10 +5,9 @@ Copyright (c) 2019 - present AppSeed.us
 
 from flask_login import UserMixin
 from sqlalchemy import LargeBinary, Column, Integer, String
-
 from app import db, login_manager
-
 from app.base.util import hash_pass
+
 
 class User(db.Model, UserMixin):
 
@@ -36,6 +35,7 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return str(self.username)
 
+
 class ClientUser(UserMixin):
 
     def __init__(self, username):
@@ -48,7 +48,7 @@ class ClientUser(UserMixin):
 @login_manager.user_loader
 def user_loader(id):
     # return User.query.filter_by(id=id).first()
-    return User(username=id)
+    return ClientUser(username=id)
 #
 # @login_manager.request_loader
 # def request_loader(request):
