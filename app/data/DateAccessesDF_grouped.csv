@@ -1,0 +1,9 @@
+,year,month,access_type,hits,Combined
+0,2019,5,molecule_1,1,"5, 2019"
+1,2019,9,molecule_2,1,"9, 2019"
+2,2020,1,molecule_3,1,"1, 2020"
+3,2020,3,molecule_1,1,"3, 2020"
+4,2020,3,molecule_2,2,"3, 2020"
+5,2020,3,molecule_3,1,"3, 2020"
+6,2020,3,molecule_4,1,"3, 2020"
+7,2020,4,molecule_1,2,"4, 2020"

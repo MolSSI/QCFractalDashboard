@@ -203,16 +203,39 @@ def get_user_table():
 @blueprint.route('/views/users_access_data_map')
 @login_required
 def get_map_data():
-    with open('app/base/static/data/access_log_data.json') as fp:
+    # /Users/emanhussein/MOLSSI/NewDashboard/QCFractalDashboard/app/data
+    with open('app/data/access_log_data.json') as fp:
         dataSet = json.load(fp)
+    
+    # dataSet =  client.query_access_log() #new function
     df = pd.DataFrame(dataSet)
-    map_df = df[['ip_lat', 'ip_long', 'country', 'city', 'id']]
+    print("df=====================")
+    print(df)
+    map_df = df[['ip_lat', 'ip_long', 'country', 'city', 'subdivision', 'id']]
+    print(map_df.shape)
     map_df.dropna(subset=['ip_lat', 'ip_long'])
-    map_df_grouped = map_df.groupby(['ip_lat', 'ip_long']).count()['id']
+    print("map_df and its shape after removing nan")
+    print(map_df.shape)
+    print(map_df)
+    # map_df_grouped = map_df.groupby(['ip_lat', 'ip_long']).count()['id']
+    map_df_grouped = map_df.groupby(['ip_lat', 'ip_long']).agg(
+        {'id': 'count', 'country': 'first', 'city': 'first', 'subdivision': 'first'})
     df_map_df_grouped = pd.DataFrame(map_df_grouped)
+    print("df_map_df_grouped")
+    print(df_map_df_grouped)
+    # map_data_json = df_map_df_grouped.to_dict()
     map_data_json = df_map_df_grouped.to_json()
+    print(map_data_json)
     to_return = {'data': map_data_json, 'size': df_map_df_grouped.shape[0]}
     return to_return
+    # df = pd.DataFrame(dataSet)
+    # map_df = df[['ip_lat', 'ip_long', 'country', 'city', 'id']]
+    # map_df.dropna(subset=['ip_lat', 'ip_long'])
+    # map_df_grouped = map_df.groupby(['ip_lat', 'ip_long']).count()['id']
+    # df_map_df_grouped = pd.DataFrame(map_df_grouped)
+    # map_data_json = df_map_df_grouped.to_json()
+    # to_return = {'data': map_data_json, 'size': df_map_df_grouped.shape[0]}
+    # return to_return
 
 
 @blueprint.route('/views/users_access_data')
