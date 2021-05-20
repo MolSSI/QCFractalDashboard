@@ -16,15 +16,21 @@ $(function ($) {
   ];
 
   var table = $('#task_queue_table').DataTable({
+    dom: 'Bfrtip',
     buttons: [
       {
+        extend: 'selected',
         text: 'Delete',
         className: 'btn-primary'
       },
       {
+        extend: 'selected',
         text: 'Restart',
         className: 'btn-primary'
-      }],
+      },
+      'selectAll',
+      'selectNone'
+    ],
     language: {
       buttons: {
         selectAll: "Select All",
@@ -44,8 +50,14 @@ $(function ($) {
           } else if (this.text() === 'Restart') {
             restartAction()
           }
+          else if  (this.text() === 'Select All') {
+            table.rows().select();
+          }
+          else if (this.text() === 'Deselect All'){
+            table.rows().deselect();
+          }
         });
-        $('#task-queue-table-main-body').LoadingOverlay("hide");
+      $('#task-queue-table-main-body').LoadingOverlay("hide");
     },
     columnDefs: [
       {
@@ -161,19 +173,22 @@ $(function ($) {
     }
   }
 
+
   function restartAction() {
     var selected = table.column(0).checkboxes.selected();
     var row_ids = [];
     $.each(selected, function (index, rowId) {
-      row_ids.push(rowId);
+      var status_ = table.rows({ selected: true }).data()[index].status
+      if (status_ != 'WAITING') {
+        row_ids.push(rowId);
+      }
     });
-
-    if (selected.length != 0) {
+    if (selected.length != 0) { // this check will not be needed if the buttons are enabled only upon selection
       $.confirm({
         title: 'Restart confirmation',
         type: 'red',
         escapeKey: true,
-        content: `Are you sure you want to restart ${selected.length} task(s)?`,
+        content: `Are you sure you want to restart ${row_ids.length} task(s)? Only Tasks of Running or Error status can be restarted.`,
         theme: 'bootstrap',
         container: '.main-body',
         closeIcon: true,
@@ -195,7 +210,7 @@ $(function ($) {
               })
                 .done(function () {
                   $.notify(
-                    `${selected.length} task(s) restarted successfully.`, {
+                    `${row_ids.length} task(s) restarted successfully.`, {
                     clickToHide: true,
                     autoHide: true,
                     autoHideDelay: 5000,
@@ -209,7 +224,9 @@ $(function ($) {
                     hideDuration: 200,
                     gap: 10
                   });
-                  table.rows('.selected').remove().draw();
+
+                  table.ajax.reload();
+                  // table.rows('.selected').remove().draw();
                 })
                 .fail(function () {
                   $.notify(

@@ -77,7 +77,13 @@ $(function ($) {
         var layout = {
           barmode: 'stack'
         };
-        Plotly.newPlot('subdivisionDiv', data, layout);
+        if (Object.keys(subdivision_dict).length > 0){
+          console.log("data.length")
+          console.log(Object.keys(subdivision_dict))
+          Plotly.newPlot('subdivisionDiv', data, layout, {responsive: true});
+        }
+
+        // Plotly.newPlot('subdivisionDiv', data, layout);
       },
       complete: function(){
         $('#datatables_wrapper').LoadingOverlay("hide");

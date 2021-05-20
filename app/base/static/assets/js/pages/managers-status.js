@@ -5,10 +5,11 @@ $(function ($) {
   });
 
   function plotting_trial_manager_status() {
-    var lineDiv = document.getElementById('line_chart_manager_status');
-    var lineDiv2 = document.getElementById('line_chart_manager_status2');
-    var lineDiv3 = document.getElementById('line_chart_manager_status3');
-    var lineDiv4 = document.getElementById('line_chart_manager_status4');
+    // Remove the following commented lines
+    // var lineDiv = document.getElementById('line_chart_manager_status');
+    // var lineDiv2 = document.getElementById('line_chart_manager_status2');
+    // var lineDiv3 = document.getElementById('line_chart_manager_status3');
+    // var lineDiv4 = document.getElementById('line_chart_manager_status4');
 
     var data = null;
 
@@ -29,6 +30,9 @@ $(function ($) {
             alert("error /views/managers_status: " + xhr);
           },
           success: function (ret) {
+            // ret looks like the following:
+            // jsonAll = {'jsonhostClusterModifiedOnDF': jsonhostClusterModifiedOnDF,
+            // 'jsonhostClusterCompletedFailureDF': jsonhostClusterCompletedFailureDF}
             data = ret;
 
             for (i = 0; i < data.length; i++) {
@@ -112,8 +116,8 @@ $(function ($) {
     });
   }
 
-  plotting_trial_manager_status()
-  // managers_status_trial()
+  // plotting_trial_manager_status() //Eman commented this out for now
+  // managers_status_trial() //This was already commented out
 
   var data_ret = null;
   var hostnames = [];
@@ -142,6 +146,9 @@ $(function ($) {
         alert("error /views/managers_status: " + xhr);
       },
       success: function (ret) {
+        // This is what ret returned from flask looks like: 
+        // jsonAll = {'jsonhostClusterModifiedOnDF': jsonhostClusterModifiedOnDF,
+        //  'jsonhostClusterCompletedFailureDF': jsonhostClusterCompletedFailureDF}
         var hostname_clustername_json_array = [];
 
         var jsonhostClusterModifiedOn = ret['jsonhostClusterModifiedOnDF']
@@ -155,6 +162,7 @@ $(function ($) {
 
         var stringRepresentationSet = new Set(); //to store premitive representation of the object
 
+        // Eman: shouldn't the following store ret and not data_ret?
         sessionStorage.setItem('dataFromPython', JSON.stringify(data_ret))
 
         var dateSet = new Set()
@@ -190,7 +198,8 @@ $(function ($) {
           } //end of if (stringRepresentationSet.has(stringRepresentation) == false) {
 
           var clustName = hostname_clustername_json_array[i].clustername
-          var json_obj = { value: clustName, label: clustName }
+          var labelVar = "Cluster: "+ clustName
+          var json_obj = { value: clustName, label: labelVar }
           if (clustArray.includes(clustName) == false) {
             clustArray.push(clustName)
             optgroup_array.push(json_obj)
@@ -250,7 +259,7 @@ $(function ($) {
 
         var df = [hostname_clustername_json_array[0].hostname, hostname_clustername_json_array[1].hostname, hostname_clustername_json_array[2].hostname]
 
-        // initialize the Selectize control
+        
         var $selectize_hostname = $('#hostnamesdata').selectize({
           options: hostname_clustername_json_array, //An array of the options available to select; array of objects.
           valueField: 'hostname',
@@ -370,7 +379,8 @@ $(function ($) {
                 // text: hoverData
               }
             ]
-            Plotly.react(plottingDiv, dataToPlot, layout_hostnames, {responsive: true})
+            // Plotly.react(plottingDiv, dataToPlot, layout_hostnames, {responsive: true}) // The following parameter causes a problem, so removed it {responsive: true}
+            Plotly.react(plottingDiv, dataToPlot, layout_hostnames)
           })
         }
         // fetch the instance
@@ -393,7 +403,8 @@ $(function ($) {
             name: "Failed",
           }
         ]
-        Plotly.react(hostnamesDiv, dataToPlot, layout_hostnames, {responsive: true})
+        // Plotly.react(hostnamesDiv, dataToPlot, layout_hostnames, {responsive: true})
+        Plotly.react(hostnamesDiv, dataToPlot, layout_hostnames)
         sliderChangeReflect(dataReturned, tempVar, hostnamesDiv, layout_hostnames)
 
         function getActiveSliderStep(layout) {
@@ -427,7 +438,8 @@ $(function ($) {
 
         selectizeControl_hostname.on('change', function () {
           var chosenhostname = selectizeControl_hostname.getValue();
-          dataReturned = getHostnameData(chosenhostname, hostnamesDiv);
+          console.log(chosenhostname)
+          var dataReturned = getHostnameData(chosenhostname, hostnamesDiv);
           var dataToPlot = [
             {
               histfunc: "count",
@@ -444,12 +456,13 @@ $(function ($) {
               name: "Failed",
             }
           ]
-          Plotly.react(hostnamesDiv, dataToPlot, layout_hostnames, {responsive: true})
+       
+          // Plotly.react(hostnamesDiv, dataToPlot, layout_hostnames, {responsive: true}) // The following parameter causes a problem, so removed it {responsive: true}
+          Plotly.react(hostnamesDiv, dataToPlot, layout_hostnames)
           sliderChangeReflect(dataToPlot, chosenhostname, hostnamesDiv, layout_hostnames)
         });
         ////////////////////////////////////// End of Hostnames Related Part ///////////////////////********************************************************************************************
         ///////////////////////////////////// Beginning of Clusternames dropdown////////////////////
-
         var df_cluster = [clusters_names[0].clustername, clusters_names[1].clustername, clusters_names[2].clustername]
         // initialize selectize
         var $selectize = $('#clusternamesdata').selectize({
@@ -546,7 +559,8 @@ $(function ($) {
               name: "Failed"
             }
           ]
-          Plotly.newPlot(plottingDiv, d_test, layout_clusters, {responsive: true});
+          // Plotly.newPlot(plottingDiv, d_test, layout_clusters, {responsive: true});
+          Plotly.newPlot(plottingDiv, d_test, layout_clusters);
 
         };
 

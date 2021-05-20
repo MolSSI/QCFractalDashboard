@@ -164,16 +164,12 @@ def priorityText(pr):
 @blueprint.route('/views/tasks_queue_restart', methods=['POST'])
 @login_required
 def tasks_queue_restart():
-    ids = request.get_json().values()
-
-    # Will not call this for now:
-    # for id_entry in ids:
-    #     # upd = client.modify_tasks("restart", base_result=request.get_data().decode('UTF-8'), full_return= True)
-    #     upd = client.modify_tasks("restart", base_result=id_entry)
-    # return_data = {'number_of_updated': upd.n_updated}
-    # return return_data
-    return jsonify(1)
-
+    client = get_client()
+    ids = request.get_json()
+    print(ids['ids'])
+    upd = client.modify_tasks("restart", base_result=ids['ids'])
+    return_data = {'number_of_updated': upd.n_updated}
+    return return_data
 
 @blueprint.route('/views/tasks_queue_delete', methods=['POST'])
 @login_required
@@ -204,6 +200,7 @@ def get_user_table():
 @login_required
 def get_map_data():
     # /Users/emanhussein/MOLSSI/NewDashboard/QCFractalDashboard/app/data
+    
     with open('app/data/access_log_data.json') as fp:
         dataSet = json.load(fp)
     
@@ -260,8 +257,7 @@ def get_user():
     dateAccessesDF_grouped.to_frame()
     # dateAccessesDF_grouped.rename(columns={'id':'count'}, inplace=True)
     dateAccessesDF_grouped = dateAccessesDF_grouped.reset_index(level=1)
-
-    dateAccessesDF_grouped.to_csv('app/base/static/data/dateAccessesDF_grouped.csv')
+    dateAccessesDF_grouped.to_csv('app/data/dateAccessesDF_grouped.csv')
 
     access_type_list = dateAccessesDF_grouped.index.unique().to_list()
     nested_dict = {}
