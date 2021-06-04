@@ -1,12 +1,15 @@
 $(function ($) {
-
   $('#task-queue-table-main-body').LoadingOverlay("show", {
     text: 'Loading Tasks Data'
   });
 
   var columns = [
     { title: "Select", data: "base_result", "width": "20px" },
-    { title: "Result ID", data: "base_result", "width": "70px" },
+    { title: "Result ID", data: "base_result", "width": "70px", "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+      // alert("base_result")
+      // $(nTd).html("<a href='tel:"+oData.base_result+"'>"+oData.base_result+"</a>");
+      $(nTd).html("<a href='task_queue_details.html'>"+oData.base_result+"</a>");
+  } },
     { title: "Status", data: "status", "width": "50px" },
     { title: "Manager", data: "manager" },
     { title: "Tag", data: "tag", "width": "50px" },
@@ -14,6 +17,10 @@ $(function ($) {
     { title: "Modified on", data: "modified_on", "width": "120px" },
     { title: "Created on", data: "created_on", "width": "120px" }
   ];
+//   $('#task_queue_table tr').on('click', 'tr', function () {
+//     var data = table.row( this ).data();
+//     alert( 'You clicked on '+data[0]+'\'s row' );
+// } );
 
   var table = $('#task_queue_table').DataTable({
     dom: 'Bfrtip',
@@ -38,6 +45,14 @@ $(function ($) {
       }
     },
     columns: columns,
+    columnDefs: [ {
+      "targets": 1,
+      "data": "base_result",
+      "render": function ( data, type, row, meta ) {
+        alert("fddf")
+        return '<a href="'+data+'">/a>';
+      }
+    } ],
     ajax: '/views/tasks_queue_data',
     initComplete: function () {
       table.buttons().container()

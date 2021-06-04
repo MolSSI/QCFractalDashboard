@@ -93,7 +93,7 @@ $(function ($) {
     var data = null;
 
     $.ajax({
-      url: "views/managers_status2",
+      url: "views/managers_status2", // why 2 ?
       async: false, //to wait until data is returned, potential bug
       dataType: 'json',
       error: function (xhr, error) {
@@ -356,6 +356,7 @@ $(function ($) {
         };
 
         function sliderChangeReflect(dataReturnedParam, chosenHostname, plottingDiv, layout) {
+          console.log($(this))
           $(this).on('plotly_sliderchange', function (e) {
             var dataReturned = getHostnameData(chosenHostname, plottingDiv);
 

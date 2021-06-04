@@ -14,13 +14,40 @@ from app import login_manager, cache
 from jinja2 import TemplateNotFound
 import pandas as pd
 import math, time, json
-
-
+from pprint import pprint 
+import ast
+from pandas.io.json import json_normalize
+from flatten_dict import flatten
+import datetime
 
 @blueprint.route('/index')
 @login_required
 def index():
-    return render_template('index.html', segment='index')
+    client = get_client()
+    dataSet = client.query_tasks(full_return=True)
+    query_meta = dataSet.meta
+    print("get_general_stats dataSet")
+    print(dataSet)
+    server_information = client.server_info
+    print(type(server_information))
+    # last_update_format = server_information['last_update'].strftime('%Y-%m-%d')
+    # print(last_update_format)
+    print(server_information['name'])
+    stats ={}
+    stats["query_n_found"] = query_meta.n_found
+    stats["server_information"] = server_information
+
+    dataSet_logs = client.query_access_log()
+    dataSet_log_df = pd.DataFrame(dataSet_logs)
+    print("dataSet_log_df")
+    print(dataSet_log_df)
+    users_set=dataSet_log_df.user.unique()
+    stats["users_set"] = users_set
+    # stats['last_update_format']=last_update_format
+
+
+    
+    return render_template('index.html', segment='index', posts=stats)
 
 @blueprint.route('/<template>')
 @login_required
@@ -181,6 +208,21 @@ def tasks_queue_delete():
 
 # End of Tasks Queue Tab-related functions
 
+#Begining of Landing page related functions
+@blueprint.route('/views/general_stats')
+@login_required
+def get_general_stats():
+    client = get_client()
+    dataSet = client.query_tasks(full_return=True)
+    print("get_general_stats dataSet")
+    print(dataSet)
+    ret_modified = client.query_managers(status=None, full_return=True)
+    ret_modified_data = ret_modified.data  # returns dictionaries
+    n_found = ret_modified.meta.n_found
+    print("get_general_stats ret_modified")
+    print(ret_modified)
+
+
 # Start of Users Access Tab-related functions
 @blueprint.route("/views/users_access_tab_render")
 @login_required
@@ -191,7 +233,9 @@ def usersAcess():
 @login_required
 def get_user_table():
     client = get_client()
-    dataSet = client.query_access_log()  # new function
+    dataSet = client.query_access_log(limit=1000)  # new function
+    # dataSet = client.query_access_log()  # if limit not specified, returned data is approx. 10,000
+
     return jsonify(dataSet)
 
 
@@ -200,11 +244,11 @@ def get_user_table():
 @login_required
 def get_map_data():
     # /Users/emanhussein/MOLSSI/NewDashboard/QCFractalDashboard/app/data
-    
-    with open('app/data/access_log_data.json') as fp:
-        dataSet = json.load(fp)
-    
-    # dataSet =  client.query_access_log() #new function
+    # with open('app/data/access_log_data.json') as fp:
+    #     dataSet = json.load(fp)
+
+    client = get_client()
+    dataSet = client.query_access_log()     
     df = pd.DataFrame(dataSet)
     print("df=====================")
     print(df)
@@ -214,7 +258,6 @@ def get_map_data():
     print("map_df and its shape after removing nan")
     print(map_df.shape)
     print(map_df)
-    # map_df_grouped = map_df.groupby(['ip_lat', 'ip_long']).count()['id']
     map_df_grouped = map_df.groupby(['ip_lat', 'ip_long']).agg(
         {'id': 'count', 'country': 'first', 'city': 'first', 'subdivision': 'first'})
     df_map_df_grouped = pd.DataFrame(map_df_grouped)
@@ -225,57 +268,304 @@ def get_map_data():
     print(map_data_json)
     to_return = {'data': map_data_json, 'size': df_map_df_grouped.shape[0]}
     return to_return
+   
+
+# @blueprint.route('/views/users_access_data', methods=['POST'])
+# @login_required
+# def get_user():
+#     client = get_client()
+#     date_begining = request.get_json()
+#     print("==========================================================================")
+#     print("date_begining")
+#     print(date_begining)
+    
+#     # date_begining_format = datetime.strptime(date_begining, '%y-%m-%d')
+
+#     dataSet_2 = client.query_access_summary(after=date_begining)
+#     print("dataSet_2")
+#     print(type(dataSet_2))
+#     pprint(dataSet_2)  # new function
+   
+#     # print(dataSet_2.keys())
+#     # print("dataset_values ==================================================")
+#     dataset_values = dataSet_2.values()
+#     # print(type(dataset_values) )
+#     # print(dataSet_2.values())
+#     s = set()
+#     for dic in dataset_values:
+#         # print("dic in dataset_values==========================================************************=====")
+#         # print("type of dic")
+#         # print(type(dic))
+#         # print(dic)     
+#         for val in dic:
+#             # print("val in dic==========")
+#             # print(val)
+#             for x in val.keys():
+#                 # print(" x in val.keys():")
+#                 # print("type of x")
+#                 # print(type(x))
+#                 # print(x)
+#                 if x == 'access_type':
+#                     # print(val[x])
+#                     s.add(val[x])
+#             # print("===************************=====")
+#     # print("s= ")
+#     # print(s)
+
+#     df = pd.DataFrame.from_dict(dataSet_2, orient = 'index') # ValueError: arrays must all be same length, solved by orient = 'index' & transpose 
+#     df.transpose()
+#     df.to_csv('/Users/emanhussein/Desktop/query_access_summary.csv')
+#     df_copy = df
+#     longest = df.shape[1]
+#     # print("==================================================")
+#     # print("df_copy before renaming columns")
+#     # print(df_copy.head(5))
+#     nested_dictionary = {}
+
+#     # access_types_returned = df_copy.name.unique()
+#     large_df = pd.DataFrame(columns = list(s), index=df_copy.index)
+#     dict_combo = {}
+#     for ind in  range (df_copy.shape[0]):
+#         # print("index = ")
+#         # print(ind)
+#         for x in range (longest):
+#             # print("x= ")
+#             # print(x)
+#             dict_elem = df_copy[x][ind]
+#             # print("dict_elem = df_copy[ind][x] ")
+#             # print(dict_elem )
+#             if dict_elem != None:
+#                 # print("dict_elem['access_type']")
+#                 # print(dict_elem['access_type'])
+
+#                 access_type_col = dict_elem['access_type']
+#                 # print("large_df.iloc[ind][access_type_col] ")
+#                 # print(large_df.iloc[ind][access_type_col] )
+#                 large_df.iloc[ind][access_type_col]  = dict_elem['count']
+#                 # print("large_df===========================================")
+#                 # print(large_df)
+#                 # print("==================================")
+#                 # stacked_area_plot_elem = large_df[i]
+#                 # print(stacked_area_plot_elem)
+#                 # print("type(stacked_area_plot_elem)")
+#                 # print(type(stacked_area_plot_elem))
+#                 # dict_combo[dict_elem['access_type']] =  stacked_area_plot_elem
+    
+#     print("large_df===========================================")
+#     print(large_df)
+#     large_df = large_df.fillna(0)
+#     large_df.sort_index(inplace=True)
+#     large_df.to_csv('/Users/emanhussein/Desktop/large_df.csv')
+#     all_arr = []
+#     for i in list(s):
+#         # print("i in list(s):")
+#         # print(i)
+#         stacked_area_plot_elem = large_df[i]
+#         # print("large_df[i]")
+#         # print(large_df[i])
+#         # print("^^^^^^^^^^^^^^^^________^^^^^^^^^^^^^^^^^^^^^")
+#         # print(stacked_area_plot_elem)
+#         # print(type(stacked_area_plot_elem))
+#         stacked_area_plot_elem_dict = stacked_area_plot_elem.to_dict()
+#         dict_combo[i] =  stacked_area_plot_elem_dict
+#     print("dict_combo")
+#     print(dict_combo)
+#     print(dict_combo.keys())
+#     dict_combo_values = dict_combo.values()
+#     # for item in dict_combo.items():
+#     #     print(item)
+#     #     print("_________________-------_____________")
+#     return json.dumps(dict_combo)
+    
+    # # with open(url_for('static', filename='data/dummy_data_user_access.json')) as fp:
+    # # app/static/data/dummy_data_user_access.json
+    # start = time.time()
+
+    # # with open('app/static/data/access_log_data.json') as fp:
+    # #     # with open("app/static/data/tiny_access_logs.json") as fp:
+    # #     dataSet = json.load(fp)
+    # client = get_client()
+    # dataSet = client.query_access_log()  # new function
+
     # df = pd.DataFrame(dataSet)
-    # map_df = df[['ip_lat', 'ip_long', 'country', 'city', 'id']]
-    # map_df.dropna(subset=['ip_lat', 'ip_long'])
-    # map_df_grouped = map_df.groupby(['ip_lat', 'ip_long']).count()['id']
-    # df_map_df_grouped = pd.DataFrame(map_df_grouped)
-    # map_data_json = df_map_df_grouped.to_json()
-    # to_return = {'data': map_data_json, 'size': df_map_df_grouped.shape[0]}
-    # return to_return
+    # df['access_date'] = pd.to_datetime(df['access_date'])
+    # df.set_index('access_date', inplace=True)
+    # df.sort_index(inplace=True)
+    # dateAccessesDF_grouped = df.groupby('access_type').resample(
+    #     'H').count()['id']  # group all data by month, but for dates
+    # dateAccessesDF_grouped.to_frame()
+    # # dateAccessesDF_grouped.rename(columns={'id':'count'}, inplace=True)
+    # dateAccessesDF_grouped = dateAccessesDF_grouped.reset_index(level=1)
+    # dateAccessesDF_grouped.to_csv('app/data/dateAccessesDF_grouped.csv')
 
+    # access_type_list = dateAccessesDF_grouped.index.unique().to_list()
+    # nested_dict = {}
+    # for access_type_element in access_type_list:
+    #     # print(access_type_element)
+    #     df_per_type = dateAccessesDF_grouped.loc[[access_type_element], :]
+    #     df_per_type = df_per_type.reset_index(level=0, drop=True)
+    #     dictionary_group = df_per_type.to_dict(orient='list')
+    #     nested_dict[access_type_element] = dictionary_group
+    #     # print(nested_dict)
+    #     # print("=======================")
+    # # print("nested_dict after loop")
+    # # print(nested_dict)
 
-@blueprint.route('/views/users_access_data')
+    # DateAccessesJSON = dateAccessesDF_grouped.to_json(
+    #     orient='records')
+
+    # # group all data by month, but for dates
+    # subdivision_df = df.groupby('subdivision').count()['id']
+
+    # subdivision_df = subdivision_df.reset_index(level=0)
+    # subdivision_df.sort_values(by=['id'])
+    # # subdivision_df.to_frame()
+    # print(subdivision_df)
+    # top_x_subdivisions = subdivision_df.head(20)
+    # subdivision_json = top_x_subdivisions.to_json(orient='records')
+
+    # allData = {'DateAccessesJSON': DateAccessesJSON,
+    #            'access_date_type': nested_dict, 'subdivision': subdivision_json}
+    # return allData
+    # return jsonify(allData)
+
+@blueprint.route('/views/users_access_data_slider', methods=['POST', 'GET'])
 @login_required
-def get_user():
-    # with open(url_for('static', filename='data/dummy_data_user_access.json')) as fp:
-    # app/static/data/dummy_data_user_access.json
-    start = time.time()
+def get_user_slider():
+    client = get_client()
+    date_begining = request.get_json()
+    print("==========================================================================")
+    print("date_begining")
+    print(date_begining)
+    if date_begining != None:
 
-    # with open('app/static/data/access_log_data.json') as fp:
-    #     # with open("app/static/data/tiny_access_logs.json") as fp:
-    #     dataSet = json.load(fp)
+        date_time_obj = datetime.datetime.strptime(date_begining, '%Y-%m-%d')
+        print(date_time_obj)
+        dataSet_2 = client.query_access_summary(after=date_time_obj)
+    else: # returning all data, this is needed when loading the data first time before making any slider selection
+        today = datetime.datetime.now()
+        days = datetime.timedelta(365)
+        new_date = today - days
+        print("new date")
+        print(type(new_date))
+        print(new_date)
+        dataSet_2 = client.query_access_summary(after=new_date)
+
+    print("dataSet_2")
+    print(type(dataSet_2))
+    pprint(dataSet_2)  # new function
+   
+    # print(dataSet_2.keys())
+    # print("dataset_values ==================================================")
+    dataset_values = dataSet_2.values()
+    # print(type(dataset_values) )
+    # print(dataSet_2.values())
+    s = set()
+    for dic in dataset_values:
+        # print("dic in dataset_values==========================================************************=====")
+        # print("type of dic")
+        # print(type(dic))
+        # print(dic)     
+        for val in dic:
+            print("val in dic==========")
+            print(val)
+            for x in val.keys():
+                print(" x in val.keys():")
+                print("type of x")
+                print(type(x))
+                print(x)
+                if x == 'access_type':
+                    print(val[x])
+                    s.add(val[x])
+            # print("===************************=====")
+    # print("s= ")
+    # print(s)
+
+    df = pd.DataFrame.from_dict(dataSet_2, orient = 'index') # ValueError: arrays must all be same length, solved by orient = 'index' & transpose 
+    df.transpose()
+    df.to_csv('/Users/emanhussein/Desktop/query_access_summary.csv')
+    df_copy = df
+    longest = df.shape[1]
+    # print("==================================================")
+    # print("df_copy before renaming columns")
+    # print(df_copy.head(5))
+    nested_dictionary = {}
+
+    # access_types_returned = df_copy.name.unique()
+    large_df = pd.DataFrame(columns = list(s), index=df_copy.index)
+    steps_arr = []
+    large_df.sort_index(inplace=True)
+
+    for i, row in large_df.iterrows():
+        print('index: ', i)
+        step_element =  { "label": i, "method": 'skip', "execute": False}
+        steps_arr.append(step_element)
+    dict_combo = {}
+    for ind in  range (df_copy.shape[0]):
+        print("index = ")
+        print(ind)
+        for x in range (longest):
+            # print("x= ")
+            # print(x)
+            dict_elem = df_copy[x][ind]
+            # print("dict_elem = df_copy[ind][x] ")
+            # print(dict_elem )
+            if dict_elem != None:
+                # print("dict_elem['access_type']")
+                # print(dict_elem['access_type'])
+
+                access_type_col = dict_elem['access_type']
+                # print("large_df.iloc[ind][access_type_col] ")
+                # print(large_df.iloc[ind][access_type_col] )
+                large_df.iloc[ind][access_type_col]  = dict_elem['count']
+                # print("large_df===========================================")
+                # print(large_df)
+                # print("==================================")
+                # stacked_area_plot_elem = large_df[i]
+                # print(stacked_area_plot_elem)
+                # print("type(stacked_area_plot_elem)")
+                # print(type(stacked_area_plot_elem))
+                # dict_combo[dict_elem['access_type']] =  stacked_area_plot_elem
+    
+    print("large_df===========================================")
+    print(large_df)
+    large_df = large_df.fillna(0)
+    large_df.to_csv('/Users/emanhussein/Desktop/large_df.csv')
+    all_arr = []
+    for i in list(s):
+        print("i in list(s):")
+        print(i)
+        stacked_area_plot_elem = large_df[i]
+        # print("large_df[i]")
+        # print(large_df[i])
+        # print("^^^^^^^^^^^^^^^^________^^^^^^^^^^^^^^^^^^^^^")
+        # print(stacked_area_plot_elem)
+        # print(type(stacked_area_plot_elem))
+        stacked_area_plot_elem_dict = stacked_area_plot_elem.to_dict()
+        dict_combo[i] =  stacked_area_plot_elem_dict
+       
+
+        
+    print("dict_combo")
+    print(dict_combo)
+    print(dict_combo.keys())
+
+    dict_combo_values = dict_combo.values()
+    to_return = {"dict_combo": dict_combo, "steps": steps_arr}
+    # for item in dict_combo.items():
+    #     print(item)
+    #     print("_________________-------_____________")
+    return jsonify(to_return)
+    # return json.dumps(dict_combo)
+    
+@blueprint.route('/views/users_access_data_subdivision')
+@login_required    
+def get_user_subdivision():
     client = get_client()
     dataSet = client.query_access_log()  # new function
-
     df = pd.DataFrame(dataSet)
-    df['access_date'] = pd.to_datetime(df['access_date'])
-    df.set_index('access_date', inplace=True)
-    df.sort_index(inplace=True)
-    dateAccessesDF_grouped = df.groupby('access_type').resample(
-        'H').count()['id']  # group all data by month, but for dates
-    dateAccessesDF_grouped.to_frame()
-    # dateAccessesDF_grouped.rename(columns={'id':'count'}, inplace=True)
-    dateAccessesDF_grouped = dateAccessesDF_grouped.reset_index(level=1)
-    dateAccessesDF_grouped.to_csv('app/data/dateAccessesDF_grouped.csv')
-
-    access_type_list = dateAccessesDF_grouped.index.unique().to_list()
-    nested_dict = {}
-    for access_type_element in access_type_list:
-        print(access_type_element)
-        df_per_type = dateAccessesDF_grouped.loc[[access_type_element], :]
-        df_per_type = df_per_type.reset_index(level=0, drop=True)
-        dictionary_group = df_per_type.to_dict(orient='list')
-        nested_dict[access_type_element] = dictionary_group
-        print(nested_dict)
-        print("=======================")
-    # print("nested_dict after loop")
-    # print(nested_dict)
-
-    DateAccessesJSON = dateAccessesDF_grouped.to_json(
-        orient='records')
-
-    # group all data by month, but for dates
+    print("subdivision")
+    print(df)
     subdivision_df = df.groupby('subdivision').count()['id']
 
     subdivision_df = subdivision_df.reset_index(level=0)
@@ -285,9 +575,8 @@ def get_user():
     top_x_subdivisions = subdivision_df.head(20)
     subdivision_json = top_x_subdivisions.to_json(orient='records')
 
-    allData = {'DateAccessesJSON': DateAccessesJSON,
-               'access_date_type': nested_dict, 'subdivision': subdivision_json}
-    return allData
+    
+    return top_x_subdivisions
     # return jsonify(allData)
 
 # Placeholder for Tabs that are needed, but not yet designed or developed.
