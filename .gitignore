@@ -30,3 +30,4 @@ package-lock.json
 .idea/
 .env
 app/base/static/data/*.*
+.vscode/
