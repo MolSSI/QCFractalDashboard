@@ -495,12 +495,15 @@ def get_user_slider():
     large_df = pd.DataFrame(columns = list(s), index=df_copy.index)
     steps_arr = []
     large_df.sort_index(inplace=True)
-
+    print("large_df.iterrows()")
+    iterrows = large_df.iterrows()
+    print(type(iterrows))
     for i, row in large_df.iterrows():
         print('index: ', i)
         step_element =  { "label": i, "method": 'skip', "execute": False}
         steps_arr.append(step_element)
     dict_combo = {}
+    print(type(steps_arr))
     for ind in  range (df_copy.shape[0]):
         print("index = ")
         print(ind)
@@ -551,12 +554,24 @@ def get_user_slider():
     print(dict_combo.keys())
 
     dict_combo_values = dict_combo.values()
+    # removing the last element in steps [ for better visualization in the stacked area plot]
+    print("steps_arr before pop")
+    print(steps_arr)
+    steps_arr.pop()
+    print("steps_arr after pop")
+    print(steps_arr)
+
     to_return = {"dict_combo": dict_combo, "steps": steps_arr}
     # for item in dict_combo.items():
     #     print(item)
     #     print("_________________-------_____________")
     return jsonify(to_return)
     # return json.dumps(dict_combo)
+
+
+
+
+
     
 @blueprint.route('/views/users_access_data_subdivision')
 @login_required    
@@ -576,8 +591,10 @@ def get_user_subdivision():
     subdivision_json = top_x_subdivisions.to_json(orient='records')
 
     
-    return top_x_subdivisions
+    # return top_x_subdivisions
     # return jsonify(allData)
+    return subdivision_json
+
 
 # Placeholder for Tabs that are needed, but not yet designed or developed.
 @blueprint.route("/views/database_statistics_tab_render")
