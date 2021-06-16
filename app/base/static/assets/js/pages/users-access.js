@@ -7,13 +7,32 @@ $(function ($) {
   var columns = [
     { title: "ID", data: "id", "width": "70px" },
     { title: "User", data: 'user', "width": "70px" },
-    { title: "Request Duration", data: "request_duration" },
+    {
+      title: "Request Duration (ms)", data: "request_duration", render: function (data, type, row) {
+        return Number((data * 1000).toFixed(1));
+      }
+    },
     { title: "Access Type", data: "access_type" },
-    { title: "Access Date", data: "access_date" },
+    {
+      title: "Access Date", data: "access_date", render: function (data, type, row) {
+        datetime = new Date(data);
+        day = datetime.getDate();
+        month = datetime.getMonth() + 1; //month: 0-11
+        year = datetime.getFullYear();
+        date = year + "-" + day + "-" + month;
+        hours = datetime.getHours();
+        minutes = datetime.getMinutes();
+        seconds = datetime.getSeconds();
+        time = hours + ":" + minutes + ":" + seconds;
+        all = date + " , " + time
+        return all;
+      }
+    },
     { title: "IP Address", data: "ip_address" },
     { title: "User Agent", data: "user_agent" },
     { title: "Geo Location", data: "country" }
   ];
+
 
   $('#users_info').DataTable({
     ajax: {
@@ -25,6 +44,7 @@ $(function ($) {
       }
     },
     columns: columns,
+
     dom: "<'row'<'col-sm-6'l><'col-sm-6'f>>" +
       "<'row'<'col-sm-5'i><'col-sm-7'p>>" +
       "<'row'<'col-sm-12'tr>>",

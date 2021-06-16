@@ -20,11 +20,11 @@
           <div class="col-md-6 col-xl-4">
             <div class="card daily-sales">
               <div class="card-block">
-                <h3 class="mb-4">Number of Queries</h3>
+                <h3 class="mb-4">Server Info (Error Logs)</h3>
                 <div class="row d-flex align-items-center">
                   <div class="col-9" id="users_count">
                     <h4 class="f-w-300 d-flex align-items-center m-b-0"><i
-                        class="feather text-c-green f-30 m-r-10"></i>n_found = {{ posts["query_n_found"] }}</h4>
+                        class="feather text-c-green f-30 m-r-10"></i> {{ posts["error_log"] }}</h4>
                   </div>
 
                   <!-- <div class="col-3 text-right">
@@ -43,11 +43,10 @@
           <div class="col-md-6 col-xl-4">
             <div class="card Monthly-sales">
               <div class="card-block">
-                <h3 class="mb-4">Server Info</h3>
+                <h3 class="mb-4">Server Info (Access Types)</h3>
                 <div class="row d-flex align-items-center">
                   <div class="col-9">
-                    <h4 class="f-w-300 d-flex align-items-center  m-b-0"><i
-                        class="feather text-c-red f-30 m-r-10"></i>{{ posts["server_information"] }}</h4>
+                  
                   </div>
                   <!-- <div class="col-3 text-right">
                     <p class="m-b-0">36%</p>
@@ -65,7 +64,7 @@
           <div class="col-md-6 col-xl-4">
             <div class="card daily-sales">
               <div class="card-block">
-                <h3 class="mb-4">Number of Queries</h3>
+                <h3 class="mb-4">Server Info (Number of Queries)</h3>
                 <div class="row d-flex align-items-center">
                   <div class="col-9" id="users_count">
                     <h4 class="f-w-300 d-flex align-items-center m-b-0"><i
@@ -94,7 +93,7 @@
                     <h4 class="f-w-300 d-flex align-items-center  m-b-0"><i
                         class="feather text-c-red f-30 m-r-10"></i>Last Update: {{ posts["server_information"]['last_update'] }}</h4>
                   </div>
-                  <div class="col-9">
+                  <div class="col-9" style="padding-top: 10px;">
                     <!-- <p class="m-b-0">Name: {{ posts["server_information"]['name'] }}</p> -->
                     <h4 class="f-w-300 d-flex align-items-center  m-b-0"><i
                         class="feather text-c-red f-30 m-r-10"></i>Name: {{ posts["server_information"]['name'] }}</h4>

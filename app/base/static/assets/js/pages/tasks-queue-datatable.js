@@ -5,22 +5,36 @@ $(function ($) {
 
   var columns = [
     { title: "Select", data: "base_result", "width": "20px" },
-    { title: "Result ID", data: "base_result", "width": "70px", "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
-      // alert("base_result")
-      // $(nTd).html("<a href='tel:"+oData.base_result+"'>"+oData.base_result+"</a>");
-      $(nTd).html("<a href='task_queue_details.html'>"+oData.base_result+"</a>");
-  } },
-    { title: "Status", data: "status", "width": "50px" },
-    { title: "Manager", data: "manager" },
+    {
+      title: 'Info', data: "base_result", "width": "40px", "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+        $(nTd).html("<button type='button' class='btn-success' >Info</button>")
+      }
+    },
+    {
+      title: "Result ID", data: "base_result", "width": "70px"
+    },
+    // {
+    //   title: "Result ID", data: "base_result", "width": "70px", "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+
+    //     // $(nTd).html("<a href='#' role='button' data-toggle='modal' data-target='#exampleModal' id='modal_pop'>" + oData.base_result + "</a>");
+    //     $(nTd).html("<a href='#' role='button' id='modal_pop'>" + oData.base_result + "</a>");
+
+    //   } //end of function
+    // },
+    { title: "Status", data: "status", "width": "auto" },
+    // {
+    //   title: "Manager", data: "manager", render: function (data, type, row) {
+    //     if (data != null) {
+    //       return data.split("-");
+    //     }
+    //   }
+    // },
+    {title: "Manager", data: "manager" },
     { title: "Tag", data: "tag", "width": "50px" },
     { title: "Priority", data: "priority", "width": "50px" },
     { title: "Modified on", data: "modified_on", "width": "120px" },
     { title: "Created on", data: "created_on", "width": "120px" }
   ];
-//   $('#task_queue_table tr').on('click', 'tr', function () {
-//     var data = table.row( this ).data();
-//     alert( 'You clicked on '+data[0]+'\'s row' );
-// } );
 
   var table = $('#task_queue_table').DataTable({
     dom: 'Bfrtip',
@@ -45,14 +59,6 @@ $(function ($) {
       }
     },
     columns: columns,
-    columnDefs: [ {
-      "targets": 1,
-      "data": "base_result",
-      "render": function ( data, type, row, meta ) {
-        alert("fddf")
-        return '<a href="'+data+'">/a>';
-      }
-    } ],
     ajax: '/views/tasks_queue_data',
     initComplete: function () {
       table.buttons().container()
@@ -65,15 +71,25 @@ $(function ($) {
           } else if (this.text() === 'Restart') {
             restartAction()
           }
-          else if  (this.text() === 'Select All') {
+          else if (this.text() === 'Select All') {
             table.rows().select();
           }
-          else if (this.text() === 'Deselect All'){
+          else if (this.text() === 'Deselect All') {
             table.rows().deselect();
+          }
+          else if (this.title() === 'Info') {
+            alert(info)
           }
         });
       $('#task-queue-table-main-body').LoadingOverlay("hide");
     },
+    columnDefs: [
+      {
+        targets: 1,
+        // data: null,
+        // defaultContent: "<button>Click</button>"
+
+      }],
     columnDefs: [
       {
         targets: 0,
@@ -90,6 +106,17 @@ $(function ($) {
     dom: "<'row'<'col-sm-2'l><'col-sm-7 text-center'B><'col-sm-3'f>>" +
       "<'row'<'col-sm-5'i><'col-sm-7'p>>" +
       "<'row'<'col-sm-12'tr>>",
+  });
+  $('#task_queue_table tbody').on('click', 'button', function () {
+    var data = table.row($(this).parents('tr')).data();
+    var task_details = "<p> <b>-Base Result ID:</b> " + data.base_result + "<br> <b>-Created on: </b>" + data.created_on +
+      "<br> <b>-ID:</b> " + data.id + "<br> <b>-Manager:</b> " + data.manager + "<br> <b>-Modified On: </b>" + data.modified_on +
+      "<br> <b>-Parser: </b>" + data.parser + "<br> <b>-Priority: </b>" + data.priority + "<br> <b>-Procedure: </b>" + data.procedure +
+      "<br> <b>-Program: </b>" + data.program + "<br> <b>-Status: </b>" + data.status + "<br> <b>-Tag: </b>" + data.tag
+    "</p>"
+    $('.modal-body').html(task_details);
+    $('.modal-body').append(data.htmlresponse);
+    $('#empModal').modal('show');
   });
 
   function deleteAction() {

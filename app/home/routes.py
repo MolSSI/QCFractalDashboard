@@ -29,14 +29,28 @@ def index():
     print("get_general_stats dataSet")
     print(dataSet)
     server_information = client.server_info
-    print(type(server_information))
-    # last_update_format = server_information['last_update'].strftime('%Y-%m-%d')
-    # print(last_update_format)
+    print(type(server_information)) #dict
     print(server_information['name'])
     stats ={}
     stats["query_n_found"] = query_meta.n_found
     stats["server_information"] = server_information
-
+    print("server_information")
+    print(server_information)
+    server_information_dropped_info = server_information.copy()
+    del server_information_dropped_info['client_upper_version_limit']
+    del server_information_dropped_info['last_update']
+    del server_information_dropped_info['version']
+    del server_information_dropped_info['query_limits']
+    del server_information_dropped_info['manager_heartbeat_frequency']
+    del server_information_dropped_info['name']
+    del server_information_dropped_info['client_lower_version_limit']
+    print( "server_information_dropped_info = ")
+    print(type(server_information_dropped_info))
+    print(server_information_dropped_info)
+    print("server_information to double check")
+    print(server_information)
+    stats['access_types']=server_information_dropped_info
+    
     dataSet_logs = client.query_access_log()
     dataSet_log_df = pd.DataFrame(dataSet_logs)
     print("dataSet_log_df")
@@ -45,9 +59,31 @@ def index():
     stats["users_set"] = users_set
     # stats['last_update_format']=last_update_format
 
-
-    
+# https://github.com/MolSSI/QCFractal/blob/bdb213f62972de092b45b40143ffd2196e6534f2/qcfractal/interface/client.py#L1261 
+# line # 1243
+    error_log_info = client.query_error_log() #list
+    print("query_error_log")
+    print(type(error_log_info))
+    print(error_log_info)
+    if len(error_log_info) == 0:
+        stats['error_log'] = "No error logs. All Good!"
+    else:
+        stats['error_log'] = error_log_info
+    print("stats['error_log']")
+    print(stats['error_log'])
     return render_template('index.html', segment='index', posts=stats)
+
+
+@blueprint.route('/views/tasks_queue_data_details' , methods=['POST'])
+@login_required
+def task_details():
+    client = get_client()
+    id = request.get_json()
+    print("id is")
+    print(id)
+    task_details = client.query_tasks(id)
+    return task_details
+
 
 @blueprint.route('/<template>')
 @login_required
@@ -85,7 +121,7 @@ def get_segment( request ):
     except:
         return None
 
-@blueprint.route("/views/managers_status")
+@blueprint.route("/views/managers_status", methods=['POST'])
 @login_required
 def call_data():
     return list_managers()
@@ -135,17 +171,17 @@ def tasksQueue():
     return render_template("blueprint/tasks_queue.html")
 
 
-@blueprint.route("/views/tasks_queue_sub_tab_render_datatable")
-@login_required
-def tasksQueueSubtabDatatable():
-    #  return render_template("blueprint/tasks_queue.html")
-    return render_template("blueprint/tasks_queue_sub_tab_datatable.html")
+# @blueprint.route("/views/tasks_queue_sub_tab_render_datatable")
+# @login_required
+# def tasksQueueSubtabDatatable():
+#     #  return render_template("blueprint/tasks_queue.html")
+#     return render_template("blueprint/tasks_queue_sub_tab_datatable.html")
 
 
-@blueprint.route("/views/tasks_queue_sub_tab_render_plots")
-@login_required
-def tasksQueueSubTabPlot():
-    return render_template("trial_tab/tasks_queue_sub_tab_plots.html")
+# @blueprint.route("/views/tasks_queue_sub_tab_render_plots")
+# @login_required
+# def tasksQueueSubTabPlot():
+#     return render_template("trial_tab/tasks_queue_sub_tab_plots.html")
 
 
 # @cache.cached()
@@ -437,12 +473,12 @@ def get_user_slider():
     print("==========================================================================")
     print("date_begining")
     print(date_begining)
-    if date_begining != None:
 
-        date_time_obj = datetime.datetime.strptime(date_begining, '%Y-%m-%d')
-        print(date_time_obj)
-        dataSet_2 = client.query_access_summary(after=date_time_obj)
-    else: # returning all data, this is needed when loading the data first time before making any slider selection
+    plotting_threshold = datetime.datetime.now() - datetime.timedelta(7)
+    print("plotting_threshold")
+    print(plotting_threshold)
+
+    if date_begining == None: # returning all data, this is needed when loading the data first time before making any slider selection
         today = datetime.datetime.now()
         days = datetime.timedelta(365)
         new_date = today - days
@@ -450,6 +486,15 @@ def get_user_slider():
         print(type(new_date))
         print(new_date)
         dataSet_2 = client.query_access_summary(after=new_date)
+    
+    elif datetime.datetime.strptime(date_begining, '%Y-%m-%d') > plotting_threshold:
+        print("plotting by hour")
+        dataSet_2 = client.query_access_summary(after=datetime.datetime.strptime(date_begining, '%Y-%m-%d'), group_by="hour")
+
+    else: 
+        date_time_obj = datetime.datetime.strptime(date_begining, '%Y-%m-%d')
+        print(date_time_obj)
+        dataSet_2 = client.query_access_summary(after=date_time_obj)
 
     print("dataSet_2")
     print(type(dataSet_2))
