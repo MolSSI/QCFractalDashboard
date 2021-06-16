@@ -29,7 +29,17 @@ $(function ($) {
     //     }
     //   }
     // },
-    {title: "Manager", data: "manager" },
+    {
+      title: "Manager", data: "manager", render: function (data, type, row) {
+        if (data != null) {
+          console.log(data.split('-'))
+          return data.split('_')[0] +"...";
+        }
+        else {
+          return data
+        }
+      }
+    },
     { title: "Tag", data: "tag", "width": "50px" },
     { title: "Priority", data: "priority", "width": "50px" },
     { title: "Modified on", data: "modified_on", "width": "120px" },
