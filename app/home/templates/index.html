@@ -23,12 +23,16 @@
                 <h3 class="mb-4">Server Info (Error Logs)</h3>
                 <div class="row d-flex align-items-center">
                   <div class="col-9" id="users_count">
-                    <h4 class="f-w-300 d-flex align-items-center m-b-0"><i
-                        class="feather text-c-green f-30 m-r-10"></i> {{ posts["error_log"] }}</h4>
+                    <h4 class="f-w-300 d-flex align-items-center m-b-0"><i class="feather text-c-green f-30 m-r-10"></i>
+                      {{ posts["error_log"] }}</h4>
+                      
                   </div>
+                  <a href="server-error-logs.html" class="label theme-bg2 text-white f-12">Details</a>
 
-                  <!-- <div class="col-3 text-right">
-                    <p class="m-b-0">67%</p>
+
+                  <!-- <div class="col-3">
+                    <p class="m-b-0">67%</p> 
+                    <a href="server-error-logs.html" class="label theme-bg2 text-white f-12">Details</a>
                   </div> -->
                 </div>
                 <!-- <div class="progress m-t-30" style="height: 7px;">
@@ -45,8 +49,18 @@
               <div class="card-block">
                 <h3 class="mb-4">Server Info (Access Types)</h3>
                 <div class="row d-flex align-items-center">
+                  <!-- <h4>{{posts['access_types']}}</h4> -->
                   <div class="col-9">
-                  
+                    <h4 class="f-w-300 d-flex align-items-center  m-b-0"><i
+                        class="feather text-c-green f-30 m-r-10"></i>
+                      <ul id="listWithHandle">
+                        {% for name in posts['access_types'] %}
+                        <li>
+                          {{ name }}
+                        </li>
+                        {% endfor %}
+                      </ul>
+                    </h4>
                   </div>
                   <!-- <div class="col-3 text-right">
                     <p class="m-b-0">36%</p>
@@ -91,13 +105,14 @@
                 <div class="row d-flex align-items-center">
                   <div class="col-9">
                     <h4 class="f-w-300 d-flex align-items-center  m-b-0"><i
-                        class="feather text-c-red f-30 m-r-10"></i>Last Update: {{ posts["server_information"]['last_update'] }}</h4>
+                        class="feather text-c-red f-30 m-r-10"></i>Last Update:
+                      {{ posts["server_information"]['last_update'] }}</h4>
                   </div>
                   <div class="col-9" style="padding-top: 10px;">
                     <!-- <p class="m-b-0">Name: {{ posts["server_information"]['name'] }}</p> -->
                     <h4 class="f-w-300 d-flex align-items-center  m-b-0"><i
                         class="feather text-c-red f-30 m-r-10"></i>Name: {{ posts["server_information"]['name'] }}</h4>
-                  
+
                   </div>
                 </div>
                 <!-- <div class="progress m-t-30" style="height: 7px;">
@@ -118,7 +133,15 @@
                 <div class="row d-flex align-items-center">
                   <div class="col-9">
                     <h4 class="f-w-300 d-flex align-items-center  m-b-0"><i
-                        class="feather text-c-green f-30 m-r-10"></i>{{ posts["users_set"] }}</h4>
+                        class="feather text-c-green f-30 m-r-10"></i>
+                      <ul id="listWithHandle">
+                        {% for name in posts["users_set"] %}
+                        <li>
+                          {{ name }}
+                        </li>
+                        {% endfor %}
+                      </ul>
+                    </h4>
                   </div>
                   <!-- <div class="col-3 text-right">
                     <p class="m-b-0">80%</p>

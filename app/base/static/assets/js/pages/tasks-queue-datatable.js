@@ -13,27 +13,13 @@ $(function ($) {
     {
       title: "Result ID", data: "base_result", "width": "70px"
     },
-    // {
-    //   title: "Result ID", data: "base_result", "width": "70px", "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
-
-    //     // $(nTd).html("<a href='#' role='button' data-toggle='modal' data-target='#exampleModal' id='modal_pop'>" + oData.base_result + "</a>");
-    //     $(nTd).html("<a href='#' role='button' id='modal_pop'>" + oData.base_result + "</a>");
-
-    //   } //end of function
-    // },
     { title: "Status", data: "status", "width": "auto" },
-    // {
-    //   title: "Manager", data: "manager", render: function (data, type, row) {
-    //     if (data != null) {
-    //       return data.split("-");
-    //     }
-    //   }
-    // },
     {
       title: "Manager", data: "manager", render: function (data, type, row) {
         if (data != null) {
-          console.log(data.split('-'))
-          return data.split('_')[0] +"...";
+          var partial = data.slice(0,15) + "..."
+          return partial;
+
         }
         else {
           return data
@@ -49,11 +35,11 @@ $(function ($) {
   var table = $('#task_queue_table').DataTable({
     dom: 'Bfrtip',
     buttons: [
-      {
-        extend: 'selected',
-        text: 'Delete',
-        className: 'btn-primary'
-      },
+      // { // commented for now until there is an end point for the delete functionality
+      //   extend: 'selected',
+      //   text: 'Delete',
+      //   className: 'btn-primary'
+      // },
       {
         extend: 'selected',
         text: 'Restart',
@@ -73,7 +59,6 @@ $(function ($) {
     initComplete: function () {
       table.buttons().container()
         .appendTo('#task_queue_table_wrapper .col-md-6:eq(0)');
-
       table.buttons()
         .action(function (e, dt, button, config) {
           if (this.text() === 'Delete') {
@@ -95,13 +80,6 @@ $(function ($) {
     },
     columnDefs: [
       {
-        targets: 1,
-        // data: null,
-        // defaultContent: "<button>Click</button>"
-
-      }],
-    columnDefs: [
-      {
         targets: 0,
         checkboxes: {
           select: true,
@@ -109,10 +87,11 @@ $(function ($) {
         }
       }
     ],
+   
     select: {
       style: 'multi'
     },
-    order: [[1, 'asc']],
+    order: [[7, 'desc']],
     dom: "<'row'<'col-sm-2'l><'col-sm-7 text-center'B><'col-sm-3'f>>" +
       "<'row'<'col-sm-5'i><'col-sm-7'p>>" +
       "<'row'<'col-sm-12'tr>>",

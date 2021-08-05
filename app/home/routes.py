@@ -24,31 +24,35 @@ import datetime
 @login_required
 def index():
     client = get_client()
-    dataSet = client.query_tasks(full_return=True)
-    query_meta = dataSet.meta
-    print("get_general_stats dataSet")
-    print(dataSet)
+    # # dataSet = client.server_info(full_return=True)
+    # # dataSet = client.query_tasks(full_return=True) #return all of the tasks (server_infor)
+    # query_meta = dataSet.meta
+    # print("get_general_stats dataSet")
+    # print(dataSet)
     server_information = client.server_info
-    print(type(server_information)) #dict
-    print(server_information['name'])
+    # print("server_information")
+    # print(server_information)
+    # print(type(server_information)) #dict
+    # print(server_information['name'])
+
     stats ={}
-    stats["query_n_found"] = query_meta.n_found
+    # stats["query_n_found"] = query_meta.n_found
     stats["server_information"] = server_information
-    print("server_information")
-    print(server_information)
+    # print("server_information")
+    # print(server_information)
     server_information_dropped_info = server_information.copy()
     del server_information_dropped_info['client_upper_version_limit']
-    del server_information_dropped_info['last_update']
+    # del server_information_dropped_info['last_update']
     del server_information_dropped_info['version']
     del server_information_dropped_info['query_limits']
     del server_information_dropped_info['manager_heartbeat_frequency']
     del server_information_dropped_info['name']
     del server_information_dropped_info['client_lower_version_limit']
-    print( "server_information_dropped_info = ")
-    print(type(server_information_dropped_info))
-    print(server_information_dropped_info)
-    print("server_information to double check")
-    print(server_information)
+    # print( "server_information_dropped_info = ")
+    # print(type(server_information_dropped_info))
+    # print(server_information_dropped_info)
+    # print("server_information to double check")
+    # print(server_information)
     stats['access_types']=server_information_dropped_info
     
     dataSet_logs = client.query_access_log()
@@ -72,6 +76,38 @@ def index():
     print("stats['error_log']")
     print(stats['error_log'])
     return render_template('index.html', segment='index', posts=stats)
+
+@blueprint.route('/views/server_error_logs')
+def server_error_logs():
+    client = get_client()
+    error_log_info = client.query_error_log() #list
+    print("query_error_log")
+    print(type(error_log_info))
+    print(error_log_info)
+
+    if len(error_log_info) == 0:
+
+        result = "No error logs. All Good!"
+        return 0
+
+    else:
+       result = error_log_info
+       return result
+
+
+@blueprint.route('/views/server_error_datatable')
+@login_required
+def error_tab():
+    client = get_client()
+    error_log_info = client.query_error_log() #list
+    print("query_error_log at error_tab function")
+    error = {'data': 
+        [{ 'id': 'sff', 'error_date':'fdfdf', 'qcfractal_version':'fgfdf', 'user':'fdfd', 'request_path':'ldjfhdlj'}]
+        }
+    return jsonify(error)
+    
+    # return jsonify({'data': [{ 'id': '', 'error_date':'', 'qcfractal_version':'', 'user':'', 'request_path':''}]})
+
 
 
 @blueprint.route('/views/tasks_queue_data_details' , methods=['POST'])
@@ -121,7 +157,7 @@ def get_segment( request ):
     except:
         return None
 
-@blueprint.route("/views/managers_status", methods=['POST'])
+@blueprint.route("/views/managers_status", methods=['GET','POST'])
 @login_required
 def call_data():
     return list_managers()
@@ -271,7 +307,9 @@ def get_user_table():
     client = get_client()
     dataSet = client.query_access_log(limit=1000)  # new function
     # dataSet = client.query_access_log()  # if limit not specified, returned data is approx. 10,000
-
+    # print("dataset from users_access_data_table")
+    # print(dataSet)
+    ret = {'data': dataSet}
     return jsonify(dataSet)
 
 
@@ -528,7 +566,7 @@ def get_user_slider():
 
     df = pd.DataFrame.from_dict(dataSet_2, orient = 'index') # ValueError: arrays must all be same length, solved by orient = 'index' & transpose 
     df.transpose()
-    df.to_csv('/Users/emanhussein/Desktop/query_access_summary.csv')
+    # df.to_csv('/Users/emanhussein/Desktop/query_access_summary.csv')
     df_copy = df
     longest = df.shape[1]
     # print("==================================================")
@@ -578,7 +616,7 @@ def get_user_slider():
     print("large_df===========================================")
     print(large_df)
     large_df = large_df.fillna(0)
-    large_df.to_csv('/Users/emanhussein/Desktop/large_df.csv')
+    # large_df.to_csv('/Users/emanhussein/Desktop/large_df.csv')
     all_arr = []
     for i in list(s):
         print("i in list(s):")
@@ -613,7 +651,15 @@ def get_user_slider():
     return jsonify(to_return)
     # return json.dumps(dict_combo)
 
-
+@blueprint.route('/views/query_access_summary')
+@login_required
+def get_query_access_summary_boxplot():
+    client = get_client()
+    dataSet = client.query_access_summary()
+    print("dataSet for boxplot")
+    print(type(dataSet)) #dict
+    print(dataSet)
+    return jsonify(dataSet)
 
 
 

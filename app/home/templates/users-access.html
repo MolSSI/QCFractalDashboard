@@ -53,6 +53,22 @@
               </div>
             </div>
           </div>
+          <div class="col-sm-12">
+            <div class="card">
+              <div class="card-header">
+                <h5>Box Plot of Request Duration</h5>
+              </div>
+              <div class="card-block">
+                <select id="server_logs">
+                  <option disabled  >Select Date and access type to display its box plot</option>
+                </select>
+                <input type="text" placeholder="Select date" id="datepicker" style="margin-top: 30px;margin-bottom: 150px;"> 
+                <span class="glyphicon glyphicon-th"></span>
+
+                <div id='boxplotDiv'> </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -63,5 +79,7 @@
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
-<script src="/static/assets/js/pages/users-access.js"></script>
+<!-- <script src="/static/assets/js/pages/users-access.js"></script> -->
+<script src="/static/assets/js/pages/users-access copy.js"></script>
+
 {% endblock javascripts %}

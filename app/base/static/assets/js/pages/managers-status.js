@@ -280,7 +280,6 @@ $(function ($) {
                 '<span>' + escape(item.hostname) + '</div>';
             }
           },
-
         });
 
         var hostnamesDiv = document.getElementById("hostnamesDiv");
@@ -311,11 +310,16 @@ $(function ($) {
         function calculateSteps(dateSetParam) {
           var t0 = performance.now();
           var modifiedOnMonthStep = []
+          console.log(dateSetParam)
           for (let stringEntry of dateSetParam) {
+            console.log(stringEntry)
             var dateEntry = new Date(stringEntry)
+            console.log(dateEntry)
             modifiedOnMonthStep.push(dateEntry)
           }
           modifiedOnMonthStep.sort(Plotly.d3.ascending)
+          console.log("modifiedOnMonthStep")
+          console.log(modifiedOnMonthStep)
           // calculate steps
           var steps = []
           for (var i = 0; i < modifiedOnMonthStep.length; i++) {
@@ -325,6 +329,8 @@ $(function ($) {
               method: 'skip',
               execute: false
             }
+            console.log("step to add")
+            console.log(step)
             steps.push(step)
           }
           //maximum will be today's date

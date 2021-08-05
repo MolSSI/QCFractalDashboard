@@ -1,33 +1,33 @@
 {% extends "layouts/base.html" %}
 
-{% block title %} Data Table {% endblock %}
+{% block title %} UI Forms {% endblock %}
 
-
-{% block stylesheets %}
-{% endblock stylesheets %}
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
+
 <div class="pcoded-content">
   <div class="pcoded-inner-content">
+    <!-- [ breadcrumb ] start -->
     <div class="page-header">
       <div class="page-block">
         <div class="row align-items-center">
           <div class="col-md-12">
             <div class="page-header-title">
-              <h5 class="m-b-10">Tasks Queue</h5>
+              <h5 class="m-b-10">Server Error Logs</h5>
             </div>
             <ul class="breadcrumb">
               <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
-              <li class="breadcrumb-item"><a href="javascript:">Tasks Queue</a></li>
+              <li class="breadcrumb-item"><a href="javascript:">Server Error Logs</a></li>
             </ul>
           </div>
         </div>
       </div>
     </div>
-    <div class="main-body" id="task-queue-table-main-body">
+    <div class="main-body" id="server-error-table-main-body">
       <div class="page-wrapper">
-        <table id="task_queue_table" class="table table-striped table-bordered" style="width:100%;table-layout:fixed">
-          
+        <table id="server_error_table" class="table table-striped table-bordered" style="width:100%;table-layout:fixed">
         </table>
         <!-- Modal -->
         <div class="modal fade" id="empModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -35,7 +35,7 @@
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Task Details</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Error Details</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                   <i class="tim-icons icon-simple-remove"></i>
                 </button>
@@ -51,10 +51,18 @@
         </div>
       </div>
     </div>
+    <!-- [ breadcrumb ] end -->
+    <!-- <div class="main-body">
+      <div class="page-wrapper">
+        <img src="/static/assets/images/work-in-progress.png">
+      </div>
+    </div> -->
   </div>
 </div>
-{% endblock content %}
-{% block javascripts %}
-<script src="/static/assets/js/pages/tasks-queue-datatable.js"></script>
 
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script src="/static/assets/js/pages/server_error_logs.js"></script>
 {% endblock javascripts %}
