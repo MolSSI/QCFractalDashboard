@@ -60,9 +60,9 @@
               </div>
               <div class="card-block">
                 <select id="server_logs">
-                  <option disabled  >Select Date and access type to display its box plot</option>
                 </select>
                 <input type="text" placeholder="Select date" id="datepicker" style="margin-top: 30px;margin-bottom: 150px;"> 
+                <!-- <input class="form-control" id="date" name="date" placeholder="MM/DD/YYY" type="text"/> -->
                 <span class="glyphicon glyphicon-th"></span>
 
                 <div id='boxplotDiv'> </div>
@@ -80,6 +80,7 @@
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
 <!-- <script src="/static/assets/js/pages/users-access.js"></script> -->
-<script src="/static/assets/js/pages/users-access copy.js"></script>
+<script src="/static/assets/js/pages/users-access_copy.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.1/js/bootstrap-datepicker.min.js"></script>
 
 {% endblock javascripts %}

@@ -379,150 +379,226 @@ $(function ($) {
         },
         success: function (ret) {
           console.log("data returned for dropdown and boxplot")
-          console.log(ret.size)
+          // console.log(ret.size)
           console.log(ret)
           all_dropdown_elements = []
-          access_types_list = new Set()
           // dates = []
-          dates = Object.keys(ret)
-          console.log(dates)
+          // dates = Object.keys(ret)
+          // console.log(dates)
+          var unique_access_types = new Set()
           Object.keys(ret).forEach(function (key) {
             console.log(key)
-            // dates.push[key]
-            console.log(dates)
+            // 2021-08-06
 
             var value = ret[key];
             console.log(value) //array
-            var unique_access_types = new Set()
+            // 0: {access_method: "GET", access_type: "access/log", count: 36, request_duration_info: Array(6), response_bytes_info: Array(6)}
+            // 1: {access_method: "GET", access_type: "access/summary", count: 24, request_duration_info: Array(6), response_bytes_info: Array(6)}
+            // 2: {access_method: "GET", access_type: "error", count: 4, request_duration_info: Array(6), response_bytes_info: Array(6)}
+            // 3: {access_method: "GET", access_type: "information", count: 4, request_duration_info: Array(6), response_bytes_info: Array(6)}
+            // length: 4
+
             value.forEach(function (v) {
               console.log(v)
+              unique_access_types.add(v.access_type)
 
-              console.log(unique_access_types)
-              unique_access_types.push(v.access_type)
-
-              var dropdown_element = { 'date': key, 'corresponding_data': v.access_type, 'boxplot_info': v.request_duration_info }
-              access_types_list.add(v.access_type)
+              // var dropdown_element = { 'date': key, 'corresponding_data': v.access_type, 'boxplot_info': v.request_duration_info, 'count': v.count }
+              var dropdown_element = { 'corresponding_data': v.access_type }
               all_dropdown_elements.push(dropdown_element)
-
 
             });
           }); //end of for loop
           console.log("unique_access_types")
           console.log(unique_access_types)
 
-          console.log("access_types_list")
-          console.log(access_types_list)
+          let unique_access_types_array = Array.from(unique_access_types);
+          console.log(typeof (unique_access_types_array)) //object
+          console.log(unique_access_types_array)
 
           default_selected = []
-          console.log(access_types_list)
-          let access_types_array = Array.from(access_types_list);
-
-          let unique_access_types_array = Array.from(unique_access_types);
-
-          default_selected.push(all_dropdown_elements[0])
+          default_selected.push(all_dropdown_elements[0].corresponding_data)
           console.log(default_selected)
-          console.log(dates)
+          // console.log(dates)
           console.log(all_dropdown_elements)
+
+          var all_values = unique_access_types.values()
+          console.log(all_values)
+          var default_value = [all_values.next().value]
+          console.log(default_value)
 
           var $selectize_server_logs = $('#server_logs').selectize({
             options: all_dropdown_elements, //An array of the options available to select; array of objects.
-            valueField: 'boxplot_info',
+            valueField: 'corresponding_data',
             labelField: 'corresponding_data',
             plugins: ["remove_button"],
             items: default_selected, //An array of the initial(default) selected values
             maxItems: 1,
-            optgroups: dates,
-            optgroupField: "date",
-            optgroupLabelField: 'date',
-            optgroupValueField: 'date',
-            closeAfterSelect: true,
-            render: {
-              item: function (item, escape) {
-                return '<div>' +
-                  '<span>' + escape(item.corresponding_data) + ", " + escape(item.date) + '</div>';
-              },
-              option: function (item, escape) {
-                return '<div>' +
-                  '<span>' + escape(item.corresponding_data) + ", " + escape(item.date) + '</div>';
-              }
-            },
+
           });
           // fetch the instance
           var selectizeControl_server_logs = $selectize_server_logs[0].selectize;
+          var accessTypeSelected = default_selected[0];
           selectizeControl_server_logs.on('change', function () {
-            var data_to_plot = selectizeControl_server_logs.getValue();
+            accessTypeSelected = selectizeControl_server_logs.getValue();
+          }); // end of selectizeControl_server_logs.on('change', function () ...
 
-            console.log("minimum, first quar, median, 3rd quar, 95th percentile, max")
-            console.log(typeof (data_to_plot))
-            console.log(data_to_plot)
-            var q1 = data_to_plot.split(",")[1]
-            q1 = Number(q1).toFixed(4)
-            console.log(q1)
-
-            var med = data_to_plot.split(",")[2]
-            med = Number(med).toFixed(4)
-            console.log(med)
-
-            var q3 = data_to_plot.split(",")[3]
-            q3 = Number(q3).toFixed(4)
-            console.log(q3)
-
-            var layout = {
-              yaxis: {
-                title: 'Request Duration',
-                zeroline: false
-              }
-            }
-            // $('.datepicker').pickadate({
-            //   disable: [
-            //     true,
-            //     1, 4, 7,
-            //     [2015,3,3],
-            //     [2015,3,12],
-            //     [2015,3,20],
-            //     new Date(2015,3,13),
-            //     new Date(2015,3,29)
-            //   ]
-            // })
-
-
-            Plotly.newPlot('boxplotDiv', [{
-              type: 'box',
-              name: '',
-
-              boxpoints: 'all',
-              jitter: 0.3,
-              pointpos: -1.8,
-              
-              q1: [q1],
-              median: [med],
-              q3: [q3],
-            }], layout)
+          $("#datepicker").datepicker();
+          var dateSelected;
+          $("#datepicker").on("change", function () {
+            dateSelected = $(this).val();
+            alert(dateSelected);
+            plotBoxPlot(dateSelected, accessTypeSelected)
           });
-          // var availableDates = ["2-7-2021", "3-7-2021", "4-7-2021"];
-          var availableDates = dates = Object.keys(ret)
-          console.log(availableDates)
-          // var $j = jQuery.noConflict();
-          // $j("#datepicker").datepicker();
 
-          $(function () {
-            $('#datepicker').datepicker({
-              beforeShowDay:
-                function (dt) {
-                  return [available(dt), ""];
+
+          function plotBoxPlot(dateSelectedParam, accessTypeParam) {
+            console.log(dateSelectedParam)
+            console.log(accessTypeParam)
+            console.log(ret)
+
+            // check if ret has given date as key
+            // Boxplot 
+            //     var x_dates = []
+            var values = []
+            for (let key in ret) {
+              var current = ret[key]
+              console.log(key) // date
+              console.log(current) // json-like data
+              //       x_dates.push(key)
+              for (let key_2 in current) {
+                var f = current[key_2]
+                console.log("f")
+                console.log(f)
+                var current_access_type = f['access_type']
+                console.log('f of access_type = current_access_type= ')
+                console.log(current_access_type)
+                if (current_access_type == accessTypeParam) {
+                  console.log("combination of date and access type exists")
+                  var duration = f['request_duration_info']
+                  // [minimum, first quar, median, 3rd quar, 95th percentile, max]
+                  console.log("duration: minimum, first quar, median, 3rd quar, 95th percentile, max]")
+                  console.log(duration)
+                  // y0[i] = Number((duration * 1000).toFixed(1))
+
+                  if (duration[1] != null || duration[2] != null || duration[3] != null) {
+                    var q1_value = (duration[1] * 1000).toFixed(1)
+                    var median_value = (duration[2] * 1000).toFixed(1)
+                    var q3_value = (duration[3] * 1000).toFixed(1)
+                    var box = [{
+                      type: 'box',
+                      name: '',
+                      q1: [ parseFloat(q1_value)],
+                      median: [parseFloat(median_value)],
+                      q3: [parseFloat(q3_value)],
+                      // x: key_2
+                    }]
+                    console.log("box = ")
+                    console.log(box)
+                    const newDiv = document.createElement("div" + String(key_2));
+                    var title_value = 'Plot for access type: ' + accessTypeParam + ' on ' + dateSelectedParam 
+                    Plotly.newPlot('boxplotDiv', box, {
+                      // yaxis: {
+                      //   range: [0, 5]
+                      // },
+                      title: {'text': title_value}
+                    }
+                    );
+                    values.push(box)
+                  }//end of if condition
+                  break;
+
                 }
-              , changeMonth: true, changeYear: false
-            });
-          });
 
-          function available(date) {
-            dmy = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate();
-            if ($.inArray(dmy, availableDates) != -1) {
-              return true;
-            } else {
-              return false;
-            }
+
+              }// end of inner for --> (let key_2 in current)
+            } //end of out for --> (let key in ret)
+            //     console.log(values)
+            //     // Plotly.newPlot('boxplotDiv', values, {
+            //     //   yaxis: {
+            //     //     range: [0, 5]
+            //     //   }
+            //     // }
+            //     // );
+            // Plotly.newPlot('boxplotDiv', values);
+            //     //   Plotly.newPlot('boxplotDiv', [{
+            //     //     type: 'box',
+            //     //     name: '',
+            //     //     q1: [duration[1]],
+            //     //     median: [duration[2]],
+            //     //     q3: [duration[3]],
+            //     //   }, {
+            //     //     type: 'box',
+            //     //     name: '',
+            //     //     q1: [ 3 ],
+            //     //     median: [ 4 ],
+            //     //     q3: [ 5 ],
+            //     // }]
+            //     //     , {
+            //     //       yaxis: {
+            //     //         range: [0, 5]
+            //     //       }
+            //     //     }
+            //     //   );
+            //     // var trace1 = {
+            //     //   y: y0,
+            //     //   type: 'box',
+            //     //   name: 'Users',
+            //     // };
+            //     // console.log("trace1")
+            //     // console.log(trace1)
+            //     // var data = [trace1];
+            //     // var layout = {
+            //     //   yaxis: {
+            //     //     title: 'Request Duration in ms',
+            //     //     zeroline: false
+            //     //   },
+            //     // };
+
+            //     // Plotly.newPlot('boxplotDiv', data, layout);
+
+
+
+
+
+            // console.log("minimum, first quar, median, 3rd quar, 95th percentile, max")
+            // console.log(typeof (data_to_plot))
+            // console.log(data_to_plot)
+
+            // var q1 = data_to_plot.split(",")[1]
+            // q1 = Number(q1).toFixed(4)
+            // console.log(q1)
+
+            // var med = data_to_plot.split(",")[2]
+            // med = Number(med).toFixed(4)
+            // console.log(med)
+
+            // var q3 = data_to_plot.split(",")[3]
+            // q3 = Number(q3).toFixed(4)
+            // console.log(q3)
+
+            // var layout = {
+            //   yaxis: {
+            //     title: 'Request Duration',
+            //     zeroline: false
+            //   }
+            // }
+
+
+            // Plotly.newPlot('boxplotDiv', [{
+            //   type: 'box',
+            //   name: '',
+
+            //   boxpoints: 'all',
+            //   jitter: 0.3,
+            //   pointpos: -1.8,
+
+            //   q1: [q1],
+            //   median: [med],
+            //   q3: [q3],
+            // }], layout)
+
           }
+
         } //end of ajax success
       });
 

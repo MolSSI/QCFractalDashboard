@@ -17,7 +17,7 @@ import math, time, json
 from pprint import pprint 
 import ast
 from pandas.io.json import json_normalize
-from flatten_dict import flatten
+# from flatten_dict import flatten
 import datetime
 
 @blueprint.route('/index')
