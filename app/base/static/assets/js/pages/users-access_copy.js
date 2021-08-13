@@ -389,6 +389,7 @@ $(function ($) {
           Object.keys(ret).forEach(function (key) {
             console.log(key)
             // 2021-08-06
+            //group_bu hour ==> 2021-03-23 03
 
             var value = ret[key];
             console.log(value) //array
@@ -445,165 +446,253 @@ $(function ($) {
           $("#datepicker").datepicker();
           var dateSelected;
           $("#datepicker").on("change", function () {
-            dateSelected = $(this).val();
-            alert(dateSelected);
-            plotBoxPlot(dateSelected, accessTypeSelected)
+            dateSelected = $(this).val(); // Calendar: 08/25/2021 --> 2021-08-25
+            var reformatted_date = dateSelected.substring(6, 10) + "-" + dateSelected.substring(0, 2) + "-" + dateSelected.substring(3, 5)
+            alert(reformatted_date);
+            plotBoxPlot(reformatted_date, accessTypeSelected)
           });
 
 
           function plotBoxPlot(dateSelectedParam, accessTypeParam) {
+            console.log("dateSelectedParam and accessTypeParam = ")
             console.log(dateSelectedParam)
             console.log(accessTypeParam)
-            console.log(ret)
+            var orig_dateSelectedParam = dateSelectedParam
+            var x_hours = []
+            var boxplot_hourly = []
+            var q1_24_hours = []
+            var median_24_hours = []
+            var q3_24_hours = []
+            var min_24_hours = []
+            var max_24_hours = []
+            for (i = 00; i < 24; i++) {
+              console.log(orig_dateSelectedParam + " " + i)
 
-            // check if ret has given date as key
-            // Boxplot 
-            //     var x_dates = []
-            var values = []
-            for (let key in ret) {
-              var current = ret[key]
-              console.log(key) // date
-              console.log(current) // json-like data
-              //       x_dates.push(key)
-              for (let key_2 in current) {
-                var f = current[key_2]
-                console.log("f")
-                console.log(f)
-                var current_access_type = f['access_type']
-                console.log('f of access_type = current_access_type= ')
-                console.log(current_access_type)
-                if (current_access_type == accessTypeParam) {
-                  console.log("combination of date and access type exists")
-                  var duration = f['request_duration_info']
-                  // [minimum, first quar, median, 3rd quar, 95th percentile, max]
-                  console.log("duration: minimum, first quar, median, 3rd quar, 95th percentile, max]")
-                  console.log(duration)
-                  // y0[i] = Number((duration * 1000).toFixed(1))
+              dateSelectedParam = orig_dateSelectedParam + " " + i
+              x_hours.push(i)
+              // }
+              // if (ret[dateSelectedParam] != null) {
+              //   console.log("date exists in ret data keys")
+              // }
+              var title_value = 'Plot for access type: ' + accessTypeParam + ' on ' + orig_dateSelectedParam
 
-                  if (duration[1] != null || duration[2] != null || duration[3] != null) {
-                    var q1_value = (duration[1] * 1000).toFixed(1)
-                    var median_value = (duration[2] * 1000).toFixed(1)
-                    var q3_value = (duration[3] * 1000).toFixed(1)
-                    var box = [{
-                      type: 'box',
-                      name: '',
-                      q1: [ parseFloat(q1_value)],
-                      median: [parseFloat(median_value)],
-                      q3: [parseFloat(q3_value)],
-                      // x: key_2
-                    }]
-                    console.log("box = ")
-                    console.log(box)
-                    const newDiv = document.createElement("div" + String(key_2));
-                    var title_value = 'Plot for access type: ' + accessTypeParam + ' on ' + dateSelectedParam 
-                    Plotly.newPlot('boxplotDiv', box, {
-                      // yaxis: {
-                      //   range: [0, 5]
-                      // },
-                      title: {'text': title_value}
+              console.log("=================================")
+              var current = ret[dateSelectedParam]
+              console.log(current) // json-like data (value of that key)
+
+              if (current == undefined) {
+                console.log("undefined current")
+                // var box = [{
+                //   type: 'box',
+                //   name: '',
+                //   q1: [0],
+                //   median: [0],
+                //   q3: [0]
+                // }]
+                q1_24_hours.push(0)
+                median_24_hours.push(0)
+                q3_24_hours.push(0)
+                min_24_hours.push(0)
+                max_24_hours.push(0)
+                // var box = {
+                //   type: 'box',
+                //   // name: i,
+                //   q1: [0],
+                //   median: [0],
+                //   q3: [0],
+                // }
+                // boxplot_hourly.push(box)
+
+                // Plotly.newPlot('boxplotDiv', box, {
+                //   yaxis: {
+                //     title: "Request Duration (ms)"
+                //   },
+                //   layout: {
+                //     "xaxis": {
+                //       "visible": false
+                //     },
+                //     "yaxis": {
+                //       "visible": false
+                //     },
+                //     "annotations": [
+                //       {
+                //         "text": "No matching data found",
+                //         // "xref": "paper",
+                //         // "yref": "paper",
+                //         // "showarrow": false,
+                //         // "font": {
+                //         //   "size": 28
+                //         // }
+                //       }
+                //     ]
+                //   },
+
+                //   title: { 'text': title_value + " <br> No matching data for the picked Date" }
+                // }
+                // );
+
+              }
+              else {
+                for (let key_2 in current) {
+                  console.log("==============")
+                  console.log("key_2= ")
+                  console.log(key_2)
+                  var f = current[key_2]
+                  console.log("f")
+                  console.log(f) // f = {access_method: "GET", access_type: "error", count: 3, request_duration_info: Array(6), response_bytes_info: Array(6)}
+
+                  var current_access_type = f['access_type']
+                  console.log('f of access_type = current_access_type= ')
+                  console.log(current_access_type)
+                  if (current_access_type == accessTypeParam) {
+                    console.log("combination of date and access type exists")
+                    var duration = f['request_duration_info']
+                    // [minimum, first quar, median, 3rd quar, 95th percentile, max]
+                    console.log("duration: minimum, first quar, median, 3rd quar, 95th percentile, max]")
+                    console.log(duration)
+
+                    if (duration[1] != null || duration[2] != null || duration[3] != null) { // should use and not or ??
+                      var q1_value = (duration[1] * 1000).toFixed(1)
+                      var median_value = (duration[2] * 1000).toFixed(1)
+                      var q3_value = (duration[3] * 1000).toFixed(1)
+                      var min_value = (duration[0] * 1000).toFixed(1)
+                      var max_value = (duration[5] * 1000).toFixed(1)
+                      // var box = [{
+                      //   type: 'box',
+                      //   name: '',
+                      //   q1: [parseFloat(q1_value)],
+                      //   median: [parseFloat(median_value)],
+                      //   q3: [parseFloat(q3_value)],
+                      //   lowerfence: [parseFloat(min_value)],
+                      //   upperfence: [parseFloat(max_value)], //https://codepen.io/alexcjohnson/pen/JjYVBgW?editors=1010
+                      //   // boxpoints: 'all',
+                      //   // jitter: 0.3,
+                      //   // pointpos: -1.8,
+                      // }]
+                      // var box = {
+                      //   type: 'box',
+                      //   name: i,
+                      //   q1: [parseFloat(q1_value)],
+                      //   median: [parseFloat(median_value)],
+                      //   q3: [parseFloat(q3_value)],
+                      //   lowerfence: [parseFloat(min_value)],
+                      //   upperfence: [parseFloat(max_value)], //https://codepen.io/alexcjohnson/pen/JjYVBgW?editors=1010
+                      //   // boxpoints: 'all',
+                      //   // jitter: 0.3,
+                      //   // pointpos: -1.8,
+
+                      // }
+                      // console.log("box = ")
+                      // console.log(box)
+                      // boxplot_hourly.push(box)
+
+                      q1_24_hours.push(parseFloat(q1_value))
+                      median_24_hours.push(parseFloat(median_value))
+                      q3_24_hours.push(parseFloat(q3_value))
+                      min_24_hours.push(parseFloat(min_value))
+                      max_24_hours.push(parseFloat(max_value))
+
+                      // Plotly.newPlot('boxplotDiv', box, {
+                      //   yaxis: {
+                      //     title: "Request Duration (ms)"
+                      //   },
+                      //   title: { 'text': title_value }
+                      // }
+                      // );
+
+
+                    }//end of if (duration[1] != null || duration[2] != null || duration[3] != null) 
+                    else {
+                      console.log("values are null")
+                      // var box = [{
+                      //   type: 'box',
+                      //   name: '',
+                      //   q1: [0],
+                      //   median: [0],
+                      //   q3: [0]
+                      // }]
+                      // var box = {
+                      //   type: 'box',
+                      //   name: i,
+                      //   q1: [0],
+                      //   median: [0],
+                      //   q3: [0],
+                      // }
+                      // boxplot_hourly.push(box)
+                      q1_24_hours.push(0)
+                      median_24_hours.push(0)
+                      q3_24_hours.push(0)
+                      min_24_hours.push(0)
+                      max_24_hours.push(0)
+                      //   Plotly.newPlot('boxplotDiv', box, {
+                      //     yaxis: {
+                      //       title: "Request Duration (ms)"
+                      //     },
+                      //     layout: {
+                      //       "xaxis": {
+                      //         "visible": false
+                      //       },
+                      //       "yaxis": {
+                      //         "visible": false
+                      //       },
+                      //       // "annotations": [
+                      //       //   {
+                      //       // "text": "No matching data found",
+                      //       // "xref": "paper",
+                      //       // "yref": "paper",
+                      //       // "showarrow": false,
+                      //       // "font": {
+                      //       //   "size": 28
+                      //       // }
+                      //       // }
+                      //       // ]
+                      //     },
+
+                      //     title: { 'text': title_value + " <br> Values of Q1, Median, or Q3 of the <br> Request Duration of the Selected date equal(s) Null" }
+                      //   }
+                      //   );
                     }
-                    );
-                    values.push(box)
-                  }//end of if condition
-                  break;
 
-                }
+                    // break;
+
+                  }// end of if (current_access_type == accessTypeParam)
 
 
-              }// end of inner for --> (let key_2 in current)
-            } //end of out for --> (let key in ret)
-            //     console.log(values)
-            //     // Plotly.newPlot('boxplotDiv', values, {
-            //     //   yaxis: {
-            //     //     range: [0, 5]
-            //     //   }
-            //     // }
-            //     // );
-            // Plotly.newPlot('boxplotDiv', values);
-            //     //   Plotly.newPlot('boxplotDiv', [{
-            //     //     type: 'box',
-            //     //     name: '',
-            //     //     q1: [duration[1]],
-            //     //     median: [duration[2]],
-            //     //     q3: [duration[3]],
-            //     //   }, {
-            //     //     type: 'box',
-            //     //     name: '',
-            //     //     q1: [ 3 ],
-            //     //     median: [ 4 ],
-            //     //     q3: [ 5 ],
-            //     // }]
-            //     //     , {
-            //     //       yaxis: {
-            //     //         range: [0, 5]
-            //     //       }
-            //     //     }
-            //     //   );
-            //     // var trace1 = {
-            //     //   y: y0,
-            //     //   type: 'box',
-            //     //   name: 'Users',
-            //     // };
-            //     // console.log("trace1")
-            //     // console.log(trace1)
-            //     // var data = [trace1];
-            //     // var layout = {
-            //     //   yaxis: {
-            //     //     title: 'Request Duration in ms',
-            //     //     zeroline: false
-            //     //   },
-            //     // };
+                }// end of for --> (let key_2 in current)  
 
-            //     // Plotly.newPlot('boxplotDiv', data, layout);
+              }//end of else current is not undefined
+            }//end of for loop i=00 --> 23
+            // console.log("boxplot_hourly")
+            // console.log(boxplot_hourly)
+            var layout_24_hours = {
+              yaxis: {
+                    title: "Request Duration (ms)"
+                  },
+                  xaxis:{
+                    title:"24 Hours of the selected day",
+                    range:[0, 23]
+                  },
+                  title: { 'text': title_value }
 
+            }
+            Plotly.newPlot('boxplotDiv', [{
+              "type": "box",
+              "name": "",
+              "offsetgroup": "1",
+              "q1": q1_24_hours,
+              "median": median_24_hours,
+              "q3": q3_24_hours,
+              "lowerfence": min_24_hours,
+              "upperfence": max_24_hours
+            }], layout_24_hours)
 
-
-
-
-            // console.log("minimum, first quar, median, 3rd quar, 95th percentile, max")
-            // console.log(typeof (data_to_plot))
-            // console.log(data_to_plot)
-
-            // var q1 = data_to_plot.split(",")[1]
-            // q1 = Number(q1).toFixed(4)
-            // console.log(q1)
-
-            // var med = data_to_plot.split(",")[2]
-            // med = Number(med).toFixed(4)
-            // console.log(med)
-
-            // var q3 = data_to_plot.split(",")[3]
-            // q3 = Number(q3).toFixed(4)
-            // console.log(q3)
-
-            // var layout = {
-            //   yaxis: {
-            //     title: 'Request Duration',
-            //     zeroline: false
-            //   }
-            // }
-
-
-            // Plotly.newPlot('boxplotDiv', [{
-            //   type: 'box',
-            //   name: '',
-
-            //   boxpoints: 'all',
-            //   jitter: 0.3,
-            //   pointpos: -1.8,
-
-            //   q1: [q1],
-            //   median: [med],
-            //   q3: [q3],
-            // }], layout)
-
-          }
+          }//end of function plotBoxPlot
 
         } //end of ajax success
       });
 
 
-  }//end of boxplot function
+  }//end of boxplotInfo function
 
 
 });

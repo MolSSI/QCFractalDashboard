@@ -655,7 +655,7 @@ def get_user_slider():
 @login_required
 def get_query_access_summary_boxplot():
     client = get_client()
-    dataSet = client.query_access_summary()
+    dataSet = client.query_access_summary( group_by="hour")
     print("dataSet for boxplot")
     print(type(dataSet)) #dict
     print(dataSet)
