@@ -8,6 +8,7 @@ import os
 
 from app.home import blueprint
 from app.base.routes import get_client
+from app.base.routes import login
 from flask import render_template, redirect, url_for, request, jsonify
 from flask_login import login_required, current_user
 from app import login_manager, cache
@@ -20,20 +21,34 @@ from pandas.io.json import json_normalize
 # from flatten_dict import flatten
 import datetime
 
+from flask_jwt_extended import create_access_token
+# from flask_jwt_extended import jwt_required
+# from flask_jwt_extended import JWTManager
+
+# @jwt.expired_token_loader
+# def my_expired_token_callback(jwt_header, jwt_payload):
+#     return jsonify(code="dave", err="I can't let you do that"), 401
+
 @blueprint.route('/index')
 @login_required
 def index():
+    print("def index function, will call getClient()")
     client = get_client()
+    print("client in index function= ")
+    print(client)
+
     # # dataSet = client.server_info(full_return=True)
     # # dataSet = client.query_tasks(full_return=True) #return all of the tasks (server_infor)
     # query_meta = dataSet.meta
     # print("get_general_stats dataSet")
     # print(dataSet)
+      
     server_information = client.server_info
     # print("server_information")
     # print(server_information)
     # print(type(server_information)) #dict
     # print(server_information['name'])
+
 
     stats ={}
     # stats["query_n_found"] = query_meta.n_found
@@ -57,8 +72,8 @@ def index():
     
     dataSet_logs = client.query_access_log()
     dataSet_log_df = pd.DataFrame(dataSet_logs)
-    print("dataSet_log_df")
-    print(dataSet_log_df)
+    # print("dataSet_log_df")
+    # print(dataSet_log_df)
     users_set=dataSet_log_df.user.unique()
     stats["users_set"] = users_set
     # stats['last_update_format']=last_update_format
@@ -66,24 +81,50 @@ def index():
 # https://github.com/MolSSI/QCFractal/blob/bdb213f62972de092b45b40143ffd2196e6534f2/qcfractal/interface/client.py#L1261 
 # line # 1243
     error_log_info = client.query_error_log() #list
-    print("query_error_log")
-    print(type(error_log_info))
-    print(error_log_info)
+    # print("query_error_log")
+    # print(type(error_log_info))
+    # print(error_log_info)
     if len(error_log_info) == 0:
         stats['error_log'] = "No error logs. All Good!"
+
     else:
         stats['error_log'] = error_log_info
-    print("stats['error_log']")
-    print(stats['error_log'])
+    # print("stats['error_log']")
+    # print(stats['error_log'])
     return render_template('index.html', segment='index', posts=stats)
 
+@blueprint.route('/views/db_stats')
+@login_required
+def db_stats():
+    client = get_client()
+    db_stats_info = client.query_server_stats() #list
+    # print("db_stats_info")
+    # print(type(db_stats_info))
+    # print(db_stats_info)
+    return jsonify(db_stats_info)
+
+@blueprint.route('/views/db_table_information')
+@login_required
+def db_stats_table_information():
+    client = get_client()
+    db_stats_info = client.query_server_stats() #list
+    print("db_stats_info")
+    # print(type(db_stats_info))
+    db_table_information = db_stats_info[0]['db_table_information']
+    # temp = jsonify(db_stats_info)
+    # print(type(temp))
+    print(db_table_information)
+    return jsonify(db_table_information)
+
 @blueprint.route('/views/server_error_logs')
+@login_required
 def server_error_logs():
     client = get_client()
     error_log_info = client.query_error_log() #list
     print("query_error_log")
     print(type(error_log_info))
     print(error_log_info)
+
 
     if len(error_log_info) == 0:
 
@@ -163,6 +204,7 @@ def call_data():
     return list_managers()
 
 # @cache.cached()
+@login_required
 def list_managers(status=None, modified_after=None):
 
     client = get_client()

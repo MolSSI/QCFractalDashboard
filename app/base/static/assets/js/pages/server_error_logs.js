@@ -52,7 +52,11 @@ $(function ($) {
 
     $('#server_error_table tbody').on('click', 'button', function () {
         var data = table.row($(this).parents('tr')).data();
-        var task_details = "<p> hello" + "</p>"
+        // var task_details = "<p> hello" + "</p>"
+        var task_details = "<p> <b>-Error Text:</b> " + data.error_text + 
+        "<br> <b>-Request Header: </b>" + data.request_headers +
+            "<br> <b>-Request Body:</b> " + data.request_body
+        "</p>"
         $('.modal-body').html(task_details);
         $('.modal-body').append(data.htmlresponse);
         $('#empModal').modal('show');

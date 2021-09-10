@@ -1,0 +1,54 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} DB Plots {% endblock %}
+
+{% block stylesheets %} {% endblock stylesheets %}
+
+{% block content %}
+<div class="pcoded-content">
+  <div class="pcoded-inner-content">
+    <div class="page-header">
+      <div class="page-block">
+        <div class="row align-items-center">
+          <div class="col-md-12">
+            <div class="page-header-title">
+              <h5 class="m-b-10">DB Stat Plots</h5>
+            </div>
+            <ul class="breadcrumb">
+              <li class="breadcrumb-item"><a href="/"><i class="feather icon-home"></i></a></li>
+              <li class="breadcrumb-item"><a href="javascript:">DB Stats Plots</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="main-body" id="db-plots-main-body">
+      <div class="row">
+        <!-- <div class="col-sm-12">
+          <div class="card">
+            <div class="card-header">
+              <h5>Histogram of Status of Tasks Queue</h5>
+            </div>
+            <div class="card-block">
+              <div id='task_queueDiv'></div>
+            </div>
+          </div>
+        </div> -->
+        <div class="col-sm-12">
+          <div class="card">
+            <div class="card-header">
+              <h5>Histogram of DB Total Size</h5>
+            </div>
+            <div class="card-block">
+              <div id='db_stats_plot'></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+{% block javascripts %}
+<script src="/static/assets/js/pages/db_statistics_plot.js"></script>
+{% endblock javascripts %}

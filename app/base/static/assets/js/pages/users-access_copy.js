@@ -678,6 +678,7 @@ $(function ($) {
             Plotly.newPlot('boxplotDiv', [{
               "type": "box",
               "name": "",
+              // "hoverinfo":[1,2,3,4,11,22,33,44,111,222,333,444,5,6,7,8,9,55,66,7,88,99,23,24],
               "offsetgroup": "1",
               "q1": q1_24_hours,
               "median": median_24_hours,
@@ -686,12 +687,28 @@ $(function ($) {
               "upperfence": max_24_hours
             }], layout_24_hours)
 
+            // boxplotDiv.on('plotly_hover', (evtData) => {
+            //   var calcData = boxplotDiv.calcdata;
+            //   var measurePoints = [];
+              
+            //   evtData.points.forEach((p) => {
+            //     var calcPt0 = calcData[p.curveNumber][0]
+                
+            //     console.log(`
+            //       median: ${calcPt0.med}
+            //       q1: ${calcPt0.q1}
+            //       q3: ${calcPt0.q3}
+            //       whiskers: ${calcPt0.lf} - ${calcPt0.uf} 
+            //       outliers: ${calcPt0.lo} - ${calcPt0.uo}
+            //     `)
+            //   })
+              
+            // })
+
           }//end of function plotBoxPlot
 
         } //end of ajax success
       });
-
-
   }//end of boxplotInfo function
 
 

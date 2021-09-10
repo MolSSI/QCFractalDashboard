@@ -3,7 +3,14 @@
 {% block title %} UI Forms {% endblock %}
 
 <!-- Specific CSS goes HERE -->
-{% block stylesheets %}{% endblock stylesheets %}
+{% block stylesheets %}
+<style>
+  tr.group,
+  tr.group:hover {
+    background-color: #ddd !important;
+  }
+</style>
+{% endblock stylesheets %}
 
 {% block content %}
 
@@ -26,21 +33,100 @@
       </div>
     </div>
     <!-- [ breadcrumb ] end -->
-    <div class="main-body">
+    <div class="main-body" id='db_statistics_main'>
       <div class="page-wrapper">
-        <img src="/static/assets/images/work-in-progress.png">
-      </div>
-      <div class="col-md-6">
-        <div class="form-group">
-          <label for="geboortedatum">Geboortedatum:</label>
-          <div class="input-group datepicker" data-provide="datepicker">
-            <input type="text" name="geboortedatum" id="geboortedatum" class="form-control">
-            <div class="input-group-addon">
-              <span class="glyphicon glyphicon-th"></span>
+        <!-- <img src="/static/assets/images/work-in-progress.png"> -->
+        <div style=" margin-bottom: 50px">
+          <table id="db_stats" class="table table-striped table-bordered" style="width:100%;table-layout:fixed">
+          </table>
+        </div>
+        
+        <!-- Modal -->
+        <!-- aria-labelledby="exampleModalLabel" -->
+        <div class="modal fade" id="empModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+          aria-hidden="true" aria-hidden="true">
+          <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                  <i class="tim-icons icon-simple-remove"></i>
+                </button>
+              </div>
+              <div class="modal-body">
+                <table id="db_table_information" class="table table-bordered"></table>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
             </div>
           </div>
         </div>
+
+        <!-- <table id="db_stats_2" class="table table-striped table-bordered" style="width:100%;table-layout:fixed">
+        </table> -->
+
+        <!-- https://datatables.net/examples/advanced_init/row_grouping.html -->
+        <table id="example" class="display" style="width:100%">
+          <thead>
+            <tr>
+              <th>Result type</th>
+              <th>Error</th>
+              <th>Running</th>
+              <th>Waiting</th>
+              <!-- <th>Start date</th>
+              <th>Salary</th> -->
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+
+              <td>grid_optimization_procedure</td>
+              <td>61</td>
+              <td>20</td>
+              <td>$3</td>
+            </tr>
+            <tr>
+
+              <td>torsiondrive_procedure</td>
+              <td>6</td>
+              <td>2</td>
+              <td>7</td>
+            </tr>
+            <tr>
+
+              <td>grid_optimization_procedure</td>
+              <td>6</td>
+              <td>3</td>
+              <td>4</td>
+            </tr>
+            <tr>
+
+              <td>torsiondrive_procedure</td>
+              <td>55</td>
+              <td>2</td>
+              <td>5</td>
+            </tr>
+            <tr>
+
+              <td>torsiondrive_procedure</td>
+              <td>23</td>
+              <td>2</td>
+              <td>10</td>
+            </tr>
+            <tr>
+
+              <td>torsiondrive_procedure</td>
+              <td>22</td>
+              <td>0</td>
+              <td>0</td>
+            </tr>
+          </tbody>
+        </table>
+
+
       </div>
+
     </div>
   </div>
 </div>
@@ -49,6 +135,7 @@
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
-<script src="/static/assets/js/pages/calendar.js"></script>
+<script src="/static/assets/js/pages/database-statistics.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
 
 {% endblock javascripts %}
