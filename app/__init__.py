@@ -56,14 +56,14 @@ def set_up_logging(app):
     app.logger.setLevel(logging.DEBUG)
 
 def create_app(config):
-    app = Flask(__name__, static_folder='base/static')
-    app.config.from_object(config)
+    application = Flask(__name__, static_folder='base/static')
+    application.config.from_object(config)
 
-    register_extensions(app)
-    register_blueprints(app)
-    configure_database(app)
-    set_up_logging(app)
+    register_extensions(application)
+    register_blueprints(application)
+    configure_database(application)
+    set_up_logging(application)
 
-    app.logger.info('-- App started ---')
+    application.logger.info('-- App started ---')
 
-    return app
+    return application
