@@ -47,9 +47,12 @@ def index():
     stats['access_types']=server_information_dropped_info
     
     dataSet_logs = client.query_access_log()
+    print(dataSet_logs)
     dataSet_log_df = pd.DataFrame(dataSet_logs)
     users_set=dataSet_log_df.user.unique()
+    access_type_set = dataSet_log_df.access_type.unique()
     stats["users_set"] = users_set
+    stats["access_types"] = access_type_set
     # stats['last_update_format']=last_update_format
     error_log_info = client.query_error_log() #list
     if len(error_log_info) == 0:
