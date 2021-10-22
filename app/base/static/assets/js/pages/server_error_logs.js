@@ -23,11 +23,17 @@ $(function ($) {
     ];
 
     var table = $('#server_error_table').DataTable({
+        "language": {
+            "emptyTable": "No Server Errors to display!"
+          },
         // dom: 'Bfrtip',
         dom: 'b',
         dataSrc: 'JSON',
         columns: columns,
-        ajax: '/views/server_error_datatable',
+        "ajax": {
+            "url": "/views/server_error_datatable",
+            "dataSrc": ""
+        },
         columnDefs: [
             {
                 targets: 0,
@@ -37,6 +43,7 @@ $(function ($) {
                 }
             }
         ],
+        
         select: {
             style: 'multi'
         },

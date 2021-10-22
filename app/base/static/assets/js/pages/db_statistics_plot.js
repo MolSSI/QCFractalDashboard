@@ -9,7 +9,7 @@ $(function ($) {
     async: false,
     dataType: 'json',
     error: function (xhr, error) {
-      alert("error /views/db_stats: " + xhr);
+      alert("error /views/db_stats plot: " + xhr);
     },
     success: function (ret) {
       console.log(ret)

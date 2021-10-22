@@ -35,7 +35,8 @@ $(function ($) {
   var table = $('#task_queue_table').DataTable({
     dom: 'Bfrtip',
     buttons: [
-      // { // commented for now until there is an end point for the delete functionality
+      // commented for now until there is an end point for the delete functionality
+      // { 
       //   extend: 'selected',
       //   text: 'Delete',
       //   className: 'btn-primary'
@@ -108,6 +109,7 @@ $(function ($) {
     $('#empModal').modal('show');
   });
 
+  // end point not yet implemented
   function deleteAction() {
     var selected = table.column(0).checkboxes.selected();
     var row_ids = [];

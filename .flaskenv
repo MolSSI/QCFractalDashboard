@@ -1,4 +1,4 @@
-FLASK_APP=run.py
+FLASK_APP=application.py
 FLASK_ENV=development
 
 # add to a .env file if needed
