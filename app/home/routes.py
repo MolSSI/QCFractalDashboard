@@ -7,6 +7,7 @@ Copyright (c) 2019 - present AppSeed.us
 import qcportal as ptl
 import os
 
+import qcportal as ptl
 from app.home import blueprint
 from app.base.routes import get_client
 from app.base.routes import login
@@ -28,7 +29,7 @@ from flask_jwt_extended import create_access_token
 @blueprint.route('/index')
 @login_required
 def index():
-    client = get_client()
+    client: ptl.PortalClient = get_client()
     # # dataSet = client.server_info(full_return=True)
     # # dataSet = client.query_tasks(full_return=True) #return all of the tasks (server_infor)
     # query_meta = dataSet.meta
@@ -36,25 +37,16 @@ def index():
     stats ={}
     # stats["query_n_found"] = query_meta.n_found
     stats["server_information"] = server_information
-    server_information_dropped_info = server_information.copy()
-    del server_information_dropped_info['client_upper_version_limit']
-    # del server_information_dropped_info['last_update']
-    del server_information_dropped_info['version']
-    del server_information_dropped_info['query_limits']
-    del server_information_dropped_info['manager_heartbeat_frequency']
-    del server_information_dropped_info['name']
-    del server_information_dropped_info['client_lower_version_limit']
-    stats['access_types']=server_information_dropped_info
-    
-    dataSet_logs = client.query_access_log()
-    print(dataSet_logs)
-    dataSet_log_df = pd.DataFrame(dataSet_logs)
+
+    dataSet_logs = list(client.query_access_log(limit=100))
+    dataSet_log_df = pd.DataFrame([x.dict() for x in dataSet_logs])
+    print(dataSet_log_df)
     users_set=dataSet_log_df.user.unique()
     access_type_set = dataSet_log_df.access_type.unique()
     stats["users_set"] = users_set
     stats["access_types"] = access_type_set
     # stats['last_update_format']=last_update_format
-    error_log_info = client.query_error_log() #list
+    error_log_info = list(client.query_error_log())
     if len(error_log_info) == 0:
         stats['error_log'] = "No error logs. All Good!"
     else:
@@ -192,21 +184,21 @@ def get_tasks_queue():
 
     client = get_client()
 
-    limitVar = 5000
-    dataSet = client.query_tasks(limit=limitVar)
+    limitVar = 500
+    dataSet = list(client.query_records(limit=limitVar))
     # get the data size from meta, and use it to allocate the array (arr)
     arr = [None] * len(dataSet)  # since the server's limit is 2000,
     iter = 0
     for ob in dataSet:
         rowRecord = {'id': ob.id,
-                     'parser': ob.parser,
+                     'parser': "none",
                      'status': ob.status,
-                     'program': ob.program,
-                     'procedure': ob.procedure,
-                     'manager': ob.manager,
-                     'priority': priorityText(ob.priority),
-                     'tag': ob.tag,
-                     'base_result': ob.base_result,
+                     'program': "a_program",
+                     'procedure': ob.record_type,
+                     'manager': ob.manager_name,
+                     'priority': "low",
+                     'tag': "atag",
+                     'base_result': ob.id,
                     #  'error': ob.error,
                      'modified_on': ob.modified_on.strftime('%Y-%m-%d-%H:%M:%S'),
                      'created_on': ob.created_on.strftime('%Y-%m-%d-%H:%M:%S')}
@@ -262,10 +254,10 @@ def usersAcess():
 @login_required
 def get_user_table():
     client = get_client()
-    dataSet = client.query_access_log(limit=1000)  # new function
+    dataSet = list(client.query_access_log(limit=1000))
     # dataSet = client.query_access_log()  # if limit not specified, returned data is approx. 10,000
-    ret = {'data': dataSet}
-    return jsonify(dataSet)
+    ret = {'data': [x.json() for x in dataSet]}
+    return jsonify(ret)
 
 
 @cache.cached()
@@ -347,8 +339,9 @@ def get_user_slider():
 @login_required
 def get_query_access_summary_boxplot():
     client = get_client()
-    dataSet = client.query_access_summary( group_by="hour")
-    return jsonify(dataSet)
+    twoday = datetime.datetime.utcnow() - datetime.timedelta(days=2)
+    dataSet = client.query_access_summary(group_by="hour", after=twoday)
+    return jsonify(dataSet.dict())
     
 @blueprint.route('/views/users_access_data_subdivision')
 @login_required    

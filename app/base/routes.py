@@ -27,7 +27,7 @@ def get_client(url=None, username=None, password=None, redirect_to_login=True, f
 
     try:
         if not url==None and not username==None and not password ==None:
-            store['client'] = ptl.FractalClient(address=url, username=username, password=password)
+            store['client'] = ptl.PortalClient(address=url, username=username, password=password)
             return store['client']
         elif url==None or username==None or password ==None:
             app.logger.error(f'Error logging in since either url or username or password = none in getClient') # ERROR in routes: Error logging in: argument of type 'NoneType' is not iterable
